@@ -26,12 +26,18 @@ export default function JSONFormatter() {
         parsed = JSON.parse(jsonInput);
       } catch (e) {
         // If it fails, try to evaluate it as JavaScript (for cases where user inputs JSON with single quotes)
-        // This is not recommended for production but can help with common user errors
         try {
-          // Replace single quotes with double quotes for simple cases
+          // Replace single quotes with double quotes and fix unquoted property keys
           const fixedInput = jsonInput
             .replace(/'/g, '"')
-            .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
+            // Improved regex to handle more cases of unquoted keys
+            .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3')
+            // Handle keys with hyphens and other valid characters
+            .replace(/([{,]\s*)([a-zA-Z0-9_-]+)(\s*:)/g, '$1"$2"$3')
+            // Fix trailing commas in objects and arrays
+            .replace(/,\s*}/g, '}')
+            .replace(/,\s*\]/g, ']');
+          
           parsed = JSON.parse(fixedInput);
         } catch (e2) {
           throw e; // Throw the original error if second attempt fails
