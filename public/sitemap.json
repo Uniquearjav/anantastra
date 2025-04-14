@@ -1,0 +1,100 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "lastModified": "2025-04-14",
+      "priority": "1.0",
+      "changeFrequency": "weekly"
+    },
+    {
+      "path": "/tools",
+      "lastModified": "2025-04-14",
+      "priority": "0.9",
+      "changeFrequency": "weekly"
+    },
+    {
+      "path": "/tools/calculator/interest-calculator",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/tools/calculator/loan-emi-calculator",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/tools/converters/morse-code-converter",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/tools/checkers/prime-checker",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/tools/password-tools/password-generator",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/tools/password-tools/password-age-checker",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/text",
+      "lastModified": "2025-04-14",
+      "priority": "0.8",
+      "changeFrequency": "monthly"
+    },
+    {
+      "path": "/interest-calculator",
+      "lastModified": "2025-04-14",
+      "priority": "0.6",
+      "changeFrequency": "monthly",
+      "redirectTo": "/tools/calculator/interest-calculator"
+    },
+    {
+      "path": "/loan-emi-calculator",
+      "lastModified": "2025-04-14",
+      "priority": "0.6",
+      "changeFrequency": "monthly",
+      "redirectTo": "/tools/calculator/loan-emi-calculator"
+    },
+    {
+      "path": "/morse-code-converter",
+      "lastModified": "2025-04-14",
+      "priority": "0.6",
+      "changeFrequency": "monthly",
+      "redirectTo": "/tools/converters/morse-code-converter"
+    },
+    {
+      "path": "/prime-checker",
+      "lastModified": "2025-04-14",
+      "priority": "0.6",
+      "changeFrequency": "monthly",
+      "redirectTo": "/tools/checkers/prime-checker"
+    },
+    {
+      "path": "/password-generator",
+      "lastModified": "2025-04-14",
+      "priority": "0.6",
+      "changeFrequency": "monthly",
+      "redirectTo": "/tools/password-tools/password-generator"
+    },
+    {
+      "path": "/password-age-checker",
+      "lastModified": "2025-04-14",
+      "priority": "0.6",
+      "changeFrequency": "monthly",
+      "redirectTo": "/tools/password-tools/password-age-checker"
+    }
+  ]
+}
