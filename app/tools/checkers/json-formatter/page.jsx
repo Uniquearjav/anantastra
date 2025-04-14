@@ -244,7 +244,7 @@ export default function JSONFormatter() {
         <ul className="list-disc list-inside space-y-1 mb-4">
           <li><span className="font-mono">String</span>: <span className="font-mono">"text"</span> (must use double quotes)</li>
           <li><span className="font-mono">Number</span>: <span className="font-mono">42</span>, <span className="font-mono">3.14159</span></li>
-          <li><span className="font-mono">Object</span>: <span className="font-mono">{"key": "value"}</span></li>
+          <li><span className="font-mono">Object</span>: <span className="font-mono">&#123;"key": "value"&#125;</span></li>
           <li><span className="font-mono">Array</span>: <span className="font-mono">[1, 2, 3]</span></li>
           <li><span className="font-mono">Boolean</span>: <span className="font-mono">true</span> or <span className="font-mono">false</span></li>
           <li><span className="font-mono">null</span></li>

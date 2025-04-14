@@ -48,6 +48,32 @@ export default function NumberToWordsConverter() {
       minus: "moins",
       point: "virgule",
       invalid: "Entrée non valide. Veuillez saisir un nombre valide."
+    },
+    hi: {
+      name: "Hindi",
+      units: ["", "एक", "दो", "तीन", "चार", "पांच", "छह", "सात", "आठ", "नौ"],
+      teens: ["दस", "ग्यारह", "बारह", "तेरह", "चौदह", "पंद्रह", "सोलह", "सत्रह", "अठारह", "उन्नीस"],
+      tens: ["", "", "बीस", "तीस", "चालीस", "पचास", "साठ", "सत्तर", "अस्सी", "नब्बे"],
+      scales: ["", "हज़ार", "लाख", "करोड़", "अरब", "खरब", "नील"],
+      and: "और",
+      hundred: "सौ",
+      zero: "शून्य",
+      minus: "ऋण",
+      point: "दशमलव",
+      invalid: "अमान्य इनपुट। कृपया एक वैध संख्या दर्ज करें।"
+    },
+    sa: {
+      name: "Sanskrit",
+      units: ["", "एकम्", "द्वे", "त्रीणि", "चत्वारि", "पञ्च", "षट्", "सप्त", "अष्ट", "नव"],
+      teens: ["दश", "एकादश", "द्वादश", "त्रयोदश", "चतुर्दश", "पञ्चदश", "षोडश", "सप्तदश", "अष्टादश", "नवदश"],
+      tens: ["", "", "विंशति", "त्रिंशत्", "चत्वारिंशत्", "पञ्चाशत्", "षष्टि", "सप्तति", "अशीति", "नवति"],
+      scales: ["", "सहस्र", "लक्ष", "कोटि", "अर्बुद", "खर्व", "निखर्व"],
+      and: "च",
+      hundred: "शतम्",
+      zero: "शून्य",
+      minus: "ऋण",
+      point: "दशमलव",
+      invalid: "अमान्यः निवेशः। कृपया वैधां संख्यां प्रविष्टं कुर्वन्तु।"
     }
   };
 
@@ -251,7 +277,7 @@ export default function NumberToWordsConverter() {
         <ul className="list-disc list-inside space-y-1 mb-4">
           <li>Supports whole numbers, negative numbers, and decimal values</li>
           <li>Handles numbers up to quintillion (10<sup>18</sup>)</li>
-          <li>Multiple language support (English, Spanish, French)</li>
+          <li>Multiple language support (English, Spanish, French, Hindi, Sanskrit)</li>
           <li>Proper linguistic rules for each language</li>
         </ul>
         
