@@ -12,23 +12,30 @@ export default function BMICalculator() {
   const [bmi, setBmi] = useState(null);
   const [bmiCategory, setBmiCategory] = useState("");
   const [showInfo, setShowInfo] = useState(false);
+  const [feet, setFeet] = useState("");
+  const [inches, setInches] = useState("");
 
   // Convert height to meters
   const getHeightInMeters = () => {
-    const heightValue = parseFloat(height);
-    if (isNaN(heightValue) || heightValue <= 0) return 0;
+    if (heightUnit === "ft") {
+      const feetValue = parseFloat(feet) || 0;
+      const inchesValue = parseFloat(inches) || 0;
+      if (feetValue <= 0 && inchesValue <= 0) return 0;
+      return feetValue * 0.3048 + inchesValue * 0.0254;
+    } else {
+      const heightValue = parseFloat(height);
+      if (isNaN(heightValue) || heightValue <= 0) return 0;
 
-    switch (heightUnit) {
-      case "cm":
-        return heightValue / 100;
-      case "m":
-        return heightValue;
-      case "ft":
-        return heightValue * 0.3048;
-      case "in":
-        return heightValue * 0.0254;
-      default:
-        return 0;
+      switch (heightUnit) {
+        case "cm":
+          return heightValue / 100;
+        case "m":
+          return heightValue;
+        case "in":
+          return heightValue * 0.0254;
+        default:
+          return 0;
+      }
     }
   };
 
@@ -82,16 +89,46 @@ export default function BMICalculator() {
   // Call calculateBMI when height, weight, or units change
   useEffect(() => {
     calculateBMI();
-  }, [height, weight, heightUnit, weightUnit]);
+  }, [height, weight, feet, inches, heightUnit, weightUnit]);
 
   // Reset form
   const resetForm = () => {
     setHeight("");
     setWeight("");
+    setFeet("");
+    setInches("");
     setHeightUnit("cm");
     setWeightUnit("kg");
     setBmi(null);
     setBmiCategory("");
+  };
+
+  // Handle height unit change
+  const handleHeightUnitChange = (e) => {
+    const newUnit = e.target.value;
+    setHeightUnit(newUnit);
+    
+    // Convert existing height to the new unit if possible
+    if (height && newUnit !== "ft") {
+      const heightInMeters = getHeightInMeters();
+      let convertedHeight;
+      
+      switch (newUnit) {
+        case "cm":
+          convertedHeight = heightInMeters * 100;
+          break;
+        case "m":
+          convertedHeight = heightInMeters;
+          break;
+        case "in":
+          convertedHeight = heightInMeters / 0.0254;
+          break;
+        default:
+          convertedHeight = "";
+      }
+      
+      setHeight(convertedHeight ? convertedHeight.toFixed(2) : "");
+    }
   };
 
   return (
@@ -105,27 +142,72 @@ export default function BMICalculator() {
             <label className="block text-sm font-medium mb-1">
               Height
             </label>
-            <div className="flex">
-              <Input
-                type="number"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                placeholder="Enter height"
-                min="0"
-                step="0.01"
-                className="flex-1 rounded-r-none"
-              />
-              <select
-                value={heightUnit}
-                onChange={(e) => setHeightUnit(e.target.value)}
-                className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md focus:ring-primary"
-              >
-                <option value="cm">cm</option>
-                <option value="m">m</option>
-                <option value="ft">ft</option>
-                <option value="in">in</option>
-              </select>
-            </div>
+            
+            {heightUnit === "ft" ? (
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex">
+                  <Input
+                    type="number"
+                    value={feet}
+                    onChange={(e) => setFeet(e.target.value)}
+                    placeholder="Feet"
+                    min="0"
+                    className="flex-1 rounded-r-none"
+                  />
+                  <div className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md">
+                    ft
+                  </div>
+                </div>
+                <div className="flex">
+                  <Input
+                    type="number"
+                    value={inches}
+                    onChange={(e) => setInches(e.target.value)}
+                    placeholder="Inches"
+                    min="0"
+                    max="11.99"
+                    step="0.01"
+                    className="flex-1 rounded-r-none"
+                  />
+                  <div className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md">
+                    in
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex">
+                <Input
+                  type="number"
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
+                  placeholder="Enter height"
+                  min="0"
+                  step="0.01"
+                  className="flex-1 rounded-r-none"
+                />
+                <select
+                  value={heightUnit}
+                  onChange={handleHeightUnitChange}
+                  className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md focus:ring-primary"
+                >
+                  <option value="cm">cm</option>
+                  <option value="m">m</option>
+                  <option value="ft">ft</option>
+                  <option value="in">in</option>
+                </select>
+              </div>
+            )}
+            
+            {heightUnit === "ft" && (
+              <div className="text-right">
+                <button 
+                  onClick={() => setHeightUnit("cm")}
+                  className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  Switch to metric
+                </button>
+              </div>
+            )}
           </div>
           
           {/* Weight input */}
@@ -244,14 +326,15 @@ export default function BMICalculator() {
                         <span>Height:</span>
                         <span className="font-medium">
                           {getHeightInMeters().toFixed(2)} m 
-                          {heightUnit !== 'm' && ` (${height} ${heightUnit})`}
+                          {heightUnit === 'ft' && feet && inches && ` (${feet}ft ${inches}in)`}
+                          {heightUnit !== 'm' && heightUnit !== 'ft' && height && ` (${height} ${heightUnit})`}
                         </span>
                       </li>
                       <li className="flex justify-between">
                         <span>Weight:</span>
                         <span className="font-medium">
                           {getWeightInKg().toFixed(1)} kg
-                          {weightUnit !== 'kg' && ` (${weight} ${weightUnit})`}
+                          {weightUnit !== 'kg' && weight && ` (${weight} ${weightUnit})`}
                         </span>
                       </li>
                     </ul>
