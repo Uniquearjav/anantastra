@@ -10,6 +10,10 @@ export default function ToolsPage() {
       tools: [
         { name: "Loan EMI Calculator", slug: "loan-emi-calculator" },
         { name: "Interest Calculator", slug: "interest-calculator" },
+        { name: "BMI Calculator", slug: "bmi-calculator" },
+        { name: "Age Calculator", slug: "age-calculator" },
+        { name: "Factorial Calculator", slug: "factorial-calculator" },
+        { name: "Decimal to Binary Calculator", slug: "decimal-binary-calculator" },
       ]
     },
     {
@@ -19,6 +23,11 @@ export default function ToolsPage() {
       color: "from-purple-500 to-purple-600",
       tools: [
         { name: "Morse Code Converter", slug: "morse-code-converter" },
+        { name: "Currency Converter", slug: "currency-converter" },
+        { name: "Unit Converter", slug: "unit-converter" },
+        { name: "Number to Words", slug: "number-words-converter" },
+        { name: "Roman to Decimal Converter", slug: "roman-decimal-converter" },
+        { name: "Markdown to HTML Converter", slug: "markdown-html-converter" },
       ]
     },
     {
@@ -28,6 +37,9 @@ export default function ToolsPage() {
       color: "from-green-500 to-green-600",
       tools: [
         { name: "Prime Number Checker", slug: "prime-checker" },
+        { name: "Palindrome Checker", slug: "palindrome-checker" },
+        { name: "Leap Year Checker", slug: "leap-year-checker" },
+        { name: "JSON Formatter/Validator", slug: "json-formatter" },
       ]
     },
     {
@@ -38,6 +50,17 @@ export default function ToolsPage() {
       tools: [
         { name: "Password Generator", slug: "password-generator" },
         { name: "Password Age Checker", slug: "password-age-checker" },
+      ]
+    },
+    {
+      name: "Code & Text Tools",
+      slug: "code-text-tools",
+      description: "Tools for working with code and text content",
+      color: "from-amber-500 to-amber-600",
+      tools: [
+        { name: "Text Difference Tool", slug: "text-difference" },
+        { name: "Random Morse Code Generator", slug: "random-morse-generator" },
+        { name: "SVG Previewer & Editor", slug: "svg-previewer" },
       ]
     },
   ];
