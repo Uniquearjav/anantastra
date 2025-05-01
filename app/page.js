@@ -131,66 +131,87 @@ export default function Home() {
               Discover our most loved tools that help you save time and boost productivity
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {/* Tool 1 - Interest Calculator */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Tool 1 - SIP Calculator (New) */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden group">
-              <div className="h-56 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center relative overflow-hidden">
+              <div className="h-48 bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(45deg,#ffffff1a_25%,transparent_25%,transparent_50%,#ffffff1a_50%,#ffffff1a_75%,transparent_75%,transparent)] bg-[length:6px_6px] opacity-20"></div>
-                <svg className="w-20 h-20 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-16 h-16 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center mb-4">
+                  <span className="px-3 py-1 text-xs font-medium bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-300 rounded-full mr-2">Finance</span>
+                  <span className="px-3 py-1 text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-full">New</span>
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">SIP Calculator</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm">Plan your wealth with our SIP calculator featuring Indian Rupee formatting and detailed investment breakups.</p>
+                <Link href="/tools/calculator/sip-calculator">
+                  <Button className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white shadow-md">Try Now →</Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Tool 2 - Interest Calculator */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden group">
+              <div className="h-48 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,#ffffff1a_25%,transparent_25%,transparent_50%,#ffffff1a_50%,#ffffff1a_75%,transparent_75%,transparent)] bg-[length:6px_6px] opacity-20"></div>
+                <svg className="w-16 h-16 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div className="p-8">
+              <div className="p-6">
                 <div className="flex items-center mb-4">
                   <span className="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full mr-2">Finance</span>
                   <span className="px-3 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-full">Popular</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Interest Calculator</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">Calculate simple and compound interest with customizable parameters and visual comparisons. Plan your investments smarter.</p>
-                <Link href="/interest-calculator">
-                  <Button className="w-full py-6 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md">Try Now →</Button>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Interest Calculator</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm">Calculate simple and compound interest with customizable parameters and visual comparisons.</p>
+                <Link href="/tools/calculator/interest-calculator">
+                  <Button className="w-full py-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md">Try Now →</Button>
                 </Link>
               </div>
             </div>
 
-            {/* Tool 2 - Text Tools */}
+            {/* Tool 3 - Text Tools */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden group">
-              <div className="h-56 bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center relative overflow-hidden">
+              <div className="h-48 bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(45deg,#ffffff1a_25%,transparent_25%,transparent_50%,#ffffff1a_50%,#ffffff1a_75%,transparent_75%,transparent)] bg-[length:6px_6px] opacity-20"></div>
-                <svg className="w-20 h-20 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-16 h-16 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
               </div>
-              <div className="p-8">
+              <div className="p-6">
                 <div className="flex items-center mb-4">
                   <span className="px-3 py-1 text-xs font-medium bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 rounded-full mr-2">Productivity</span>
                   <span className="px-3 py-1 text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-full">New</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Text Tools</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">Powerful text formatting, conversion, and analysis tools for everyday text manipulation tasks. Format, clean and transform text instantly.</p>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Text Tools</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm">Format, clean and transform text instantly with our powerful text manipulation tools.</p>
                 <Link href="/text">
-                  <Button className="w-full py-6 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-md">Try Now →</Button>
+                  <Button className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-md">Try Now →</Button>
                 </Link>
               </div>
             </div>
 
-            {/* Tool 3 - Password Generator */}
+            {/* Tool 4 - Password Generator */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden group">
-              <div className="h-56 bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center relative overflow-hidden">
+              <div className="h-48 bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(45deg,#ffffff1a_25%,transparent_25%,transparent_50%,#ffffff1a_50%,#ffffff1a_75%,transparent_75%,transparent)] bg-[length:6px_6px] opacity-20"></div>
-                <svg className="w-20 h-20 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-16 h-16 text-white transform group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <div className="p-8">
+              <div className="p-6">
                 <div className="flex items-center mb-4">
                   <span className="px-3 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-full mr-2">Security</span>
                   <span className="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full">Essential</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Password Generator</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">Create secure, random passwords with customizable options. Enhance your online security with strong passwords.</p>
-                <Link href="/password-generator">
-                  <Button className="w-full py-6 rounded-xl bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md">Try Now →</Button>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Password Generator</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm">Create secure, random passwords with customizable options to enhance your online security.</p>
+                <Link href="/tools/password-tools/password-generator">
+                  <Button className="w-full py-4 rounded-xl bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md">Try Now →</Button>
                 </Link>
               </div>
             </div>
@@ -243,13 +264,13 @@ export default function Home() {
             {/* Testimonial 2 */}
             <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-sm">
               <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center text-xl font-bold text-purple-700 dark:text-purple-300">SJ</div>
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center text-xl font-bold text-purple-700 dark:text-purple-300">SL</div>
                 <div className="ml-4">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Sarah Johnson</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Sarah Lee</h4>
                   <p className="text-gray-600 dark:text-gray-400 text-sm">Web Developer</p>
                 </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 italic">"As a developer, I appreciate how lightweight these tools are. The password generator and text tools save me time every day. Plus, being open source means I can contribute!"</p>
+              <p className="text-gray-700 dark:text-gray-300 italic">"I use the password generator and text tools almost daily in my work. Being open source means I can trust that my data isn't being harvested. Kudos to the team!"</p>
               <div className="flex mt-6 text-yellow-400">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
@@ -258,55 +279,9 @@ export default function Home() {
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
               </div>
             </div>
-            
-            {/* Testimonial 3 */}
-            <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-sm">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-xl font-bold text-green-700 dark:text-green-300">MP</div>
-                <div className="ml-4">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Michael Patel</h4>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">Student</p>
-                </div>
-              </div>
-              <p className="text-gray-700 dark:text-gray-300 italic">"The Morse code converter and prime checker helped me with my computer science assignments. I'm grateful these tools are free and accessible."</p>
-              <div className="flex mt-6 text-yellow-400">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <svg className="w-5 h-5 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,#ffffff0a_25%,transparent_25%,transparent_50%,#ffffff0a_50%,#ffffff0a_75%,transparent_75%,transparent)] bg-[length:20px_20px]"></div>
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Try Anantastra?</h2>
-            <p className="text-xl mb-10 text-blue-100">Discover our collection of free, privacy-focused tools designed to make your digital life easier.</p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link href="/tools">
-                <Button className="px-8 py-5 text-lg rounded-xl bg-white text-blue-600 hover:bg-blue-50 shadow-lg shadow-blue-700/20 hover:shadow-blue-700/30 transition-all duration-300">
-                  Explore All Tools
-                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </Button>
-              </Link>
-              <Link href="/about">
-                <Button variant="outline" className="px-8 py-5 text-lg rounded-xl border-2 border-white hover:bg-white/10 transition-all duration-300">
-                  Learn More
-                </Button>
-              </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
+            </section>
       {/* Open Source Banner */}
       <section className="py-16 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 sm:px-6">

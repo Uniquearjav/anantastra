@@ -147,7 +147,7 @@ export function Footer() {
             </div>
           </div>
           <div className="mt-4 text-center sm:text-left text-xs text-gray-500 dark:text-gray-500">
-            Designed with ❤️ by Anantastra Team
+            Designed with ❤️ by Arjav Choudhary
           </div>
         </div>
       </div>
