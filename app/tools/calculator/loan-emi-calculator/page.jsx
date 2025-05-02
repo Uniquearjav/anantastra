@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formatCurrency, formatIndianCurrency } from "@/lib/formatters";
 
 export default function LoanEMICalculator() {
   const [loanAmount, setLoanAmount] = useState(100000);
@@ -13,6 +14,7 @@ export default function LoanEMICalculator() {
   const [totalInterest, setTotalInterest] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [amortizationSchedule, setAmortizationSchedule] = useState([]);
+  const [currencyType, setCurrencyType] = useState("INR");
 
   const calculateEMI = () => {
     // Convert interest rate from annual percentage to monthly decimal
@@ -54,13 +56,12 @@ export default function LoanEMICalculator() {
     setShowResults(true);
   };
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(value);
+  const handleCurrencyChange = (e) => {
+    setCurrencyType(e.target.value);
+  };
+
+  const formatCurrencyValue = (value) => {
+    return formatCurrency(value, currencyType);
   };
 
   return (
@@ -81,6 +82,9 @@ export default function LoanEMICalculator() {
               min="1"
               step="1000"
             />
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {formatCurrencyValue(loanAmount)}
+            </p>
           </div>
           
           <div>
@@ -112,6 +116,23 @@ export default function LoanEMICalculator() {
             />
           </div>
           
+          <div>
+            <label className="block text-sm font-medium mb-2" htmlFor="currencyType">
+              Currency
+            </label>
+            <select
+              id="currencyType"
+              value={currencyType}
+              onChange={handleCurrencyChange}
+              className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+            >
+              <option value="INR">Indian Rupee (₹)</option>
+              <option value="USD">US Dollar ($)</option>
+              <option value="EUR">Euro (€)</option>
+              <option value="GBP">British Pound (£)</option>
+            </select>
+          </div>
+          
           <Button onClick={calculateEMI} className="w-full">
             Calculate EMI
           </Button>
@@ -125,15 +146,18 @@ export default function LoanEMICalculator() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">Monthly EMI</p>
-                <p className="text-2xl font-bold">{formatCurrency(emi)}</p>
+                <p className="text-2xl font-bold">{formatCurrencyValue(emi)}</p>
               </div>
               <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Payment</p>
-                <p className="text-2xl font-bold">{formatCurrency(totalPayment)}</p>
+                <p className="text-2xl font-bold">{formatCurrencyValue(totalPayment)}</p>
               </div>
               <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Interest</p>
-                <p className="text-2xl font-bold">{formatCurrency(totalInterest)}</p>
+                <p className="text-2xl font-bold">{formatCurrencyValue(totalInterest)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  ({Math.round((totalInterest / loanAmount) * 100)}% of principal)
+                </p>
               </div>
             </div>
           </div>
@@ -155,10 +179,10 @@ export default function LoanEMICalculator() {
                   {amortizationSchedule.slice(0, 12).map((row) => (
                     <tr key={row.month}>
                       <td className="px-4 py-2">{row.month}</td>
-                      <td className="px-4 py-2">{formatCurrency(row.emi)}</td>
-                      <td className="px-4 py-2">{formatCurrency(row.principalPayment)}</td>
-                      <td className="px-4 py-2">{formatCurrency(row.interestPayment)}</td>
-                      <td className="px-4 py-2">{formatCurrency(row.remainingPrincipal)}</td>
+                      <td className="px-4 py-2">{formatCurrencyValue(row.emi)}</td>
+                      <td className="px-4 py-2">{formatCurrencyValue(row.principalPayment)}</td>
+                      <td className="px-4 py-2">{formatCurrencyValue(row.interestPayment)}</td>
+                      <td className="px-4 py-2">{formatCurrencyValue(row.remainingPrincipal)}</td>
                     </tr>
                   ))}
                   {amortizationSchedule.length > 12 && (

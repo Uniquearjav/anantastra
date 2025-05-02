@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { formatIndianCurrency } from '@/lib/formatters';
 
 const InterestCalculator = () => {
     // States for form inputs
@@ -561,14 +562,14 @@ const InterestCalculator = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
                             <h3 className="text-sm font-medium text-blue-600 dark:text-blue-400">Simple Interest</h3>
-                            <p className="text-2xl font-bold mt-1">₹{simpleInterest.toFixed(0)}</p>
-                            <p className="text-sm mt-1">Total: ₹{(Number(principal) + simpleInterest).toFixed(0)}</p>
+                            <p className="text-2xl font-bold mt-1">{formatIndianCurrency(simpleInterest)}</p>
+                            <p className="text-sm mt-1">Total: {formatIndianCurrency(Number(principal) + simpleInterest)}</p>
                         </div>
                         
                         <div className={`p-4 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
                             <h3 className="text-sm font-medium text-purple-600 dark:text-purple-400">Compound Interest</h3>
-                            <p className="text-2xl font-bold mt-1">₹{compoundInterest.toFixed(0)}</p>
-                            <p className="text-sm mt-1">Total: ₹{(Number(principal) + compoundInterest).toFixed(0)}</p>
+                            <p className="text-2xl font-bold mt-1">{formatIndianCurrency(compoundInterest)}</p>
+                            <p className="text-sm mt-1">Total: {formatIndianCurrency(Number(principal) + compoundInterest)}</p>
                         </div>
                     </div>
                     
@@ -577,8 +578,8 @@ const InterestCalculator = () => {
                         <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                             <p className="font-medium">
                                 {compoundInterest > simpleInterest ? 
-                                    `Compound interest earns you ₹${(compoundInterest - simpleInterest).toFixed(0)} more.` :
-                                    `Simple interest earns you ₹${(simpleInterest - compoundInterest).toFixed(0)} more.`
+                                    `Compound interest earns you ${formatIndianCurrency(compoundInterest - simpleInterest)} more.` :
+                                    `Simple interest earns you ${formatIndianCurrency(simpleInterest - compoundInterest)} more.`
                                 }
                             </p>
                             <p className="text-sm mt-1 opacity-80">
@@ -677,10 +678,10 @@ const InterestCalculator = () => {
                         }).map((data) => (
                             <tr key={data.period} className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-300'}`}>
                                 <td className="p-2">{data.period}</td>
-                                <td className="p-2 text-right text-blue-600 dark:text-blue-400">₹{data.simpleInterest.toFixed(0)}</td>
-                                <td className="p-2 text-right">₹{data.simpleAmount.toFixed(0)}</td>
-                                <td className="p-2 text-right text-purple-600 dark:text-purple-400">₹{data.compoundInterest.toFixed(0)}</td>
-                                <td className="p-2 text-right">₹{data.compoundAmount.toFixed(0)}</td>
+                                <td className="p-2 text-right text-blue-600 dark:text-blue-400">{formatIndianCurrency(data.simpleInterest)}</td>
+                                <td className="p-2 text-right">{formatIndianCurrency(data.simpleAmount)}</td>
+                                <td className="p-2 text-right text-purple-600 dark:text-purple-400">{formatIndianCurrency(data.compoundInterest)}</td>
+                                <td className="p-2 text-right">{formatIndianCurrency(data.compoundAmount)}</td>
                                 <td className={`p-2 text-right ${
                                     data.difference > 0 
                                         ? 'text-green-600 dark:text-green-400' 
@@ -688,7 +689,7 @@ const InterestCalculator = () => {
                                             ? 'text-red-600 dark:text-red-400'
                                             : ''
                                 }`}>
-                                    {data.difference > 0 ? '+' : ''}₹{data.difference.toFixed(0)}
+                                    {data.difference > 0 ? '+' : ''}{formatIndianCurrency(data.difference)}
                                 </td>
                             </tr>
                         ))}
