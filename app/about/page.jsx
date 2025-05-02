@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-
+import AV_image from "@/public/Arjav_about.jpg"
 
 export default function AboutPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -32,11 +32,10 @@ export default function AboutPage() {
                 {/* Replace with your actual image path */}
                 <div className={`absolute inset-0 transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
                   <Image
-                    src="/your-image.jpg" // Replace with your image
-                    alt="Your Name"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
+                    src={AV_image} // Replace with your image
+                    alt="Arjav Choudhary"
+                    // sizes="(max-width: 768px 100vw, 33vw"
+                    className="object-fill"
                     priority
                     onLoad={() => setImageLoaded(true)}
                   />
