@@ -109,7 +109,7 @@ export function Footer() {
           <div className="mt-4 text-center sm:text-left text-xs text-gray-500 dark:text-gray-500">
             Designed with ❤️ by Arjav Choudhary & {" "}
             <a 
-              href="https://unnatvega.vercel.app" 
+              href="https://www.unnatvega.in" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
