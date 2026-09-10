@@ -1,264 +1,379 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  FileCode2, 
+  Copy, 
+  Check, 
+  Download, 
+  Trash2, 
+  Sparkles, 
+  Minimize2, 
+  Maximize2, 
+  AlertCircle, 
+  CheckCircle2,
+  FileText
+} from 'lucide-react';
+
+const SAMPLE_JSON = `{
+  "app": "Anantastra",
+  "version": "2.0.0",
+  "privacy": {
+    "telemetry": false,
+    "clientSideExecution": true
+  },
+  "features": [
+    "Calculators",
+    "Security Tools",
+    "Converters"
+  ],
+  "author": {
+    "name": "Arjav Choudhary",
+    "role": "Creator"
+  }
+}`;
 
 export default function JSONFormatter() {
-  const [jsonInput, setJsonInput] = useState("");
-  const [formattedJson, setFormattedJson] = useState("");
-  const [error, setError] = useState("");
+  const [jsonInput, setJsonInput] = useState('');
+  const [formattedJson, setFormattedJson] = useState('');
+  const [error, setError] = useState('');
   const [indentSize, setIndentSize] = useState(2);
   const [stats, setStats] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
 
-  const formatJSON = () => {
-    if (!jsonInput.trim()) {
-      setError("Please enter JSON data");
-      setFormattedJson("");
+  const formatJSON = (customInput = jsonInput, spaces = indentSize) => {
+    const raw = customInput.trim();
+    if (!raw) {
+      setError('Please paste or enter JSON text');
+      setFormattedJson('');
       setStats(null);
       return;
     }
 
     try {
       let parsed;
-      
-      // Try to parse the JSON
       try {
-        parsed = JSON.parse(jsonInput);
-      } catch (e) {
-        // If it fails, try to evaluate it as JavaScript (for cases where user inputs JSON with single quotes)
-        try {
-          // Replace single quotes with double quotes and fix unquoted property keys
-          const fixedInput = jsonInput
-            .replace(/'/g, '"')
-            // Improved regex to handle more cases of unquoted keys
-            .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3')
-            // Handle keys with hyphens and other valid characters
-            .replace(/([{,]\s*)([a-zA-Z0-9_-]+)(\s*:)/g, '$1"$2"$3')
-            // Fix trailing commas in objects and arrays
-            .replace(/,\s*}/g, '}')
-            .replace(/,\s*\]/g, ']');
-          
-          parsed = JSON.parse(fixedInput);
-        } catch (e2) {
-          throw e; // Throw the original error if second attempt fails
-        }
+        parsed = JSON.parse(raw);
+      } catch (err) {
+        // Tolerant parsing attempt for trailing commas and single quotes
+        const relaxed = raw
+          .replace(/'/g, '"')
+          .replace(/([{,]\s*)([a-zA-Z0-9_-]+)(\s*:)/g, '$1"$2"$3')
+          .replace(/,\s*([}\]])/g, '$1');
+        parsed = JSON.parse(relaxed);
       }
 
-      // Format with the specified indentation
-      const formatted = JSON.stringify(parsed, null, indentSize);
+      const formatted = JSON.stringify(parsed, null, spaces);
       setFormattedJson(formatted);
-      setError("");
-      
-      // Calculate statistics
+      setError('');
       calculateStats(parsed);
-      
     } catch (err) {
-      setError(`Invalid JSON: ${err.message}`);
-      setFormattedJson("");
+      setError(`Syntax Error: ${err.message}`);
+      setFormattedJson('');
       setStats(null);
     }
   };
 
+  const minifyJSON = () => {
+    if (!jsonInput.trim()) return;
+    try {
+      const parsed = JSON.parse(jsonInput);
+      setFormattedJson(JSON.stringify(parsed));
+      setError('');
+      calculateStats(parsed);
+    } catch (err) {
+      setError(`Invalid JSON for Minification: ${err.message}`);
+    }
+  };
+
   const calculateStats = (obj) => {
-    const stats = {
-      totalKeys: 0,
+    const s = {
+      keys: 0,
       depth: 0,
-      arrayCount: 0,
-      objectCount: 0,
-      stringCount: 0,
-      numberCount: 0,
-      booleanCount: 0,
-      nullCount: 0
+      arrays: 0,
+      objects: 0,
+      strings: 0,
+      numbers: 0,
+      booleans: 0,
+      nulls: 0,
+      sizeBytes: new Blob([JSON.stringify(obj)]).size
     };
 
-    // Helper function to traverse the object and count items
-    const traverse = (obj, currentDepth = 0) => {
-      if (currentDepth > stats.depth) {
-        stats.depth = currentDepth;
-      }
-
-      if (Array.isArray(obj)) {
-        stats.arrayCount++;
-        obj.forEach(item => traverse(item, currentDepth + 1));
-      } else if (obj !== null && typeof obj === 'object') {
-        stats.objectCount++;
-        stats.totalKeys += Object.keys(obj).length;
-        
-        Object.values(obj).forEach(value => {
-          traverse(value, currentDepth + 1);
-        });
+    const traverse = (item, currentDepth = 0) => {
+      if (currentDepth > s.depth) s.depth = currentDepth;
+      if (Array.isArray(item)) {
+        s.arrays++;
+        item.forEach(i => traverse(i, currentDepth + 1));
+      } else if (item !== null && typeof item === 'object') {
+        s.objects++;
+        s.keys += Object.keys(item).length;
+        Object.values(item).forEach(v => traverse(v, currentDepth + 1));
       } else {
-        // Count primitive types
-        if (typeof obj === 'string') stats.stringCount++;
-        else if (typeof obj === 'number') stats.numberCount++;
-        else if (typeof obj === 'boolean') stats.booleanCount++;
-        else if (obj === null) stats.nullCount++;
+        if (typeof item === 'string') s.strings++;
+        else if (typeof item === 'number') s.numbers++;
+        else if (typeof item === 'boolean') s.booleans++;
+        else if (item === null) s.nulls++;
       }
     };
 
     traverse(obj);
-    setStats(stats);
+    setStats(s);
   };
 
-  const copyToClipboard = () => {
-    if (formattedJson) {
-      navigator.clipboard.writeText(formattedJson);
-    }
+  const handleCopy = () => {
+    const target = formattedJson || jsonInput;
+    if (!target) return;
+    navigator.clipboard.writeText(target);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const minifyJSON = () => {
-    if (!jsonInput.trim()) {
-      return;
-    }
+  const handleDownload = () => {
+    const target = formattedJson || jsonInput;
+    if (!target) return;
+    const blob = new Blob([target], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `formatted-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setDownloaded(true);
+    setTimeout(() => setDownloaded(false), 2000);
+  };
 
-    try {
-      const parsed = JSON.parse(jsonInput);
-      const minified = JSON.stringify(parsed);
-      setFormattedJson(minified);
-      setError("");
-    } catch (err) {
-      setError(`Invalid JSON: ${err.message}`);
-    }
+  const loadSample = () => {
+    setJsonInput(SAMPLE_JSON);
+    formatJSON(SAMPLE_JSON, indentSize);
+  };
+
+  const clearAll = () => {
+    setJsonInput('');
+    setFormattedJson('');
+    setError('');
+    setStats(null);
   };
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">JSON Formatter & Validator</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Input JSON</h2>
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600 dark:text-gray-400">
-                Indent size:
-              </label>
-              <select 
-                value={indentSize}
-                onChange={(e) => setIndentSize(Number(e.target.value))}
-                className="bg-white dark:bg-gray-700 border rounded px-2 py-1 text-sm"
-              >
-                <option value="2">2</option>
-                <option value="4">4</option>
-                <option value="8">8</option>
-              </select>
-            </div>
+    <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-border/40">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="p-2 rounded-lg bg-foreground text-background">
+              <FileCode2 className="h-4 w-4" />
+            </span>
+            <Badge variant="contrast">Developer Tool</Badge>
+            <Badge variant="subtle">JSON Validator</Badge>
           </div>
-          
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            JSON Formatter & Validator
+          </h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">
+            Validate, prettify, minify, and inspect JSON structures instantly without sending data to any server
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadSample}
+            className="h-8 text-xs gap-1 border-border/70"
+          >
+            <Sparkles className="h-3 w-3" />
+            <span>Sample</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={clearAll}
+            className="h-8 text-xs gap-1 border-border/70"
+          >
+            <Trash2 className="h-3 w-3" />
+            <span>Clear</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopy}
+            disabled={!formattedJson && !jsonInput}
+            className="h-8 text-xs gap-1 border-border/70"
+          >
+            {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownload}
+            disabled={!formattedJson && !jsonInput}
+            className="h-8 text-xs gap-1 border-border/70"
+          >
+            {downloaded ? <CheckCircle2 className="h-3 w-3 text-emerald-500" /> : <Download className="h-3 w-3" />}
+            <span>Export</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Control Actions Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 p-3 rounded-xl border border-border/60 bg-card text-card-foreground">
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            onClick={() => formatJSON(jsonInput, indentSize)}
+            className="h-8 text-xs gap-1.5"
+          >
+            <Maximize2 className="h-3.5 w-3.5" />
+            <span>Format & Validate</span>
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={minifyJSON}
+            className="h-8 text-xs gap-1.5"
+          >
+            <Minimize2 className="h-3.5 w-3.5" />
+            <span>Minify</span>
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs">
+          <span className="text-muted-foreground font-medium">Indentation:</span>
+          <div className="flex rounded-lg border border-border/70 bg-muted/30 p-0.5">
+            {[2, 4, 8].map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => {
+                  setIndentSize(size);
+                  if (formattedJson) formatJSON(jsonInput, size);
+                }}
+                className={`px-2.5 py-0.5 rounded text-xs font-semibold transition-all ${
+                  indentSize === size
+                    ? 'bg-foreground text-background shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {size}sp
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Editor Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Input Textarea */}
+        <Card className="p-4 border-border/60 bg-card text-card-foreground flex flex-col h-[480px]">
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/40">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Input Raw JSON
+            </span>
+            <span className="text-[11px] text-muted-foreground font-mono">
+              {jsonInput.length} chars
+            </span>
+          </div>
+
           <textarea
             value={jsonInput}
             onChange={(e) => setJsonInput(e.target.value)}
-            placeholder='{"example": "Paste your JSON here"}'
-            className="w-full h-80 p-4 font-mono text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
+            placeholder='Paste your JSON here (e.g. {"name": "test"})...'
+            className="flex-1 w-full resize-none p-3 font-mono text-xs leading-relaxed bg-background/60 border border-border/60 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            spellCheck={false}
           />
-          
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={formatJSON} className="flex-1">
-              Format & Validate
-            </Button>
-            <Button 
-              onClick={minifyJSON} 
-              variant="outline" 
-              className="flex-1"
-            >
-              Minify
-            </Button>
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Formatted Result</h2>
-            {formattedJson && (
-              <Button 
-                onClick={copyToClipboard} 
-                variant="outline" 
-                size="sm"
-                className="text-xs"
-              >
-                Copy to Clipboard
-              </Button>
+        </Card>
+
+        {/* Right: Output / Error Viewer */}
+        <Card className="p-4 border-border/60 bg-card text-card-foreground flex flex-col h-[480px]">
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/40">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Output
+              </span>
+              {error ? (
+                <Badge variant="outline" className="border-rose-500/40 text-rose-500 gap-1 text-[10px] py-0">
+                  <AlertCircle className="h-2.5 w-2.5" />
+                  <span>Invalid</span>
+                </Badge>
+              ) : formattedJson ? (
+                <Badge variant="outline" className="border-emerald-500/40 text-emerald-500 gap-1 text-[10px] py-0">
+                  <CheckCircle2 className="h-2.5 w-2.5" />
+                  <span>Valid JSON</span>
+                </Badge>
+              ) : null}
+            </div>
+            {stats && (
+              <span className="text-[11px] text-muted-foreground font-mono">
+                {stats.sizeBytes} bytes
+              </span>
             )}
           </div>
-          
+
           {error ? (
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg border border-red-200 dark:border-red-800">
-              {error}
-            </div>
-          ) : (
-            <pre className="w-full h-80 p-4 font-mono text-sm overflow-auto bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg">
-              {formattedJson}
-            </pre>
-          )}
-          
-          {stats && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
-              <h3 className="font-medium mb-2">JSON Statistics:</h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Total Keys:</span>
-                  <span className="font-semibold">{stats.totalKeys}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Max Depth:</span>
-                  <span className="font-semibold">{stats.depth}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Objects:</span>
-                  <span className="font-semibold">{stats.objectCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Arrays:</span>
-                  <span className="font-semibold">{stats.arrayCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Strings:</span>
-                  <span className="font-semibold">{stats.stringCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Numbers:</span>
-                  <span className="font-semibold">{stats.numberCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Booleans:</span>
-                  <span className="font-semibold">{stats.booleanCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Null values:</span>
-                  <span className="font-semibold">{stats.nullCount}</span>
+            <div className="flex-1 p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono text-xs overflow-auto leading-relaxed">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block font-bold mb-1">Parse Error</strong>
+                  <span>{error}</span>
                 </div>
               </div>
             </div>
+          ) : (
+            <pre className="flex-1 w-full overflow-auto p-3 font-mono text-xs leading-relaxed bg-background/60 border border-border/60 rounded-xl text-foreground select-all">
+              {formattedJson || <span className="text-muted-foreground/60 italic">// Formatted output will appear here...</span>}
+            </pre>
           )}
-        </div>
+        </Card>
       </div>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-8">
-        <h2 className="text-xl font-bold mb-4">About JSON</h2>
-        <p className="mb-4">
-          JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write 
-          and easy for machines to parse and generate. It is based on a subset of JavaScript syntax.
-        </p>
-        
-        <h3 className="text-lg font-semibold mb-2">Valid JSON Types:</h3>
-        <ul className="list-disc list-inside space-y-1 mb-4">
-          <li><span className="font-mono">String</span>: <span className="font-mono">"text"</span> (must use double quotes)</li>
-          <li><span className="font-mono">Number</span>: <span className="font-mono">42</span>, <span className="font-mono">3.14159</span></li>
-          <li><span className="font-mono">Object</span>: <span className="font-mono">&#123;"key": "value"&#125;</span></li>
-          <li><span className="font-mono">Array</span>: <span className="font-mono">[1, 2, 3]</span></li>
-          <li><span className="font-mono">Boolean</span>: <span className="font-mono">true</span> or <span className="font-mono">false</span></li>
-          <li><span className="font-mono">null</span></li>
-        </ul>
-        
-        <h3 className="text-lg font-semibold mb-2">Common JSON Errors:</h3>
-        <ul className="list-disc list-inside space-y-1">
-          <li>Using single quotes instead of double quotes for strings</li>
-          <li>Missing commas between array items or object properties</li>
-          <li>Trailing commas (not allowed in JSON)</li>
-          <li>Unquoted property names (keys must be in double quotes)</li>
-          <li>Including comments (not allowed in JSON)</li>
-        </ul>
-      </div>
+
+      {/* JSON Statistics Bar */}
+      {stats && (
+        <Card className="mt-6 p-4 border-border/60 bg-card text-card-foreground">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+            Structure Inspection
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3 text-center">
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Keys</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.keys}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Max Depth</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.depth}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Objects</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.objects}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Arrays</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.arrays}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Strings</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.strings}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Numbers</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.numbers}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Booleans</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.booleans}</span>
+            </div>
+            <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+              <span className="text-[10px] text-muted-foreground block">Nulls</span>
+              <span className="text-sm font-bold text-foreground font-mono">{stats.nulls}</span>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

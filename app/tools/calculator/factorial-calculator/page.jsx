@@ -1,325 +1,419 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { 
+  Calculator, 
+  Copy, 
+  Check, 
+  RotateCcw, 
+  Sparkles, 
+  Info, 
+  Binary,
+  Layers, 
+  ShieldCheck 
+} from 'lucide-react';
 
 export default function FactorialCalculator() {
-  const [number, setNumber] = useState("");
-  const [result, setResult] = useState(null);
-  const [steps, setSteps] = useState([]);
-  const [showSteps, setShowSteps] = useState(false);
-  const [error, setError] = useState("");
-  const [isCalculating, setIsCalculating] = useState(false);
+  const [activeTab, setActiveTab] = useState('factorial'); // 'factorial' | 'permutation' | 'combination' | 'double'
+  const [nInput, setNInput] = useState('10');
+  const [rInput, setRInput] = useState('3');
+  const [copied, setCopied] = useState(false);
 
-  // Calculate factorial with steps
-  const calculateFactorial = (n) => {
-    if (n < 0) {
-      throw new Error("Factorial is not defined for negative numbers");
+  // BigInt factorial helper
+  const computeBigIntFactorial = (num) => {
+    if (num < 0) return null;
+    if (num === 0 || num === 1) return 1n;
+    let res = 1n;
+    for (let i = 2n; i <= BigInt(num); i++) {
+      res *= i;
     }
-    
-    if (n > 170) {
-      throw new Error("Number too large (max: 170)");
-    }
-
-    let result = 1;
-    const steps = [];
-    
-    if (n === 0 || n === 1) {
-      steps.push({ 
-        step: n === 0 ? "0! = 1 (by definition)" : "1! = 1", 
-        result: 1 
-      });
-      return { result: 1, steps };
-    }
-    
-    for (let i = 1; i <= n; i++) {
-      result *= i;
-      steps.push({
-        step: i,
-        calculation: `${i === 1 ? '1' : steps[i - 2].result} × ${i}`,
-        result: result
-      });
-    }
-    
-    return { result, steps };
+    return res;
   };
 
-  // Calculate factorial using Stirling's approximation for large numbers
-  const calculateStirlingApproximation = (n) => {
-    return Math.sqrt(2 * Math.PI * n) * Math.pow(n / Math.E, n);
+  // Double factorial n!! helper
+  const computeBigIntDoubleFactorial = (num) => {
+    if (num < 0) return null;
+    if (num === 0 || num === 1) return 1n;
+    let res = 1n;
+    for (let i = BigInt(num); i > 0n; i -= 2n) {
+      res *= i;
+    }
+    return res;
   };
 
-  // Handle the calculation
-  const handleCalculate = () => {
-    setError("");
-    setResult(null);
-    setSteps([]);
-    
-    if (!number.trim()) {
-      setError("Please enter a number");
-      return;
+  // Trailing zeros in n! (Legendre's formula)
+  const countTrailingZeros = (num) => {
+    let count = 0;
+    for (let i = 5; Math.floor(num / i) >= 1; i *= 5) {
+      count += Math.floor(num / i);
     }
-    
-    const n = parseFloat(number.trim());
-    
-    if (isNaN(n)) {
-      setError("Please enter a valid number");
-      return;
-    }
-    
-    if (!Number.isInteger(n)) {
-      setError("Please enter a whole number");
-      return;
-    }
+    return count;
+  };
 
-    setIsCalculating(true);
-    
-    // Use setTimeout to avoid blocking the UI for larger calculations
-    setTimeout(() => {
-      try {
-        if (n > 170) {
-          // Use Stirling's approximation for very large numbers
-          const approximation = calculateStirlingApproximation(n);
-          setResult({
-            exact: "Too large to calculate exactly",
-            approximation: approximation.toExponential(10),
-            isApproximation: true
-          });
-          setSteps([{ 
-            step: "Using Stirling's approximation", 
-            calculation: "√(2πn) × (n/e)^n", 
-            result: approximation.toExponential(10) 
-          }]);
-        } else {
-          const { result, steps } = calculateFactorial(n);
-          setResult({ 
-            exact: result.toString(), 
-            approximation: null, 
-            isApproximation: false 
-          });
-          setSteps(steps);
+  // Stirling's approximation for log10 digits
+  const estimateDigits = (num) => {
+    if (num <= 1) return 1;
+    // Ramanujan / Stirling log10 approximation
+    const log10Fac = (num * Math.log10(num / Math.E) + 0.5 * Math.log10(2 * Math.PI * num));
+    return Math.floor(log10Fac) + 1;
+  };
+
+  const nVal = parseInt(nInput, 10);
+  const rVal = parseInt(rInput, 10);
+  const isValidN = !isNaN(nVal) && nVal >= 0 && nVal <= 1000;
+  const isValidR = !isNaN(rVal) && rVal >= 0 && rVal <= nVal;
+
+  const result = useMemo(() => {
+    if (!isValidN) return null;
+
+    if (activeTab === 'factorial') {
+      const isBig = nVal > 250;
+      const bigIntRes = computeBigIntFactorial(nVal);
+      const strRes = bigIntRes.toString();
+      const trailingZeros = countTrailingZeros(nVal);
+      const digitCount = strRes.length;
+
+      // Multiplication steps preview for small n
+      const steps = [];
+      if (nVal <= 15) {
+        for (let i = 1; i <= nVal; i++) {
+          steps.push(i);
         }
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setIsCalculating(false);
       }
-    }, 0);
+
+      return {
+        value: strRes,
+        digitCount,
+        trailingZeros,
+        stepsPreview: steps.length > 0 ? steps.join(' × ') : null,
+        isExact: true
+      };
+    }
+
+    if (activeTab === 'double') {
+      const bigIntRes = computeBigIntDoubleFactorial(nVal);
+      const strRes = bigIntRes.toString();
+      return {
+        value: strRes,
+        digitCount: strRes.length,
+        trailingZeros: 0,
+        isExact: true
+      };
+    }
+
+    if (activeTab === 'permutation') {
+      if (!isValidR) return null;
+      // P(n, r) = n! / (n - r)! = n * (n-1) * ... * (n - r + 1)
+      let perm = 1n;
+      for (let i = BigInt(nVal); i > BigInt(nVal - rVal); i--) {
+        perm *= i;
+      }
+      const strRes = perm.toString();
+      return {
+        value: strRes,
+        digitCount: strRes.length,
+        isExact: true
+      };
+    }
+
+    if (activeTab === 'combination') {
+      if (!isValidR) return null;
+      // C(n, r) = n! / (r! * (n-r)!)
+      const k = Math.min(rVal, nVal - rVal);
+      let comb = 1n;
+      for (let i = 1; i <= k; i++) {
+        comb = (comb * BigInt(nVal - i + 1)) / BigInt(i);
+      }
+      const strRes = comb.toString();
+      return {
+        value: strRes,
+        digitCount: strRes.length,
+        isExact: true
+      };
+    }
+
+    return null;
+  }, [nVal, rVal, activeTab, isValidN, isValidR]);
+
+  const handleCopy = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result.value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  // Format large numbers with thousand separators
-  const formatLargeNumber = (num) => {
-    if (!num) return "";
-    
-    // If it's in scientific notation already
-    if (num.includes('e')) return num;
-    
-    // Only format if it's a regular number
-    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-  
+  const factorialPresets = [0, 1, 5, 10, 20, 50, 100];
+
   return (
-    <div className="container mx-auto py-10 px-4 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Factorial Calculator</h1>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-        <div className="mb-6">
-          <label htmlFor="number" className="block text-sm font-medium mb-2">
-            Enter a Number
-          </label>
-          <Input
-            id="number"
-            type="text"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder="Enter a non-negative integer (e.g., 5)"
-            className="font-mono"
-          />
-          
-          {error && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-              {error}
-            </p>
-          )}
-        </div>
-        
-        <div className="flex space-x-3">
-          <Button 
-            onClick={handleCalculate} 
-            disabled={isCalculating}
-            className="flex-1"
+    <div className="container mx-auto py-8 px-4 sm:px-6 max-w-5xl">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <Badge variant="outline" className="mb-3 px-3 py-1 font-mono text-xs border-primary/30">
+          <Calculator className="w-3.5 h-3.5 mr-1.5 text-primary" />
+          High-Precision Combinatorics Engine
+        </Badge>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          Factorial Calculator
+        </h1>
+        <p className="text-muted-foreground text-sm mt-1 max-w-xl mx-auto">
+          Calculate exact arbitrary-precision factorials, permutations (nPr), combinations (nCr), and double factorials (n!!) with zero rounding errors.
+        </p>
+      </div>
+
+      {/* Mode Tabs */}
+      <div className="flex justify-center mb-6">
+        <div className="p-1 rounded-xl bg-muted/50 border border-border/60 flex flex-wrap gap-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab('factorial')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'factorial'
+                ? 'bg-background text-foreground shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
-            {isCalculating ? "Calculating..." : "Calculate Factorial"}
-          </Button>
-          <Button 
-            onClick={() => {
-              setNumber("");
-              setResult(null);
-              setSteps([]);
-              setError("");
-              setShowSteps(false);
-            }} 
-            variant="outline"
+            Factorial (n!)
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('permutation')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'permutation'
+                ? 'bg-background text-foreground shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
-            Reset
-          </Button>
+            Permutations P(n, r)
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('combination')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'combination'
+                ? 'bg-background text-foreground shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Combinations C(n, r)
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('double')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activeTab === 'double'
+                ? 'bg-background text-foreground shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Double Factorial (n!!)
+          </button>
         </div>
-        
-        {result && (
-          <div className="mt-6 space-y-4">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Result</h2>
-              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <div className="font-medium mb-1">
-                  {number}! = 
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Input Panel */}
+        <div className="lg:col-span-6 space-y-6">
+          <Card className="p-6 border-border/60 shadow-xs">
+            <h2 className="text-base font-bold text-foreground mb-4">Input Values</h2>
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="n-input" className="block text-sm font-semibold text-foreground mb-1.5">
+                  Enter n {activeTab === 'factorial' ? '(Integer 0 to 1000)' : '(Total items)'}
+                </label>
+                <Input
+                  id="n-input"
+                  type="number"
+                  min="0"
+                  max="1000"
+                  value={nInput}
+                  onChange={(e) => setNInput(e.target.value)}
+                  className="font-mono text-base"
+                />
+              </div>
+
+              {(activeTab === 'permutation' || activeTab === 'combination') && (
+                <div>
+                  <label htmlFor="r-input" className="block text-sm font-semibold text-foreground mb-1.5">
+                    Enter r (Items to choose, 0 ≤ r ≤ n)
+                  </label>
+                  <Input
+                    id="r-input"
+                    type="number"
+                    min="0"
+                    max={nVal || 0}
+                    value={rInput}
+                    onChange={(e) => setRInput(e.target.value)}
+                    className="font-mono text-base"
+                  />
                 </div>
-                <div className="font-mono break-all">
-                  {formatLargeNumber(result.exact)}
-                </div>
-                
-                {result.isApproximation && (
-                  <div className="mt-3">
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Stirling's Approximation:
-                    </div>
-                    <div className="font-mono">
-                      {result.approximation}
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      (Note: Result is approximate due to large number)
-                    </p>
+              )}
+
+              {/* Quick Presets */}
+              {activeTab === 'factorial' && (
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground block mb-2">Quick Presets:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {factorialPresets.map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setNInput(p.toString())}
+                        className={`text-xs px-2.5 py-1 rounded-md border font-mono transition-colors ${
+                          nVal === p
+                            ? 'bg-primary text-primary-foreground border-primary font-bold'
+                            : 'bg-muted/40 hover:bg-muted border-border/60 text-foreground'
+                        }`}
+                      >
+                        {p}!
+                      </button>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Mathematical Formula Display */}
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/50 text-xs">
+                <div className="font-semibold text-foreground mb-1">Active Mathematical Formula:</div>
+                <div className="font-mono text-primary text-sm font-bold">
+                  {activeTab === 'factorial' && 'n! = n × (n - 1) × (n - 2) × ... × 1 (0! = 1)'}
+                  {activeTab === 'permutation' && 'P(n, r) = n! / (n - r)!'}
+                  {activeTab === 'combination' && 'C(n, r) = n! / [r! × (n - r)!]'}
+                  {activeTab === 'double' && 'n!! = n × (n - 2) × (n - 4) × ...'}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setNInput('0');
+                    setRInput('0');
+                  }}
+                  className="text-xs"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                  Reset
+                </Button>
               </div>
             </div>
-            
-            {steps.length > 0 && (
-              <div>
-                <button
-                  onClick={() => setShowSteps(!showSteps)}
-                  className="text-blue-600 dark:text-blue-400 hover:underline text-sm flex items-center"
-                >
-                  {showSteps ? 'Hide Calculation Steps' : 'Show Calculation Steps'}
-                  <svg 
-                    className={`ml-1 w-4 h-4 transition-transform ${showSteps ? 'rotate-180' : ''}`}
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                {showSteps && (
-                  <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg overflow-x-auto">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr className="border-b dark:border-gray-600">
-                          <th className="text-left py-2 px-4">{result.isApproximation ? "Method" : "Step"}</th>
-                          <th className="text-left py-2 px-4">Calculation</th>
-                          <th className="text-left py-2 px-4">Result</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {steps.map((step, index) => (
-                          <tr key={index} className="border-b dark:border-gray-600">
-                            <td className="py-2 px-4">{result.isApproximation ? step.step : `${step.step}!`}</td>
-                            <td className="py-2 px-4 font-mono">{step.calculation}</td>
-                            <td className="py-2 px-4 font-mono">{formatLargeNumber(step.result.toString())}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+          </Card>
+        </div>
+
+        {/* Right Output Panel */}
+        <div className="lg:col-span-6 space-y-6">
+          <Card className="p-6 border-border/60 shadow-xs">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-bold text-foreground">Exact Computed Result</h2>
+              {result && (
+                <Badge variant="secondary" className="font-mono text-xs">
+                  {result.digitCount} {result.digitCount === 1 ? 'digit' : 'digits'}
+                </Badge>
+              )}
+            </div>
+
+            {result ? (
+              <div className="space-y-4">
+                {/* Result header */}
+                <div className="p-3 rounded-xl border border-border/60 bg-muted/20 font-mono text-xs text-muted-foreground">
+                  <span className="font-bold text-foreground">
+                    {activeTab === 'factorial' && `${nVal}! = `}
+                    {activeTab === 'permutation' && `P(${nVal}, ${rVal}) = `}
+                    {activeTab === 'combination' && `C(${nVal}, ${rVal}) = `}
+                    {activeTab === 'double' && `${nVal}!! = `}
+                  </span>
+                </div>
+
+                {/* BigInt Scrollable Output Box */}
+                <div className="relative">
+                  <div className="max-h-60 overflow-y-auto p-4 rounded-xl border border-border/60 bg-muted/40 font-mono text-sm text-foreground break-all leading-relaxed select-all">
+                    {result.value}
                   </div>
-                )}
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleCopy}
+                    className="absolute top-2 right-2 h-7 text-xs px-2 shadow-xs"
+                  >
+                    {copied ? <Check className="w-3 h-3 mr-1 text-emerald-500" /> : <Copy className="w-3 h-3 mr-1" />}
+                    {copied ? 'Copied' : 'Copy'}
+                  </Button>
+                </div>
+
+                {/* Properties Grid */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="p-3 rounded-xl border border-border/60 bg-card text-center">
+                    <div className="text-xs text-muted-foreground">Total Digits</div>
+                    <div className="text-lg font-mono font-bold text-foreground mt-0.5">
+                      {result.digitCount.toLocaleString()}
+                    </div>
+                  </div>
+                  {activeTab === 'factorial' && (
+                    <div className="p-3 rounded-xl border border-border/60 bg-card text-center">
+                      <div className="text-xs text-muted-foreground">Trailing Zeros</div>
+                      <div className="text-lg font-mono font-bold text-foreground mt-0.5">
+                        {result.trailingZeros.toLocaleString()}
+                      </div>
+                    </div>
+                  )}
+                  {result.stepsPreview && (
+                    <div className="col-span-2 p-3 rounded-xl border border-border/60 bg-card">
+                      <div className="text-xs text-muted-foreground mb-1">Expanded Multiplication:</div>
+                      <div className="font-mono text-xs text-primary truncate">
+                        {result.stepsPreview}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-muted-foreground text-sm border border-dashed border-border/60 rounded-xl">
+                Please enter a valid non-negative integer (0 to 1000).
               </div>
             )}
-          </div>
-        )}
-      </div>
-      
-      {/* Educational section about factorials */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Understanding Factorials</h2>
-        
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">What is a Factorial?</h3>
-            <p>
-              The factorial of a non-negative integer n, denoted as n!, is the product of all positive integers less than or equal to n.
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mt-2 font-mono">
-              n! = n × (n-1) × (n-2) × ... × 3 × 2 × 1
-            </div>
-            <p className="mt-3">
-              Special cases:
-            </p>
-            <ul className="list-disc list-inside space-y-1 mt-1">
-              <li>0! = 1 (by mathematical definition)</li>
-              <li>1! = 1</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Examples</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>2! = 2 × 1 = 2</li>
-              <li>3! = 3 × 2 × 1 = 6</li>
-              <li>4! = 4 × 3 × 2 × 1 = 24</li>
-              <li>5! = 5 × 4 × 3 × 2 × 1 = 120</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Stirling's Approximation</h3>
-            <p>
-              For large values of n, computing the exact factorial becomes difficult due to the rapid growth. 
-              Stirling's formula provides an approximation:
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mt-2 font-mono">
-              n! ≈ √(2πn) × (n/e)<sup>n</sup>
-            </div>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              where e is the mathematical constant approximately equal to 2.71828.
-            </p>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Applications of Factorials</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li><strong>Combinations and Permutations:</strong> Used to calculate the number of ways to arrange or select items.</li>
-              <li><strong>Probability Theory:</strong> Essential for calculating various probability distributions.</li>
-              <li><strong>Series Expansions:</strong> Used in Taylor series and other mathematical expansions.</li>
-              <li><strong>Number Theory:</strong> Important in various number theory problems and formulas.</li>
-              <li><strong>Statistical Distributions:</strong> Used in defining distributions like the Poisson distribution.</li>
-            </ul>
-          </div>
-          
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg">
-            <h3 className="font-semibold mb-2">Did you know?</h3>
-            <p>
-              Factorials grow extremely quickly! 20! has 19 digits, 50! has 65 digits, and 100! has 158 digits. 
-              The largest factorial that can be represented exactly as a JavaScript number is 170! - beyond that, 
-              the precision is lost and approximations must be used.
-            </p>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Recursive Definition</h3>
-            <p>
-              Factorials can be defined recursively as:
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mt-2 font-mono">
-              n! = n × (n-1)!<br />
-              0! = 1
-            </div>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              This recursive definition is often used in programming implementations.
-            </p>
+          </Card>
+
+          {/* Privacy badge */}
+          <div className="p-4 rounded-xl border border-border/60 bg-card/60 text-xs text-muted-foreground flex items-center gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>Runs locally with Native JavaScript BigInt. Uncapped integer precision.</span>
           </div>
         </div>
       </div>
+
+      {/* Guide Card */}
+      <Card className="mt-8 p-6 border-border/60 shadow-xs">
+        <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+          <Info className="w-5 h-5 text-primary" />
+          Factorial Combinatorics Reference
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Why is 0! = 1?</h3>
+            <p className="text-xs text-muted-foreground">
+              There is exactly 1 way to arrange zero objects (the empty set). Mathematically, from n! = (n+1)! / (n+1), 0! = 1! / 1 = 1.
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Permutations vs Combinations</h3>
+            <p className="text-xs text-muted-foreground">
+              <strong>Permutations</strong> care about order (race finishes, passwords). <strong>Combinations</strong> ignore order (card hands, team rosters).
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Stirling's Formula</h3>
+            <p className="text-xs text-muted-foreground">
+              For astronomical numbers, Stirling's approximation <code>n! ≈ √(2πn) × (n/e)ⁿ</code> gives accurate estimates of magnitude and digits.
+            </p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

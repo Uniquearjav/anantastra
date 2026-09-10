@@ -1,144 +1,515 @@
-"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import AV_image from "@/public/Arjav_about.jpg"
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import AV_image from "@/public/Arjav_about.jpg";
+import { 
+  ShieldCheck, 
+  Code2, 
+  Zap, 
+  Lock, 
+  Globe, 
+  Github, 
+  Linkedin, 
+  Mail, 
+  ExternalLink, 
+  Heart,
+  Terminal,
+  Cpu,
+  HelpCircle,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  MapPin,
+  School,
+  Award
+} from "lucide-react";
+
+export const metadata = {
+  title: "About Anantastra & Arjav Choudhary | Mission, Privacy & Open Source",
+  description: "Learn about Anantastra, a free and privacy-focused suite of open-source web utilities created by Arjav Choudhary. Discover our mission, zero-data-collection architecture, and tools.",
+  keywords: [
+    "Anantastra",
+    "About Anantastra",
+    "Arjav Choudhary",
+    "Open Source Tools",
+    "Privacy First Utilities",
+    "Client-side Calculators",
+    "Unnat Vega",
+    "Free Online Utilities",
+    "Web Developer Tools",
+    "Indian Financial Calculators"
+  ],
+  authors: [{ name: "Arjav Choudhary", url: "https://github.com/Uniquearjav" }],
+  creator: "Arjav Choudhary",
+  publisher: "Anantastra",
+  alternates: {
+    canonical: "https://anantastra.vercel.app/about",
+  },
+  openGraph: {
+    title: "About Anantastra & Founder Arjav Choudhary",
+    description: "Empowering users with private, client-side, zero-tracking utilities. Open source under MIT license.",
+    url: "https://anantastra.vercel.app/about",
+    siteName: "Anantastra",
+    locale: "en_US",
+    type: "profile",
+    images: [
+      {
+        url: "/Arjav_about.jpg",
+        width: 800,
+        height: 800,
+        alt: "Arjav Choudhary - Founder of Anantastra",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Anantastra - Privacy-First Open Source Utilities",
+    description: "Learn about Anantastra and founder Arjav Choudhary. Pure client-side calculations with zero telemetry.",
+    images: ["/Arjav_about.jpg"],
+  },
+};
 
 export default function AboutPage() {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  
-  return (
-    <div className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-24">
-        {/* Page Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl text-gray-900 dark:text-white">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600">
-              About Me
-            </span>
-          </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-300">
-            The person behind Anantastra
-          </p>
-        </div>
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["AboutPage", "ProfilePage"],
+        "@id": "https://anantastra.vercel.app/about",
+        "url": "https://anantastra.vercel.app/about",
+        "name": "About Anantastra & Founder Arjav Choudhary",
+        "description": "Background, mission, technical architecture, and founder profile of the Anantastra open-source project.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://anantastra.vercel.app/#website",
+          "url": "https://anantastra.vercel.app",
+          "name": "Anantastra"
+        },
+        "mainEntity": {
+          "@type": "Person",
+          "@id": "https://anantastra.vercel.app/about#founder",
+          "name": "Arjav Choudhary",
+          "jobTitle": "Founder & Full-Stack Developer",
+          "alumniOf": "Delhi Public School, Jodhpur",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Jodhpur",
+            "addressRegion": "Rajasthan",
+            "addressCountry": "India"
+          },
+          "sameAs": [
+            "https://github.com/Uniquearjav",
+            "https://www.linkedin.com/in/arjav-choudhary-531b2126b/",
+            "https://www.unnatvega.in"
+          ]
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://anantastra.vercel.app/#software",
+        "name": "Anantastra",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All modern web browsers",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR"
+        },
+        "author": {
+          "@id": "https://anantastra.vercel.app/about#founder"
+        },
+        "description": "Free, client-side open-source calculators and developer tools built with zero data collection."
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://anantastra.vercel.app/about#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Anantastra?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Anantastra is an open-source suite of browser-native utilities, financial tools, and developer helpers that execute 100% client-side without storing or collecting user data."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Who created Anantastra?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Anantastra was founded and created by Arjav Choudhary, a programmer and entrepreneur based in Jodhpur, India, who is passionate about open-source and privacy-preserving technology."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Anantastra collect or track user data?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Anantastra operates with zero data collection, zero cookies, and zero server logging. All calculations run strictly within the user's browser engine."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Anantastra open source?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Anantastra is open source under the MIT License. Anyone can inspect the code, suggest improvements, or contribute directly on GitHub."
+            }
+          }
+        ]
+      }
+    ]
+  };
 
-        {/* Main Content */}
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-12 items-start">
-            {/* Profile Image Section */}
-            <div className="w-full lg:w-1/3">
-              <div className="aspect-square relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700 mb-6 shadow-xl">
-                {/* Replace with your actual image path */}
-                <div className={`absolute inset-0 transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+  const corePillars = [
+    {
+      icon: ShieldCheck,
+      title: "100% Client-Side Privacy",
+      description: "No calculation parameters, loan amounts, or inputs ever leave your device. Everything executes inside your local browser engine."
+    },
+    {
+      icon: Code2,
+      title: "Open Source Under MIT",
+      description: "Full transparency. Inspect the source code, verify privacy claims, or fork and adapt it for your own personal or enterprise needs."
+    },
+    {
+      icon: Zap,
+      title: "Instant Zero-Latency Execution",
+      description: "No server roundtrips, no loading spinners, and no session expiration. Instant calculations with full offline capability."
+    },
+    {
+      icon: Heart,
+      title: "Community & User First",
+      description: "Created to serve students, professionals, and developers with accessible utilities without aggressive ads or paywalls."
+    }
+  ];
+
+  const quickFacts = [
+    { label: "Founder", value: "Arjav Choudhary" },
+    { label: "Location", value: "Jodhpur, Rajasthan, India" },
+    { label: "Project Status", value: "Active & Open Source" },
+    { label: "License", value: "MIT License" },
+    { label: "Architecture", value: "Next.js 15, React 19, Tailwind CSS" },
+    { label: "Data Storage", value: "Zero Server Storage (100% Client-Side)" },
+  ];
+
+  const faqs = [
+    {
+      q: "What is Anantastra and why was it built?",
+      a: "Anantastra is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, ad-light, client-side alternative."
+    },
+    {
+      q: "Who is Arjav Choudhary?",
+      a: "Arjav Choudhary is the creator and lead developer of Anantastra. He is a programmer with expertise in Python, Node.js, and modern React architectures, focusing on privacy-first tools, sustainable digital solutions, and practical AI applications."
+    },
+    {
+      q: "How does Anantastra guarantee zero data collection?",
+      a: "All calculation algorithms, charts, and text formatters run entirely in client-side JavaScript within your browser window. There are no backend database endpoints storing your inputs, financial numbers, or generated passwords."
+    },
+    {
+      q: "Can I contribute to Anantastra?",
+      a: "Yes! Contributions from developers, designers, and translators are enthusiastically welcomed. You can submit feature requests, open issues, or create pull requests on the official GitHub repository."
+    }
+  ];
+
+  return (
+    <article className="min-h-screen bg-background text-foreground py-12 md:py-16">
+      {/* Schema.org JSON-LD for SEO, GEO & AEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+        {/* Breadcrumb & Header */}
+        <header className="text-center max-w-3xl mx-auto mb-14">
+          <Badge variant="subtle" className="mb-3">
+            About the Project & Creator
+          </Badge>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
+            About Anantastra
+          </h1>
+          <p className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed">
+            A free, open-source collection of web utilities engineered with privacy, speed, and clean code at its core.
+          </p>
+        </header>
+
+        {/* Founder Hero Card Section */}
+        <section className="mb-16">
+          <Card className="overflow-hidden border-border/60 bg-card shadow-sm p-6 sm:p-10">
+            <div className="flex flex-col lg:flex-row gap-10 items-center lg:items-start">
+              {/* Profile Image & Badges */}
+              <div className="w-full sm:w-80 lg:w-72 shrink-0 flex flex-col items-center">
+                <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-2xl overflow-hidden border-2 border-border/80 shadow-md bg-muted/40">
                   <Image
-                    src={AV_image} // Replace with your image
-                    alt="Arjav Choudhary"
-                    // sizes="(max-width: 768px 100vw, 33vw"
-                    className="object-fill"
+                    src={AV_image}
+                    alt="Arjav Choudhary - Founder and Full-Stack Developer of Anantastra"
+                    fill
+                    sizes="(max-width: 768px) 256px, 300px"
+                    className="object-cover"
                     priority
-                    onLoad={() => setImageLoaded(true)}
                   />
                 </div>
-                <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
-                  <svg className="animate-spin h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+
+                <div className="text-center mt-4 space-y-1">
+                  <h2 className="text-xl font-bold text-foreground">Arjav Choudhary</h2>
+                  <p className="text-xs text-muted-foreground font-medium">Founder & Developer</p>
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-1">
+                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    <span>Jodhpur, India</span>
+                  </div>
+                </div>
+
+                {/* Social Connect Buttons */}
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-5 w-full">
+                  <a
+                    href="https://github.com/Uniquearjav"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub Profile"
+                  >
+                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-full border-border/70 text-xs gap-1.5">
+                      <Github className="h-3.5 w-3.5" />
+                      <span>GitHub</span>
+                    </Button>
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn Profile"
+                  >
+                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-full border-border/70 text-xs gap-1.5">
+                      <Linkedin className="h-3.5 w-3.5 text-blue-500" />
+                      <span>LinkedIn</span>
+                    </Button>
+                  </a>
+                  <a
+                    href="https://www.unnatvega.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Unnat Vega Website"
+                  >
+                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-full border-border/70 text-xs gap-1.5">
+                      <Globe className="h-3.5 w-3.5 text-primary" />
+                      <span>Unnat Vega</span>
+                    </Button>
+                  </a>
                 </div>
               </div>
-              
-              {/* Social Links */}
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
-                <Link href="https://github.com/YourGithubUsername" target="_blank" rel="noopener noreferrer">
-                  <Button className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path>
-                    </svg>
-                    GitHub
-                  </Button>
-                </Link>
-                <Link href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/" target="_blank" rel="noopener noreferrer">
-                  <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                    LinkedIn
-                  </Button>
-                </Link>
-                <Link href="https://twitter.com/YourTwitterUsername" target="_blank" rel="noopener noreferrer">
-                  <Button className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                    </svg>
-                    X (Twitter)
-                  </Button>
-                </Link>
+
+              {/* Bio & Story */}
+              <div className="flex-1 space-y-5">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/80 bg-muted/30 text-xs font-medium text-foreground">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  <span>The Story Behind Anantastra</span>
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                  "I believe software should respect people's privacy by default."
+                </h3>
+
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  Hi! I'm <strong className="text-foreground">Arjav Choudhary</strong>, a passionate programmer, student at Delhi Public School Jodhpur, and technology builder. What started as exploring Python as a hobby has grown into building complete web platforms, generative AI applications, and community-oriented utilities.
+                </p>
+
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  I created <strong className="text-foreground">Anantastra</strong> (from Sanskrit, meaning <em>"Infinite Instruments"</em>) because I grew tired of utility websites filled with trackers, popups, paywalls, and slow server-side page reloads. Everyday tools—like calculating loan EMIs, estimating SIP compound interest, or formatting tax figures—should be instant, accessible, and run completely within your own browser with <strong className="text-foreground">zero data harvesting</strong>.
+                </p>
+
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <Link href="/tools">
+                    <Button className="rounded-full gap-2 shadow-xs">
+                      <span>Explore Tools</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                  <a
+                    href="https://github.com/Uniquearjav/anantastra"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" className="rounded-full border-border/80 gap-2">
+                      <Code2 className="h-4 w-4" />
+                      <span>Source Code (GitHub)</span>
+                    </Button>
+                  </a>
+                </div>
               </div>
             </div>
-            
-            {/* About Content */}
-            <div className="w-full lg:w-2/3">
-              <div className="prose prose-lg dark:prose-invert max-w-none">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Hello there! I'm Arjav Choudhary</h2>
-                
-                <p className="text-gray-700 dark:text-gray-300">
-                  Welcome to Anantastra, a project I created to provide free, open-source tools that respect your privacy. 
-                  I'm passionate about developing utilities that make everyday tasks easier while ensuring your data stays with you.
-                </p>
-                
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">My Journey</h3>
-                
-                <p className="text-gray-700 dark:text-gray-300">
-                I am a passionate programmer and commerce student at Delhi Public School, Jodhpur, with a deep interest in technology, entrepreneurship, and innovation. Starting with Python as a hobby, I have expanded my skills across web development, Artificial Intelligence, and open-source contributions. My technical expertise includes:
+          </Card>
+        </section>
 
-- Programming : Python, Node.js, front-end development, and GitHub Copilot.
-
-- Exploration: Digital marketing, generative AI, and cutting-edge tech.
-
-- Projects: Anantastra and Nirvatatva — building privacy-first tools and promoting sustainable handicrafts globally.
-
-
-I actively work to create meaningful contributions at the intersection of technology and real-world impact. Driven by curiosity, I am focused on the future, striving to push the boundaries of innovation while staying committed to sustainability.
-                </p>
-                
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">Why I Created Anantastra</h3>
-                
-                <p className="text-gray-700 dark:text-gray-300">
-                  I believe in a web where privacy is respected and quality tools are accessible to everyone. 
-                  Anantastra was born from this vision - a platform offering useful utilities without collecting your data.
-                </p>
-                
-                <p className="text-gray-700 dark:text-gray-300 mt-4">
-                  All calculations happen right in your browser, with zero data collection. The entire project is open-source,
-                  so you can verify this for yourself or even contribute to making these tools better.
-                </p>
-                
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">Let's Connect</h3>
-                
-                <p className="text-gray-700 dark:text-gray-300">
-                  I'm always open to connecting with like-minded individuals, discussing new ideas,
-                  or exploring collaboration opportunities. Feel free to reach out to me through any of the social links.
-                </p>
-              </div>
-              
-              {/* Call to Action */}
-              <div className="mt-12 flex flex-wrap gap-4">
-                <Link href="/tools">
-                  <Button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
-                    Explore My Tools
-                  </Button>
-                </Link>
-                <Link href="mailto:your-email@example.com">
-                  <Button variant="outline" className="px-6 py-3 rounded-xl">
-                    Contact Me
-                  </Button>
-                </Link>
-              </div>
-            </div>
+        {/* Quick Facts Matrix (Optimized for GEO / Search Generative Engines) */}
+        <section className="mb-16">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold tracking-tight text-foreground">
+              Key Facts at a Glance
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Verified specifications and architectural summary for researchers and answer engines.
+            </p>
           </div>
-        </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {quickFacts.map((fact, idx) => (
+              <Card key={idx} className="border-border/60 bg-card p-4">
+                <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                  {fact.label}
+                </span>
+                <p className="text-sm sm:text-base font-bold text-foreground mt-1">
+                  {fact.value}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Core Principles / Pillars */}
+        <section className="mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <Badge variant="subtle" className="mb-2">
+              Our Philosophy
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              Four Core Architectural Pillars
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {corePillars.map((pillar, idx) => {
+              const Icon = pillar.icon;
+              return (
+                <Card key={idx} className="border-border/60 bg-card p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 rounded-xl bg-muted/60 text-primary shrink-0 border border-border/40">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <h3 className="font-bold text-base text-foreground">{pillar.title}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                        {pillar.description}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Modern Tech Stack Overview */}
+        <section className="mb-16">
+          <Card className="border-border/60 bg-card p-6 sm:p-8">
+            <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <Cpu className="h-5 w-5 text-primary" />
+              <span>Technology Stack & Performance Engineering</span>
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              Anantastra is engineered using modern, production-grade tools designed for optimal client execution, small bundle sizes, and instantaneous interactivity:
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                Next.js 15 (Turbopack)
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                React 19
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                Tailwind CSS v4
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                shadcn/ui Design System
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                Radix UI Primitives
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                ApexCharts & HTML5 Canvas
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                next-themes
+              </span>
+              <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">
+                MIT Open Source
+              </span>
+            </div>
+          </Card>
+        </section>
+
+        {/* Answer Engine Optimization (AEO) / FAQ Section */}
+        <section className="mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <Badge variant="subtle" className="mb-2">
+              Frequently Asked Questions
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              Questions & Answers (AEO)
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Direct, factual answers for users and AI knowledge systems.
+            </p>
+          </div>
+
+          <div className="space-y-4 max-w-4xl mx-auto">
+            {faqs.map((faq, idx) => (
+              <details
+                key={idx}
+                className="group rounded-2xl border border-border/60 bg-card p-5 transition-colors open:bg-card"
+              >
+                <summary className="cursor-pointer font-bold text-sm sm:text-base text-foreground list-none flex items-center justify-between gap-4">
+                  <span className="flex items-center gap-2">
+                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <span>{faq.q}</span>
+                  </span>
+                  <span className="text-muted-foreground transition-transform duration-200 group-open:rotate-90">
+                    ›
+                  </span>
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed pl-6 border-l-2 border-primary/40">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Collaboration & Contact Footer Card */}
+        <section>
+          <Card className="border-border/60 bg-muted/20 p-8 sm:p-12 text-center rounded-3xl">
+            <h2 className="text-2xl font-bold text-foreground">
+              Get in Touch or Collaborate
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto leading-relaxed">
+              Have an idea for a new calculator, want to suggest an improvement, or explore collaboration? Connect with Arjav directly:
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://github.com/Uniquearjav/anantastra/issues/new"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="rounded-full shadow-xs gap-2">
+                  <Github className="h-4 w-4" />
+                  <span>Submit an Issue on GitHub</span>
+                </Button>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline" className="rounded-full border-border/80 gap-2">
+                  <Linkedin className="h-4 w-4 text-blue-500" />
+                  <span>Message on LinkedIn</span>
+                </Button>
+              </a>
+            </div>
+          </Card>
+        </section>
       </div>
-    </div>
+    </article>
   );
 }

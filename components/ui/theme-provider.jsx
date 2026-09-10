@@ -1,58 +1,34 @@
-'use client'
+"use client"
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import * as React from "react"
+import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from "next-themes"
 
-// Create a context for theme
-const ThemeContext = createContext()
-
-export function ThemeProvider({ children }) {
-  // Check for user preference or stored theme on client side
-  const [theme, setTheme] = useState('light')
-  
-  // Initialize theme on component mount
-  useEffect(() => {
-    // Check localStorage first
-    const savedTheme = localStorage.getItem('anantastra-theme')
-    
-    // If no saved theme, check user preference
-    if (!savedTheme) {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      const initialTheme = prefersDark ? 'dark' : 'light'
-      setTheme(initialTheme)
-      localStorage.setItem('anantastra-theme', initialTheme)
-    } else {
-      setTheme(savedTheme)
-    }
-  }, [])
-
-  // Apply theme class to document
-  useEffect(() => {
-    const root = window.document.documentElement
-    root.classList.remove('light', 'dark')
-    root.classList.add(theme)
-    
-    // Save to localStorage when theme changes
-    localStorage.setItem('anantastra-theme', theme)
-  }, [theme])
-
-  // Toggle between light and dark themes
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light')
-  }
-
-  // Provide theme context to children
+export function ThemeProvider({ children, ...props }) {
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange={false}
+      {...props}
+    >
       {children}
-    </ThemeContext.Provider>
+    </NextThemesProvider>
   )
 }
 
-// Custom hook to use the theme
 export const useTheme = () => {
-  const context = useContext(ThemeContext)
-  if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider')
+  const nextTheme = useNextTheme()
+  const current = nextTheme.resolvedTheme || nextTheme.theme || 'light'
+  
+  const toggleTheme = () => {
+    nextTheme.setTheme(current === 'dark' ? 'light' : 'dark')
   }
-  return context
+
+  return {
+    ...nextTheme,
+    theme: current,
+    systemTheme: nextTheme.theme,
+    toggleTheme,
+  }
 }

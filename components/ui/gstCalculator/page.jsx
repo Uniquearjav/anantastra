@@ -1,262 +1,452 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { formatIndianCurrency } from '@/lib/formatters';
+import { 
+  Calculator, 
+  Copy, 
+  Check, 
+  Download, 
+  ArrowRightLeft, 
+  ReceiptText, 
+  HelpCircle,
+  FileSpreadsheet,
+  CheckCircle2
+} from 'lucide-react';
 
 export default function GSTCalculator() {
-  const [amount, setAmount] = useState(1000);
+  const [amount, setAmount] = useState(10000);
   const [gstRate, setGSTRate] = useState(18);
-  const [calculationType, setCalculationType] = useState('exclusive');
-  const [results, setResults] = useState(null);
-  
-  const gstRates = [0, 3, 5, 12, 18, 28];
-  
-  useEffect(() => {
-    calculateGST();
-  }, [amount, gstRate, calculationType]);
-  
-  const calculateGST = () => {
-    if (!amount || amount <= 0) {
-      setResults(null);
-      return;
-    }
-    
-    const rate = gstRate / 100;
-    let baseAmount, gstAmount, totalAmount;
-    
-    if (calculationType === 'exclusive') {
-      // GST Exclusive calculation (Base + GST = Total)
-      baseAmount = parseFloat(amount);
-      gstAmount = baseAmount * rate;
-      totalAmount = baseAmount + gstAmount;
-    } else {
-      // GST Inclusive calculation (Total includes GST already)
-      totalAmount = parseFloat(amount);
-      baseAmount = totalAmount / (1 + rate);
-      gstAmount = totalAmount - baseAmount;
-    }
-    
-    // For CGST and SGST (split GST into Central and State components)
-    const cgst = gstAmount / 2;
-    const sgst = gstAmount / 2;
-    
-    setResults({
-      baseAmount,
-      gstAmount,
-      totalAmount,
-      cgst,
-      sgst
-    });
+  const [customRate, setCustomRate] = useState('');
+  const [calculationType, setCalculationType] = useState('exclusive'); // 'exclusive' | 'inclusive'
+  const [supplyType, setSupplyType] = useState('intra'); // 'intra' (CGST+SGST) | 'inter' (IGST)
+  const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
+  const standardRates = [0, 3, 5, 12, 18, 28];
+  const quickAmounts = [1000, 5000, 10000, 25000, 50000, 100000];
+
+  const activeRate = customRate !== '' ? parseFloat(customRate) || 0 : gstRate;
+  const numAmount = Math.max(0, parseFloat(amount) || 0);
+
+  // Core GST math
+  const rateFraction = activeRate / 100;
+  let baseAmount = 0;
+  let gstAmount = 0;
+  let totalAmount = 0;
+
+  if (calculationType === 'exclusive') {
+    baseAmount = numAmount;
+    gstAmount = baseAmount * rateFraction;
+    totalAmount = baseAmount + gstAmount;
+  } else {
+    totalAmount = numAmount;
+    baseAmount = totalAmount / (1 + rateFraction);
+    gstAmount = totalAmount - baseAmount;
+  }
+
+  const cgst = supplyType === 'intra' ? gstAmount / 2 : 0;
+  const sgst = supplyType === 'intra' ? gstAmount / 2 : 0;
+  const igst = supplyType === 'inter' ? gstAmount : 0;
+
+  const taxPercentageOfTotal = totalAmount > 0 ? ((gstAmount / totalAmount) * 100).toFixed(1) : 0;
+  const basePercentageOfTotal = totalAmount > 0 ? ((baseAmount / totalAmount) * 100).toFixed(1) : 100;
+
+  const handleCopy = () => {
+    const summaryText = `GST INVOICE BREAKDOWN (Anantastra)
+Calculation: ${calculationType === 'exclusive' ? 'Add GST (Exclusive)' : 'Extract GST (Inclusive)'}
+Supply Type: ${supplyType === 'intra' ? 'Intra-State (CGST + SGST)' : 'Inter-State (IGST)'}
+----------------------------------------
+Taxable Base Amount : ${formatIndianCurrency(baseAmount)}
+GST Rate Applied    : ${activeRate}%
+${supplyType === 'intra' 
+  ? `CGST (${activeRate / 2}%)         : ${formatIndianCurrency(cgst)}\nSGST (${activeRate / 2}%)         : ${formatIndianCurrency(sgst)}` 
+  : `IGST (${activeRate}%)          : ${formatIndianCurrency(igst)}`}
+Total GST Amount    : ${formatIndianCurrency(gstAmount)}
+----------------------------------------
+Final Invoice Total : ${formatIndianCurrency(totalAmount)}
+`;
+    navigator.clipboard.writeText(summaryText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
-  
+
+  const handleDownload = () => {
+    const summaryText = `GST INVOICE BREAKDOWN - ANANTASTRA
+Generated: ${new Date().toLocaleString('en-IN')}
+Calculation Mode: ${calculationType === 'exclusive' ? 'GST Exclusive (Added to Base)' : 'GST Inclusive (Extracted from Total)'}
+Supply Type: ${supplyType === 'intra' ? 'Intra-State (CGST + SGST)' : 'Inter-State (IGST)'}
+
+Taxable Base Amount: ${formatIndianCurrency(baseAmount)}
+GST Rate: ${activeRate}%
+${supplyType === 'intra' 
+  ? `Central GST (CGST ${activeRate / 2}%): ${formatIndianCurrency(cgst)}\nState GST (SGST ${activeRate / 2}%): ${formatIndianCurrency(sgst)}` 
+  : `Integrated GST (IGST ${activeRate}%): ${formatIndianCurrency(igst)}`}
+Total GST Payable: ${formatIndianCurrency(gstAmount)}
+
+Final Gross Total: ${formatIndianCurrency(totalAmount)}
+
+100% Client-Side Engine • Anantastra Open-Source Utilities
+`;
+    const blob = new Blob([summaryText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `gst-calculation-${Date.now()}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setDownloaded(true);
+    setTimeout(() => setDownloaded(false), 2500);
+  };
+
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold text-center mb-8">GST Calculator</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Input Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-6">Input Details</h2>
-          
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Calculation Type
+    <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-border/40">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="p-2 rounded-lg bg-foreground text-background">
+              <Calculator className="h-4 w-4" />
+            </span>
+            <Badge variant="contrast">Financial Tool</Badge>
+            <Badge variant="subtle">India GST 2025</Badge>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            GST Calculator
+          </h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">
+            Calculate and reverse-engineer Goods & Services Tax with instant CGST, SGST, and IGST breakdowns
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopy}
+            className="h-8 text-xs gap-1.5 border-border/70 hover:bg-accent"
+          >
+            {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownload}
+            className="h-8 text-xs gap-1.5 border-border/70 hover:bg-accent"
+          >
+            {downloaded ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> : <Download className="h-3.5 w-3.5" />}
+            <span>Export</span>
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Form Controls (7 cols) */}
+        <div className="lg:col-span-7 space-y-6">
+          {/* Mode Switcher */}
+          <Card className="p-5 border-border/60 bg-card text-card-foreground">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Calculation Mode
               </label>
-              <div className="grid grid-cols-2 gap-4">
-                <label className={`flex items-center justify-center p-3 rounded-md cursor-pointer border ${
-                  calculationType === 'exclusive' 
-                    ? "border-primary bg-primary/10 text-primary" 
-                    : "border-gray-300 dark:border-gray-600"
-                }`}>
-                  <input
-                    type="radio"
-                    name="calculationType"
-                    value="exclusive"
-                    checked={calculationType === 'exclusive'}
-                    onChange={() => setCalculationType('exclusive')}
-                    className="sr-only"
-                  />
-                  <span>Add GST to Amount</span>
-                </label>
-                <label className={`flex items-center justify-center p-3 rounded-md cursor-pointer border ${
-                  calculationType === 'inclusive' 
-                    ? "border-primary bg-primary/10 text-primary" 
-                    : "border-gray-300 dark:border-gray-600"
-                }`}>
-                  <input
-                    type="radio"
-                    name="calculationType"
-                    value="inclusive"
-                    checked={calculationType === 'inclusive'}
-                    onChange={() => setCalculationType('inclusive')}
-                    className="sr-only"
-                  />
-                  <span>Extract GST from Amount</span>
-                </label>
-              </div>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                {calculationType === 'exclusive' 
-                  ? "Calculate GST on top of the given amount" 
-                  : "Extract GST from an amount that already includes GST"}
-              </p>
+              <span className="text-xs text-muted-foreground">
+                {calculationType === 'exclusive' ? 'Base + GST = Total' : 'Total includes GST'}
+              </span>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                {calculationType === 'exclusive' ? 'Base Amount (₹)' : 'Total Amount with GST (₹)'}
+            <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-muted/40 border border-border/50">
+              <button
+                type="button"
+                onClick={() => setCalculationType('exclusive')}
+                className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+                  calculationType === 'exclusive'
+                    ? 'bg-foreground text-background shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                GST Exclusive (Add GST)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCalculationType('inclusive')}
+                className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
+                  calculationType === 'inclusive'
+                    ? 'bg-foreground text-background shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                GST Inclusive (Extract Tax)
+              </button>
+            </div>
+
+            {/* Supply Type (Intra vs Inter state) */}
+            <div className="mt-4 pt-4 border-t border-border/40">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-semibold text-foreground">Supply Jurisdiction</label>
+                <span className="text-[11px] text-muted-foreground">
+                  {supplyType === 'intra' ? 'Same State (CGST + SGST)' : 'Inter-State (IGST)'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSupplyType('intra')}
+                  className={`py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
+                    supplyType === 'intra'
+                      ? 'border-foreground bg-foreground/10 text-foreground font-semibold'
+                      : 'border-border/60 text-muted-foreground hover:border-border'
+                  }`}
+                >
+                  Intra-State (CGST + SGST)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSupplyType('inter')}
+                  className={`py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
+                    supplyType === 'inter'
+                      ? 'border-foreground bg-foreground/10 text-foreground font-semibold'
+                      : 'border-border/60 text-muted-foreground hover:border-border'
+                  }`}
+                >
+                  Inter-State (IGST)
+                </button>
+              </div>
+            </div>
+          </Card>
+
+          {/* Amount Input & Preset Chips */}
+          <Card className="p-5 border-border/60 bg-card text-card-foreground">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                {calculationType === 'exclusive' ? 'Net Taxable Amount (₹)' : 'Gross Total Amount (₹)'}
               </label>
+              <span className="text-xs font-semibold text-foreground">
+                {formatIndianCurrency(numAmount)}
+              </span>
+            </div>
+
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-sm">
+                ₹
+              </span>
               <Input
                 type="number"
                 min="0"
-                step="0.01"
+                step="100"
                 value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setAmount(e.target.value)}
+                className="pl-8 text-base font-semibold h-11 rounded-xl border-border/70 bg-background"
+                placeholder="Enter amount..."
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                GST Rate (%)
+
+            {/* Quick Amount Chips */}
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {quickAmounts.map((qVal) => (
+                <button
+                  key={qVal}
+                  type="button"
+                  onClick={() => setAmount(qVal)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                    numAmount === qVal
+                      ? 'border-foreground bg-foreground text-background'
+                      : 'border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:border-border'
+                  }`}
+                >
+                  ₹{qVal >= 100000 ? `${qVal / 100000}L` : `${qVal / 1000}K`}
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          {/* GST Rate Selection */}
+          <Card className="p-5 border-border/60 bg-card text-card-foreground">
+            <div className="flex items-center justify-between mb-2.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                GST Slab / Rate (%)
               </label>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  {gstRates.map(rate => (
-                    <button
-                      key={rate}
-                      onClick={() => setGSTRate(rate)}
-                      className={`px-3 py-1 rounded-lg text-sm ${
-                        gstRate === rate 
-                          ? "bg-primary text-white" 
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                      }`}
-                    >
-                      {rate}%
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    value={gstRate}
-                    onChange={(e) => setGSTRate(parseFloat(e.target.value) || 0)}
-                    className="flex-1"
-                  />
-                  <span className="text-gray-500 dark:text-gray-400">%</span>
-                </div>
+              <Badge variant="outline" className="font-mono text-xs">
+                Active: {activeRate}%
+              </Badge>
+            </div>
+
+            {/* Standard Slab Buttons */}
+            <div className="grid grid-cols-6 gap-2 mb-3">
+              {standardRates.map((rate) => (
+                <button
+                  key={rate}
+                  type="button"
+                  onClick={() => {
+                    setGSTRate(rate);
+                    setCustomRate('');
+                  }}
+                  className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                    customRate === '' && gstRate === rate
+                      ? 'border-foreground bg-foreground text-background shadow-xs'
+                      : 'border-border/60 bg-muted/20 text-foreground hover:border-border hover:bg-muted/40'
+                  }`}
+                >
+                  {rate}%
+                </button>
+              ))}
+            </div>
+
+            {/* Custom Rate Input */}
+            <div className="flex items-center gap-2 pt-2 border-t border-border/40">
+              <span className="text-xs text-muted-foreground shrink-0">Custom Rate:</span>
+              <div className="relative flex-1">
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  placeholder="Enter custom % (e.g. 7.5)"
+                  value={customRate}
+                  onChange={(e) => setCustomRate(e.target.value)}
+                  className="h-8.5 text-xs rounded-lg border-border/70 pr-7"
+                />
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-semibold">
+                  %
+                </span>
+              </div>
+              {customRate !== '' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCustomRate('')}
+                  className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Reset
+                </Button>
+              )}
+            </div>
+          </Card>
+        </div>
+
+        {/* Right Column: Invoice Receipt & Visual Breakdown (5 cols) */}
+        <div className="lg:col-span-5 space-y-6">
+          {/* Main Result Card */}
+          <Card className="p-6 border-border/60 bg-card text-card-foreground shadow-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <ReceiptText className="h-4 w-4 text-primary" />
+                <h2 className="text-sm font-bold text-foreground uppercase tracking-wider">
+                  Tax Breakdown
+                </h2>
+              </div>
+              <Badge variant="subtle">{activeRate}% Rate</Badge>
+            </div>
+
+            {/* Big Total Box */}
+            <div className="my-5 p-4 rounded-xl border border-border/80 bg-muted/30">
+              <span className="text-xs text-muted-foreground font-medium block mb-1">
+                {calculationType === 'exclusive' ? 'Final Invoice Payable' : 'Total Amount (Tax Included)'}
+              </span>
+              <span className="text-3xl font-extrabold tracking-tight text-foreground">
+                {formatIndianCurrency(totalAmount)}
+              </span>
+            </div>
+
+            {/* Visual Ratio Bar */}
+            <div className="mb-5 space-y-1.5">
+              <div className="flex justify-between text-[11px] text-muted-foreground">
+                <span>Net Value: {basePercentageOfTotal}%</span>
+                <span>Tax: {taxPercentageOfTotal}%</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-muted/60 overflow-hidden flex">
+                <div 
+                  className="h-full bg-foreground transition-all duration-300"
+                  style={{ width: `${basePercentageOfTotal}%` }} 
+                />
+                <div 
+                  className="h-full bg-primary transition-all duration-300" 
+                  style={{ width: `${taxPercentageOfTotal}%` }} 
+                />
               </div>
             </div>
-            
-            <Button 
-              onClick={calculateGST}
-              className="w-full"
-            >
-              Calculate GST
-            </Button>
-          </div>
-        </div>
-        
-        {/* Results Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-6">GST Calculation Results</h2>
-          
-          {results ? (
-            <div className="space-y-4">
-              <div className="flex justify-between py-2 border-b">
-                <span>Base Amount:</span>
-                <span className="font-semibold">{formatIndianCurrency(results.baseAmount)}</span>
+
+            {/* Detailed Table */}
+            <div className="space-y-2.5 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-border/40">
+                <span className="text-muted-foreground">Taxable Value (Base)</span>
+                <span className="font-semibold text-foreground">
+                  {formatIndianCurrency(baseAmount)}
+                </span>
               </div>
-              
-              <div className="flex justify-between py-2 border-b">
-                <span>CGST ({gstRate/2}%):</span>
-                <span className="font-semibold text-blue-600">{formatIndianCurrency(results.cgst)}</span>
-              </div>
-              
-              <div className="flex justify-between py-2 border-b">
-                <span>SGST ({gstRate/2}%):</span>
-                <span className="font-semibold text-green-600">{formatIndianCurrency(results.sgst)}</span>
-              </div>
-              
-              <div className="flex justify-between py-2 border-b">
-                <span>Total GST ({gstRate}%):</span>
-                <span className="font-semibold text-purple-600">{formatIndianCurrency(results.gstAmount)}</span>
-              </div>
-              
-              <div className="flex justify-between py-2 bg-blue-50 dark:bg-blue-900/20 rounded px-2">
-                <span className="font-bold">Final Amount:</span>
-                <span className="font-bold text-lg">{formatIndianCurrency(results.totalAmount)}</span>
-              </div>
-              
-              <div className="mt-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
-                <h3 className="font-medium mb-2">GST Invoice Breakdown</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Base Amount:</span>
-                    <span>{formatIndianCurrency(results.baseAmount)}</span>
+
+              {supplyType === 'intra' ? (
+                <>
+                  <div className="flex justify-between py-1.5 border-b border-border/40">
+                    <span className="text-muted-foreground">
+                      Central Tax (CGST {activeRate / 2}%)
+                    </span>
+                    <span className="font-semibold text-foreground">
+                      {formatIndianCurrency(cgst)}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>CGST ({gstRate/2}%):</span>
-                    <span>{formatIndianCurrency(results.cgst)}</span>
+                  <div className="flex justify-between py-1.5 border-b border-border/40">
+                    <span className="text-muted-foreground">
+                      State Tax (SGST {activeRate / 2}%)
+                    </span>
+                    <span className="font-semibold text-foreground">
+                      {formatIndianCurrency(sgst)}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>SGST ({gstRate/2}%):</span>
-                    <span>{formatIndianCurrency(results.sgst)}</span>
-                  </div>
-                  <div className="border-t mt-2 pt-2 flex justify-between font-semibold">
-                    <span>Total Amount:</span>
-                    <span>{formatIndianCurrency(results.totalAmount)}</span>
-                  </div>
+                </>
+              ) : (
+                <div className="flex justify-between py-1.5 border-b border-border/40">
+                  <span className="text-muted-foreground">
+                    Integrated Tax (IGST {activeRate}%)
+                  </span>
+                  <span className="font-semibold text-foreground">
+                    {formatIndianCurrency(igst)}
+                  </span>
                 </div>
+              )}
+
+              <div className="flex justify-between py-1.5 border-b border-border/40">
+                <span className="font-medium text-foreground">Total GST Levy</span>
+                <span className="font-bold text-foreground">
+                  +{formatIndianCurrency(gstAmount)}
+                </span>
+              </div>
+
+              <div className="flex justify-between py-2 pt-3 font-extrabold text-sm text-foreground">
+                <span>Total Amount</span>
+                <span>{formatIndianCurrency(totalAmount)}</span>
               </div>
             </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              Enter an amount and GST rate to see the results
+          </Card>
+
+          {/* Quick GST Reference Card */}
+          <Card className="p-5 border-border/60 bg-card/60 backdrop-blur-sm text-card-foreground text-xs space-y-3">
+            <h3 className="font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
+              <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>Standard Slabs Reference</span>
+            </h3>
+            <div className="grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+              <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+                <span className="font-bold text-foreground block">5% Slab</span>
+                Edible oil, tea, sugar, spices
+              </div>
+              <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+                <span className="font-bold text-foreground block">12% Slab</span>
+                Processed food, apparel &gt; ₹1K
+              </div>
+              <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+                <span className="font-bold text-foreground block">18% Slab</span>
+                IT, telecom, consumer goods
+              </div>
+              <div className="p-2 rounded-lg bg-muted/20 border border-border/40">
+                <span className="font-bold text-foreground block">28% Slab</span>
+                Automobiles, air conditioners
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Information Section */}
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">About GST in India</h2>
-        <p className="mb-4">
-          Goods and Services Tax (GST) was introduced in India on July 1, 2017, replacing multiple cascading taxes levied by the central and state governments.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-          <div>
-            <h3 className="text-lg font-medium mt-4 mb-2">GST Rates</h3>
-            <ul className="list-disc list-inside space-y-1 ml-4">
-              <li><strong>0%</strong>: Essential items (milk, fresh vegetables, etc.)</li>
-              <li><strong>5%</strong>: Basic necessities (sugar, tea, spices, etc.)</li>
-              <li><strong>12%</strong>: Standard goods and services</li>
-              <li><strong>18%</strong>: Standard rate for most goods and services</li>
-              <li><strong>28%</strong>: Luxury items and sin goods</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-medium mt-4 mb-2">GST Components</h3>
-            <ul className="list-disc list-inside space-y-1 ml-4">
-              <li><strong>CGST</strong>: Central GST collected by the Central Government</li>
-              <li><strong>SGST</strong>: State GST collected by the State Government</li>
-              <li><strong>IGST</strong>: Integrated GST on inter-state supplies</li>
-              <li><strong>UTGST</strong>: Union Territory GST for union territories</li>
-              <li><strong>Cess</strong>: Additional tax on certain luxury and sin goods</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div className="bg-yellow-50 dark:bg-yellow-900/30 p-4 rounded-md mt-4">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            Note: This calculator provides the basic GST calculation. For intra-state transactions, GST is split equally between CGST and SGST. For inter-state transactions, the full amount is charged as IGST.
-          </p>
+          </Card>
         </div>
       </div>
     </div>

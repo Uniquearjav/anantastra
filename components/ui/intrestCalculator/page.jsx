@@ -1,716 +1,883 @@
-'use client'
-import React, { useState, useEffect, useRef } from 'react';
+'use client';
+
+import React, { useState, useEffect, useRef, useId } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { formatIndianCurrency } from '@/lib/formatters';
+import { useTheme } from '@/components/ui/theme-provider';
+import { 
+  Calculator, 
+  TrendingUp, 
+  RotateCcw, 
+  Download, 
+  FileSpreadsheet, 
+  Image as ImageIcon,
+  Check,
+  Copy,
+  Info,
+  Calendar,
+  Percent,
+  Coins,
+  ArrowRight
+} from 'lucide-react';
 
-const InterestCalculator = () => {
-    // States for form inputs
-    const [principal, setPrincipal] = useState(10000);
-    const [rate, setRate] = useState(5);
-    const [time, setTime] = useState(5);
-    const [timeUnit, setTimeUnit] = useState('years');
-    const [compoundFrequency, setCompoundFrequency] = useState(1);
-    
-    // States for results
-    const [simpleInterest, setSimpleInterest] = useState(0);
-    const [compoundInterest, setCompoundInterest] = useState(0);
-    const [yearlyData, setYearlyData] = useState([]);
-    const [effectiveTime, setEffectiveTime] = useState(5); // Time in years for calculations
-    
-    // State for dark mode and graph size
-    const [darkMode, setDarkMode] = useState(false);
-    const [graphSize, setGraphSize] = useState('medium'); // 'small', 'medium', 'large'
-    
-    // States for download status
-    const [csvDownloaded, setCsvDownloaded] = useState(false);
-    const [imageDownloaded, setImageDownloaded] = useState(false);
-    
-    // Canvas ref to handle resizing
-    const canvasRef = useRef(null);
-    const canvasContainerRef = useRef(null);
-    
-    // Apply dark mode effect
-    useEffect(() => {
-        if (darkMode) {
-            document.body.classList.add('dark');
-        } else {
-            document.body.classList.remove('dark');
-        }
-    }, [darkMode]);
-    
-    // Convert time to years based on selected unit
-    useEffect(() => {
-        let timeInYears = Number(time);
-        
-        if (timeUnit === 'months') {
-            timeInYears = timeInYears / 12;
-        } else if (timeUnit === 'days') {
-            timeInYears = timeInYears / 365;
-        }
-        
-        setEffectiveTime(timeInYears);
-    }, [time, timeUnit]);
-    
-    // Calculate interests whenever inputs change
-    useEffect(() => {
-        calculateInterest();
-    }, [principal, rate, effectiveTime, compoundFrequency]);
-    
-    // Handle window resize to redraw graph
-    useEffect(() => {
-        const handleResize = () => {
-            drawGraph();
-        };
-        
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [yearlyData, darkMode, graphSize]);
-    
-    // Reset download status when inputs change
-    useEffect(() => {
-        setCsvDownloaded(false);
-        setImageDownloaded(false);
-    }, [principal, rate, time, timeUnit, compoundFrequency]);
-    
-    // Toggle dark mode
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    };
-    
-    // Get time period label based on data points
-    const getTimePeriodLabel = (index, totalPeriods) => {
-        // For very short periods (days/weeks), show more detailed labels
-        if (effectiveTime < 1/12) { // Less than a month
-            return `Day ${Math.round(index * effectiveTime * 365)}`;
-        } else if (effectiveTime <= 1) { // Up to a year
-            return `Month ${Math.round(index * effectiveTime * 12)}`;
-        } else {
-            return `Year ${Math.round(index * effectiveTime)}`;
-        }
-    };
-    
-    // Get appropriate x-axis title based on period
-    const getXAxisTitle = () => {
-        if (effectiveTime < 1/12) {
-            return 'Days';
-        } else if (effectiveTime <= 1) {
-            return 'Months';
-        } else {
-            return 'Years';
-        }
-    };
-    
-    // Get the number of data points to display based on time period
-    const getDataPointCount = () => {
-        if (effectiveTime <= 1/12) { // Less than a month
-            return Math.min(30, Math.max(5, Math.ceil(effectiveTime * 365))); // Daily points up to 30
-        } else if (effectiveTime <= 1) { // Up to a year
-            return Math.min(12, Math.max(4, Math.ceil(effectiveTime * 12))); // Monthly points
-        } else {
-            return Math.min(50, Math.max(5, Math.ceil(effectiveTime))); // Yearly points up to 50
-        }
-    };
-    
-    // Calculate both simple and compound interest
-    const calculateInterest = () => {
-        // Validate inputs
-        const p = Number(principal) || 0;
-        const r = Number(rate) / 100 || 0;
-        const t = effectiveTime || 0;
-        const n = Number(compoundFrequency) || 1;
-        
-        // Calculate simple interest: P * r * t
-        const si = p * r * t;
-        setSimpleInterest(si);
-        
-        // Calculate compound interest: P * (1 + r/n)^(n*t) - P
-        const ci = p * Math.pow(1 + r / n, n * t) - p;
-        setCompoundInterest(ci);
-        
-        // Generate data for graph
-        const dataPoints = getDataPointCount();
-        const data = [];
-        
-        for (let i = 0; i <= dataPoints; i++) {
-            const timeFraction = i / dataPoints * t;
-            const siAmount = p + (p * r * timeFraction);
-            const ciAmount = p * Math.pow(1 + r / n, n * timeFraction);
-            const simpleInt = siAmount - p;
-            const compoundInt = ciAmount - p;
-            const difference = compoundInt - simpleInt;
-            
-            data.push({
-                period: i,
-                periodLabel: getTimePeriodLabel(i / dataPoints, dataPoints),
-                simpleAmount: siAmount,
-                compoundAmount: ciAmount,
-                simpleInterest: simpleInt,
-                compoundInterest: compoundInt,
-                difference: difference,
-                timeFraction: timeFraction
-            });
-        }
-        
-        setYearlyData(data);
-        
-        // Draw the graph after data is updated
-        setTimeout(() => drawGraph(), 0);
-    };
-    
-    // Format number as INR currency
-    const formatINR = (number) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(number);
-    };
-    
-    // Draw the graph using canvas
-    const drawGraph = () => {
-        if (yearlyData.length === 0 || !canvasRef.current) return;
-        
-        const canvas = canvasRef.current;
-        const container = canvasContainerRef.current;
-        
-        if (!container) return;
-        
-        // Set canvas dimensions based on container size for sharpness
-        const rect = container.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        
-        // Set the canvas dimensions with device pixel ratio for sharpness
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        
-        // Set the display size to match the container
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
-        
-        const ctx = canvas.getContext('2d');
-        
-        // Scale the context to account for the device pixel ratio
-        ctx.scale(dpr, dpr);
-        
-        const width = rect.width;
-        const height = rect.height;
-        
-        // Clear canvas
-        ctx.clearRect(0, 0, width, height);
-        
-        // Set colors based on theme
-        const gridColor = darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-        const textColor = darkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)';
-        const siColor = 'rgba(59, 130, 246, 0.8)'; // Blue
-        const ciColor = 'rgba(139, 92, 246, 0.8)'; // Purple
-        
-        // Find max value for scaling
-        const maxAmount = Math.max(
-            ...yearlyData.map(d => Math.max(d.simpleAmount, d.compoundAmount))
-        );
-        
-        // Padding
-        const padding = { left: 60, right: 20, top: 20, bottom: 60 }; // Increased bottom padding for legend
-        const graphWidth = width - padding.left - padding.right;
-        const graphHeight = height - padding.top - padding.bottom;
-        
-        // Draw grid
-        ctx.strokeStyle = gridColor;
-        ctx.lineWidth = 0.5;
-        
-        // Horizontal grid lines
-        const numYLines = 5;
-        for (let i = 0; i <= numYLines; i++) {
-            const y = padding.top + (i / numYLines) * graphHeight;
-            ctx.beginPath();
-            ctx.moveTo(padding.left, y);
-            ctx.lineTo(width - padding.right, y);
-            ctx.stroke();
-            
-            // Y-axis labels
-            const value = Math.round(maxAmount - (i / numYLines) * maxAmount);
-            ctx.fillStyle = textColor;
-            ctx.font = '10px sans-serif';
-            ctx.textAlign = 'right';
-            const formattedValue = value >= 1000 ? `₹${(value/1000).toFixed(0)}K` : `₹${value}`;
-            ctx.fillText(formattedValue, padding.left - 5, y + 3);
-        }
-        
-        // Vertical grid lines
-        const periods = yearlyData.length - 1;
-        const skipFactor = Math.ceil(periods / 10); // Show approximately 10 labels
-        
-        for (let i = 0; i <= periods; i++) {
-            if (i % skipFactor === 0 || i === periods) {
-                const x = padding.left + (i / periods) * graphWidth;
-                ctx.beginPath();
-                ctx.moveTo(x, padding.top);
-                ctx.lineTo(x, height - padding.bottom);
-                ctx.stroke();
-                
-                // X-axis labels
-                ctx.fillStyle = textColor;
-                ctx.font = '9px sans-serif';
-                ctx.textAlign = 'center';
-                
-                // Display label based on time period
-                if (effectiveTime < 1) {
-                    // For periods less than a year, show the period number directly
-                    ctx.fillText(i.toString(), x, height - padding.bottom + 15);
-                } else {
-                    // For years, show actual year number
-                    const yearNum = Math.round(i / periods * effectiveTime);
-                    ctx.fillText(yearNum.toString(), x, height - padding.bottom + 15);
-                }
-            }
-        }
-        
-        // X-axis title
-        ctx.fillStyle = textColor;
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(getXAxisTitle(), width / 2, height - padding.bottom + 30);
-        
-        // Y-axis title
-        ctx.save();
-        ctx.translate(15, height / 2);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillStyle = textColor;
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Amount (₹)', 0, 0);
-        ctx.restore();
-        
-        // Draw simple interest line
-        ctx.beginPath();
-        ctx.strokeStyle = siColor;
-        ctx.lineWidth = 2;
-        yearlyData.forEach((data, index) => {
-            const x = padding.left + (index / periods) * graphWidth;
-            const y = padding.top + graphHeight - (data.simpleAmount / maxAmount) * graphHeight;
-            
-            if (index === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
-        });
-        ctx.stroke();
-        
-        // Draw compound interest line
-        ctx.beginPath();
-        ctx.strokeStyle = ciColor;
-        ctx.lineWidth = 2;
-        yearlyData.forEach((data, index) => {
-            const x = padding.left + (index / periods) * graphWidth;
-            const y = padding.top + graphHeight - (data.compoundAmount / maxAmount) * graphHeight;
-            
-            if (index === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
-        });
-        ctx.stroke();
-        
-        // Add legend at bottom right
-        const legendY = height - padding.bottom + 15;
-        const legendX = width - padding.right - 80;
-        
-        // Background for legend
-        ctx.fillStyle = darkMode ? 'rgba(50, 50, 50, 0.7)' : 'rgba(240, 240, 240, 0.7)';
-        ctx.fillRect(legendX - 10, legendY - 10, 90, 35);
-        ctx.strokeStyle = darkMode ? 'rgba(150, 150, 150, 0.5)' : 'rgba(100, 100, 100, 0.3)';
-        ctx.strokeRect(legendX - 10, legendY - 10, 90, 35);
-        
-        // Simple interest legend
-        ctx.beginPath();
-        ctx.strokeStyle = siColor;
-        ctx.lineWidth = 2;
-        ctx.moveTo(legendX, legendY);
-        ctx.lineTo(legendX + 25, legendY);
-        ctx.stroke();
-        
-        ctx.fillStyle = textColor;
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText('Simple', legendX + 30, legendY + 3);
-        
-        // Compound interest legend
-        ctx.beginPath();
-        ctx.strokeStyle = ciColor;
-        ctx.lineWidth = 2;
-        ctx.moveTo(legendX, legendY + 15);
-        ctx.lineTo(legendX + 25, legendY + 15);
-        ctx.stroke();
-        
-        ctx.fillStyle = textColor;
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText('Compound', legendX + 30, legendY + 18);
-    };
-    
-    // Draw graph when data changes
-    useEffect(() => {
-        drawGraph();
-    }, [yearlyData, darkMode, graphSize]);
-    
-    // Format period label based on timeUnit
-    const formatPeriodLabel = (period) => {
-        if (timeUnit === 'days') {
-            return `Day ${period}`;
-        } else if (timeUnit === 'months') {
-            return `Month ${period}`;
-        } else {
-            return `Year ${period}`;
-        }
-    };
-    
-    // Function to save canvas as image
-    const saveGraphAsImage = () => {
-        if (!canvasRef.current) return;
-        
-        try {
-            // Create a temporary link element
-            const link = document.createElement('a');
-            
-            // Get the canvas data as URL
-            const imageData = canvasRef.current.toDataURL('image/png');
-            
-            // Set link properties
-            link.href = imageData;
-            link.download = `interest-comparison-${Date.now()}.png`;
-            
-            // Append to body, click to download, then remove
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Show success status for 3 seconds
-            setImageDownloaded(true);
-            setTimeout(() => setImageDownloaded(false), 3000);
-        } catch (error) {
-            console.error('Error saving graph as image:', error);
-            alert('Failed to save graph. Please try again.');
-        }
-    };
-    
-    // Function to convert table data to CSV and download
-    const saveTableAsCSV = () => {
-        try {
-            // Prepare CSV header
-            let csvContent = "data:text/csv;charset=utf-8,";
-            
-            // Add headers for CSV
-            const headers = [
-                timeUnit === 'years' ? 'Year' : timeUnit === 'months' ? 'Month' : 'Day',
-                'Simple Interest (₹)', 
-                'Simple Total (₹)', 
-                'Compound Interest (₹)', 
-                'Compound Total (₹)', 
-                'Difference (₹)'
-            ];
-            csvContent += headers.join(',') + '\n';
-            
-            // Add all data rows to CSV
-            yearlyData.forEach(data => {
-                const row = [
-                    data.period,
-                    Math.round(data.simpleInterest),
-                    Math.round(data.simpleAmount),
-                    Math.round(data.compoundInterest),
-                    Math.round(data.compoundAmount),
-                    Math.round(data.difference)
-                ];
-                csvContent += row.join(',') + '\n';
-            });
-            
-            // Create download link
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `interest-data-${Date.now()}.csv`);
-            
-            // Trigger download
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Show success status for 3 seconds
-            setCsvDownloaded(true);
-            setTimeout(() => setCsvDownloaded(false), 3000);
-        } catch (error) {
-            console.error('Error saving table as CSV:', error);
-            alert('Failed to save table data. Please try again.');
-        }
-    };
-    
-    return (
-        <main className={`p-5 min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <h1 className='text-3xl md:text-4xl font-extrabold text-center md:text-left'>Interest Calculator</h1>
-                <Button 
-                    onClick={toggleDarkMode} 
-                    className={`py-2 px-4 rounded-full transition-all ${darkMode ? 'bg-yellow-400 text-black hover:bg-yellow-300' : 'bg-gray-800 text-white hover:bg-gray-700'}`}
-                >
-                    {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-                </Button>
-            </div>
-            
-            {/* Input Section */}
-            <div className={`mb-8 p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                <p className='text-lg mb-4'>Enter values to calculate simple and compound interest</p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label className="block mb-2 text-sm font-medium">Principal Amount</label>
-                        <div className="relative">
-                            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">₹</span>
-                            <Input
-                                type="number"
-                                value={principal}
-                                onChange={(e) => setPrincipal(e.target.value)}
-                                className={`pl-7 ${darkMode ? 'bg-gray-700 text-white border-gray-600' : ''}`}
-                                min="0"
-                            />
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label className="block mb-2 text-sm font-medium">Interest Rate (per annum)</label>
-                        <div className="relative">
-                            <Input
-                                type="number"
-                                value={rate}
-                                onChange={(e) => setRate(e.target.value)}
-                                className={`pr-7 ${darkMode ? 'bg-gray-700 text-white border-gray-600' : ''}`}
-                                min="0"
-                                step="0.1"
-                            />
-                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2">%</span>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label className="block mb-2 text-sm font-medium">Time Period</label>
-                        <div className="flex gap-2">
-                            <div className="relative flex-1">
-                                <Input
-                                    type="number"
-                                    value={time}
-                                    onChange={(e) => setTime(e.target.value)}
-                                    className={`${darkMode ? 'bg-gray-700 text-white border-gray-600' : ''}`}
-                                    min={timeUnit === 'years' ? '1' : timeUnit === 'months' ? '1' : '1'}
-                                    max={timeUnit === 'years' ? '50' : timeUnit === 'months' ? '600' : '18250'}
-                                />
-                            </div>
-                            <select
-                                value={timeUnit}
-                                onChange={(e) => setTimeUnit(e.target.value)}
-                                className={`h-9 px-3 py-1 rounded-md border min-w-[100px] ${
-                                    darkMode 
-                                        ? 'bg-gray-700 text-white border-gray-600' 
-                                        : 'bg-white text-black border-gray-300'
-                                } outline-none transition-colors focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
-                            >
-                                <option value="years">Years</option>
-                                <option value="months">Months</option>
-                                <option value="days">Days</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label className="block mb-2 text-sm font-medium">Compound Frequency</label>
-                        <select
-                            value={compoundFrequency}
-                            onChange={(e) => setCompoundFrequency(e.target.value)}
-                            className={`w-full h-9 px-3 py-1 rounded-md border ${
-                                darkMode 
-                                    ? 'bg-gray-700 text-white border-gray-600' 
-                                    : 'bg-white text-black border-gray-300'
-                            } outline-none transition-colors focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
-                        >
-                            <option value="1">Annually (1/year)</option>
-                            <option value="2">Semi-Annually (2/year)</option>
-                            <option value="4">Quarterly (4/year)</option>
-                            <option value="12">Monthly (12/year)</option>
-                            <option value="365">Daily (365/year)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                {/* Time period explanation */}
-                <div className={`p-3 rounded-md text-sm ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                    {timeUnit === 'years' ? (
-                        <p>Calculating interest for {time} year{time !== 1 ? 's' : ''} at {rate}% per annum.</p>
-                    ) : timeUnit === 'months' ? (
-                        <p>Calculating interest for {time} month{time !== 1 ? 's' : ''} (equivalent to {(time / 12).toFixed(2)} years) at {rate}% per annum.</p>
-                    ) : (
-                        <p>Calculating interest for {time} day{time !== 1 ? 's' : ''} (equivalent to {(time / 365).toFixed(2)} years) at {rate}% per annum.</p>
-                    )}
-                </div>
-            </div>
-            
-            {/* Results Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {/* Interests Display */}
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                    <h2 className="text-xl font-bold mb-4">Results</h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
-                            <h3 className="text-sm font-medium text-blue-600 dark:text-blue-400">Simple Interest</h3>
-                            <p className="text-2xl font-bold mt-1">{formatIndianCurrency(simpleInterest)}</p>
-                            <p className="text-sm mt-1">Total: {formatIndianCurrency(Number(principal) + simpleInterest)}</p>
-                        </div>
-                        
-                        <div className={`p-4 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
-                            <h3 className="text-sm font-medium text-purple-600 dark:text-purple-400">Compound Interest</h3>
-                            <p className="text-2xl font-bold mt-1">{formatIndianCurrency(compoundInterest)}</p>
-                            <p className="text-sm mt-1">Total: {formatIndianCurrency(Number(principal) + compoundInterest)}</p>
-                        </div>
-                    </div>
-                    
-                    <div className="mt-4">
-                        <h3 className="font-medium mb-2">Difference</h3>
-                        <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                            <p className="font-medium">
-                                {compoundInterest > simpleInterest ? 
-                                    `Compound interest earns you ${formatIndianCurrency(compoundInterest - simpleInterest)} more.` :
-                                    `Simple interest earns you ${formatIndianCurrency(simpleInterest - compoundInterest)} more.`
-                                }
-                            </p>
-                            <p className="text-sm mt-1 opacity-80">
-                                That's {simpleInterest === 0 ? '0' : Math.abs(((compoundInterest - simpleInterest) / simpleInterest) * 100).toFixed(2)}% {compoundInterest > simpleInterest ? 'more' : 'less'} than simple interest.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                {/* Graph Display */}
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold">Interest Growth Over Time</h2>
-                        <div className="flex items-center gap-2">
-                            <label className="text-sm mr-2">Size:</label>
-                            <select
-                                value={graphSize}
-                                onChange={(e) => setGraphSize(e.target.value)}
-                                className={`h-8 px-2 py-0 rounded-md border text-sm ${
-                                    darkMode 
-                                        ? 'bg-gray-700 text-white border-gray-600' 
-                                        : 'bg-white text-black border-gray-300'
-                                } outline-none transition-colors focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
-                            >
-                                <option value="small">Small</option>
-                                <option value="medium">Medium</option>
-                                <option value="large">Large</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div 
-                        ref={canvasContainerRef} 
-                        className={`w-full transition-all duration-300 relative ${
-                            graphSize === 'small' ? 'aspect-[4/2.5]' : 
-                            graphSize === 'medium' ? 'aspect-[4/3]' : 
-                            'aspect-[4/3.5]'
-                        }`}
-                    >
-                        <canvas 
-                            ref={canvasRef}
-                            className="w-full h-full"
-                        ></canvas>
-                    </div>
-                    <div className="mt-4 flex justify-end">
-                        <Button 
-                            onClick={saveGraphAsImage}
-                            className={`text-sm py-1 px-3 ${
-                                darkMode 
-                                    ? 'bg-blue-600 hover:bg-blue-700' 
-                                    : 'bg-blue-500 hover:bg-blue-600'
-                            }`}
-                        >
-                            {imageDownloaded ? '✓ Saved!' : '📥 Save as Image'}
-                        </Button>
-                    </div>
-                </div>
-            </div>
-            
-            {/* Data Table Section */}
-            <div className={`mb-8 p-4 rounded-lg overflow-x-auto ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">
-                        {timeUnit === 'years' ? 'Yearly Breakdown' : 
-                         timeUnit === 'months' ? 'Monthly Breakdown' : 'Daily Breakdown'}
-                    </h2>
-                    <Button 
-                        onClick={saveTableAsCSV}
-                        className={`text-sm py-1 px-3 ${
-                            darkMode 
-                                ? 'bg-green-600 hover:bg-green-700' 
-                                : 'bg-green-500 hover:bg-green-600'
-                        }`}
-                    >
-                        {csvDownloaded ? '✓ Saved!' : '📊 Save as CSV'}
-                    </Button>
-                </div>
-                
-                <table className={`w-full min-w-[700px] ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                    <thead className={`${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                        <tr>
-                            <th className="p-2 text-left">{timeUnit === 'years' ? 'Year' : timeUnit === 'months' ? 'Month' : 'Day'}</th>
-                            <th className="p-2 text-right">Simple Interest</th>
-                            <th className="p-2 text-right">Simple Total</th>
-                            <th className="p-2 text-right">Compound Interest</th>
-                            <th className="p-2 text-right">Compound Total</th>
-                            <th className="p-2 text-right">Difference</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {yearlyData.filter((_, index) => {
-                            // Limiting data rows for readability
-                            const total = yearlyData.length - 1;
-                            return index === 0 || 
-                                   index === total || 
-                                   index % Math.max(1, Math.floor(total / 10)) === 0;
-                        }).map((data) => (
-                            <tr key={data.period} className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-300'}`}>
-                                <td className="p-2">{data.period}</td>
-                                <td className="p-2 text-right text-blue-600 dark:text-blue-400">{formatIndianCurrency(data.simpleInterest)}</td>
-                                <td className="p-2 text-right">{formatIndianCurrency(data.simpleAmount)}</td>
-                                <td className="p-2 text-right text-purple-600 dark:text-purple-400">{formatIndianCurrency(data.compoundInterest)}</td>
-                                <td className="p-2 text-right">{formatIndianCurrency(data.compoundAmount)}</td>
-                                <td className={`p-2 text-right ${
-                                    data.difference > 0 
-                                        ? 'text-green-600 dark:text-green-400' 
-                                        : data.difference < 0 
-                                            ? 'text-red-600 dark:text-red-400'
-                                            : ''
-                                }`}>
-                                    {data.difference > 0 ? '+' : ''}{formatIndianCurrency(data.difference)}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-3">
-                    <p className="text-sm opacity-70 mb-2 sm:mb-0">
-                        Note: Difference = Compound Interest - Simple Interest. Positive values indicate compound interest is higher.
-                    </p>
-                    <p className="text-sm opacity-70">
-                        {csvDownloaded ? 'CSV includes all data points, not just the ones shown above.' : ''}
-                    </p>
-                </div>
-            </div>
-            
-            {/* Tips Section */}
-            <div className="mt-10 text-center text-sm opacity-70">
-                <p>Tips: Compound interest generally yields higher returns over longer time periods. The more frequently interest is compounded, the greater the final amount.</p>
-            </div>
-        </main>
+const COMPOUND_FREQUENCIES = [
+  { value: 1, label: 'Annually (1x)' },
+  { value: 2, label: 'Semi-Annually (2x)' },
+  { value: 4, label: 'Quarterly (4x)' },
+  { value: 12, label: 'Monthly (12x)' },
+  { value: 365, label: 'Daily (365x)' },
+];
+
+const PRINCIPAL_PRESETS = [
+  { label: '₹10K', value: 10000 },
+  { label: '₹50K', value: 50000 },
+  { label: '₹1 Lakh', value: 100000 },
+  { label: '₹5 Lakh', value: 500000 },
+  { label: '₹10 Lakh', value: 1000000 },
+];
+
+const RATE_PRESETS = [
+  { label: '4% (Savings)', value: 4 },
+  { label: '7% (FD)', value: 7 },
+  { label: '10% (Balanced)', value: 10 },
+  { label: '12% (Equity)', value: 12 },
+  { label: '15% (High Yield)', value: 15 },
+];
+
+const YEAR_PRESETS = [1, 3, 5, 10, 15, 20];
+
+export default function InterestCalculator() {
+  const { theme } = useTheme();
+  const darkMode = theme === 'dark';
+
+  // Input states
+  const [principal, setPrincipal] = useState(50000);
+  const [rate, setRate] = useState(7.5);
+  const [time, setTime] = useState(5);
+  const [timeUnit, setTimeUnit] = useState('years');
+  const [compoundFrequency, setCompoundFrequency] = useState(1);
+
+  // Results & Graph states
+  const [simpleInterest, setSimpleInterest] = useState(0);
+  const [compoundInterest, setCompoundInterest] = useState(0);
+  const [yearlyData, setYearlyData] = useState([]);
+  const [effectiveTime, setEffectiveTime] = useState(5);
+  const [graphSize, setGraphSize] = useState('medium');
+  const [showAllRows, setShowAllRows] = useState(false);
+
+  // Status flags
+  const [copied, setCopied] = useState(false);
+  const [csvDownloaded, setCsvDownloaded] = useState(false);
+  const [imageDownloaded, setImageDownloaded] = useState(false);
+
+  // Canvas refs
+  const canvasRef = useRef(null);
+  const canvasContainerRef = useRef(null);
+
+  // Convert time to effective years
+  useEffect(() => {
+    const numTime = Math.max(0, Number(time) || 0);
+    let years = numTime;
+    if (timeUnit === 'months') {
+      years = numTime / 12;
+    } else if (timeUnit === 'days') {
+      years = numTime / 365;
+    }
+    setEffectiveTime(years);
+  }, [time, timeUnit]);
+
+  // Calculate interest
+  useEffect(() => {
+    const p = Math.max(0, Number(principal) || 0);
+    const r = Math.max(0, Number(rate) || 0) / 100;
+    const t = effectiveTime;
+    const n = Number(compoundFrequency) || 1;
+
+    // Simple Interest: P * r * t
+    const si = p * r * t;
+    setSimpleInterest(si);
+
+    // Compound Interest: P * (1 + r/n)^(n*t) - P
+    const ci = p > 0 && r > 0 && t > 0
+      ? p * Math.pow(1 + r / n, n * t) - p
+      : 0;
+    setCompoundInterest(ci);
+
+    // Generate graph points
+    const dataPoints = getDataPointCount(t);
+    const data = [];
+
+    for (let i = 0; i <= dataPoints; i++) {
+      const timeFraction = dataPoints > 0 ? (i / dataPoints) * t : 0;
+      const siAmount = p + p * r * timeFraction;
+      const ciAmount = p > 0 && r > 0 && timeFraction > 0
+        ? p * Math.pow(1 + r / n, n * timeFraction)
+        : p;
+      const simpleInt = siAmount - p;
+      const compoundInt = ciAmount - p;
+      const difference = compoundInt - simpleInt;
+
+      data.push({
+        period: i,
+        periodLabel: getTimePeriodLabel(i, dataPoints, t, timeUnit),
+        simpleAmount: Math.round(siAmount),
+        compoundAmount: Math.round(ciAmount),
+        simpleInterest: Math.round(simpleInt),
+        compoundInterest: Math.round(compoundInt),
+        difference: Math.round(difference),
+        timeFraction
+      });
+    }
+
+    setYearlyData(data);
+  }, [principal, rate, effectiveTime, compoundFrequency, timeUnit]);
+
+  // Redraw graph on data or theme changes
+  useEffect(() => {
+    drawGraph();
+  }, [yearlyData, darkMode, graphSize]);
+
+  // Reset export feedback when inputs change
+  useEffect(() => {
+    setCsvDownloaded(false);
+    setImageDownloaded(false);
+    setCopied(false);
+  }, [principal, rate, time, timeUnit, compoundFrequency]);
+
+  // Window resize handler
+  useEffect(() => {
+    const handleResize = () => drawGraph();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [yearlyData, darkMode, graphSize]);
+
+  const resetDefaults = () => {
+    setPrincipal(50000);
+    setRate(7.5);
+    setTime(5);
+    setTimeUnit('years');
+    setCompoundFrequency(1);
+  };
+
+  const copySummary = () => {
+    const text = `Interest Calculation Summary:
+Principal: ${formatIndianCurrency(principal)}
+Rate: ${rate}% p.a.
+Period: ${time} ${timeUnit}
+Simple Interest: ${formatIndianCurrency(Math.round(simpleInterest))} (Total: ${formatIndianCurrency(Math.round(Number(principal) + simpleInterest))})
+Compound Interest: ${formatIndianCurrency(Math.round(compoundInterest))} (Total: ${formatIndianCurrency(Math.round(Number(principal) + compoundInterest))})
+Compound Extra Gain: ${formatIndianCurrency(Math.round(compoundInterest - simpleInterest))}
+Calculated with Anantastra: https://anantastra.vercel.app/interest-calculator`;
+
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  function getDataPointCount(years) {
+    if (years <= 1 / 12) return Math.min(30, Math.max(5, Math.ceil(years * 365)));
+    if (years <= 1) return Math.min(12, Math.max(4, Math.ceil(years * 12)));
+    return Math.min(40, Math.max(5, Math.ceil(years)));
+  }
+
+  function getTimePeriodLabel(index, total, years, unit) {
+    if (total === 0) return '0';
+    if (unit === 'days') return `Day ${Math.round((index / total) * years * 365)}`;
+    if (unit === 'months' || years <= 1) return `Mo ${Math.round((index / total) * years * 12)}`;
+    return `Yr ${Math.round((index / total) * years)}`;
+  }
+
+  // Draw crisp canvas graph without blurry scaling
+  const drawGraph = () => {
+    if (!yearlyData.length || !canvasRef.current || !canvasContainerRef.current) return;
+
+    const canvas = canvasRef.current;
+    const container = canvasContainerRef.current;
+    const rect = container.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Color tokens
+    const gridColor = darkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+    const textColor = darkMode ? '#94a3b8' : '#64748b';
+    const siLineColor = '#3b82f6'; // Solid Blue
+    const ciLineColor = '#8b5cf6'; // Solid Purple
+
+    const maxAmount = Math.max(
+      ...yearlyData.map((d) => Math.max(d.simpleAmount, d.compoundAmount, Number(principal) * 1.05))
     );
-};
 
-export default InterestCalculator;
+    const padding = { left: 65, right: 24, top: 24, bottom: 44 };
+    const graphWidth = width - padding.left - padding.right;
+    const graphHeight = height - padding.top - padding.bottom;
+
+    // Horizontal Grid & Y-Labels
+    const numYLines = 4;
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+    ctx.fillStyle = textColor;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+
+    for (let i = 0; i <= numYLines; i++) {
+      const y = padding.top + (i / numYLines) * graphHeight;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(width - padding.right, y);
+      ctx.stroke();
+
+      const val = Math.round(maxAmount - (i / numYLines) * maxAmount);
+      let label = `₹${val}`;
+      if (val >= 10000000) label = `₹${(val / 10000000).toFixed(1)}Cr`;
+      else if (val >= 100000) label = `₹${(val / 100000).toFixed(1)}L`;
+      else if (val >= 1000) label = `₹${(val / 1000).toFixed(0)}K`;
+
+      ctx.fillText(label, padding.left - 8, y + 4);
+    }
+
+    // X-Axis Grid & Labels
+    const totalPeriods = yearlyData.length - 1;
+    const skipFactor = Math.max(1, Math.ceil(totalPeriods / 6));
+    ctx.textAlign = 'center';
+
+    for (let i = 0; i <= totalPeriods; i += skipFactor) {
+      const x = padding.left + (i / totalPeriods) * graphWidth;
+      ctx.beginPath();
+      ctx.moveTo(x, padding.top);
+      ctx.lineTo(x, height - padding.bottom);
+      ctx.stroke();
+
+      const item = yearlyData[i];
+      if (item) {
+        ctx.fillText(item.periodLabel, x, height - padding.bottom + 18);
+      }
+    }
+
+    // Draw Line helper
+    const drawSeries = (key, strokeColor, lineWidth = 2.5) => {
+      ctx.beginPath();
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = lineWidth;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      yearlyData.forEach((point, index) => {
+        const x = padding.left + (index / totalPeriods) * graphWidth;
+        const val = point[key];
+        const y = padding.top + graphHeight - (val / maxAmount) * graphHeight;
+
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    };
+
+    // Draw Simple Interest Line (Blue)
+    drawSeries('simpleAmount', siLineColor, 2.5);
+
+    // Draw Compound Interest Line (Purple)
+    drawSeries('compoundAmount', ciLineColor, 2.5);
+
+    // Draw End Points for visual clarity
+    const lastPoint = yearlyData[yearlyData.length - 1];
+    if (lastPoint) {
+      const endX = padding.left + graphWidth;
+      const endSiY = padding.top + graphHeight - (lastPoint.simpleAmount / maxAmount) * graphHeight;
+      const endCiY = padding.top + graphHeight - (lastPoint.compoundAmount / maxAmount) * graphHeight;
+
+      // SI point
+      ctx.fillStyle = siLineColor;
+      ctx.beginPath();
+      ctx.arc(endX, endSiY, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // CI point
+      ctx.fillStyle = ciLineColor;
+      ctx.beginPath();
+      ctx.arc(endX, endCiY, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  };
+
+  const saveGraphAsImage = () => {
+    if (!canvasRef.current) return;
+    try {
+      const link = document.createElement('a');
+      link.download = `anantastra-interest-growth-${principal}-rate${rate}.png`;
+      link.href = canvasRef.current.toDataURL('image/png');
+      link.click();
+      setImageDownloaded(true);
+      setTimeout(() => setImageDownloaded(false), 3000);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const saveTableAsCSV = () => {
+    try {
+      let csv = 'Period,Simple Interest (INR),Simple Total (INR),Compound Interest (INR),Compound Total (INR),Net Difference (INR)\n';
+      yearlyData.forEach((row) => {
+        csv += `"${row.periodLabel}",${row.simpleInterest},${row.simpleAmount},${row.compoundInterest},${row.compoundAmount},${row.difference}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `anantastra-interest-breakdown-${principal}-pkr.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setCsvDownloaded(true);
+      setTimeout(() => setCsvDownloaded(false), 3000);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const differenceValue = compoundInterest - simpleInterest;
+  const differencePercent = simpleInterest > 0 ? (differenceValue / simpleInterest) * 100 : 0;
+
+  return (
+    <main className="container mx-auto py-8 px-4 sm:px-6 max-w-6xl text-foreground">
+      {/* Top Header Bar */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-border/50 mb-8">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              Interest Calculator
+            </h1>
+            <Badge variant="subtle" className="text-xs">
+              Simple vs Compound
+            </Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            Compare simple and compound interest side-by-side with live sliders, visual trajectories, and schedule exports.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={resetDefaults}
+            className="rounded-full border-border/80 text-xs gap-1.5 h-9"
+          >
+            <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" />
+            <span>Reset</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={copySummary}
+            className="rounded-full border-border/80 text-xs gap-1.5 h-9"
+          >
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-emerald-500" />
+                <span>Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                <span>Copy Summary</span>
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Main 2-Column Grid: Left Controls, Right Highlights */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+        {/* Left Column: Interactive Inputs & Sliders (7 cols) */}
+        <Card className="lg:col-span-7 border-border/60 bg-card shadow-sm p-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+              <Coins className="h-4 w-4 text-primary" />
+              <span>Investment Parameters</span>
+            </h2>
+            <span className="text-xs text-muted-foreground">Adjust sliders or type values</span>
+          </div>
+
+          {/* 1. Principal Input */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-medium text-foreground">Principal Amount</label>
+              <span className="font-bold text-foreground text-sm">
+                {formatIndianCurrency(principal)}
+              </span>
+            </div>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-sm">
+                ₹
+              </span>
+              <Input
+                type="number"
+                min="500"
+                step="500"
+                value={principal}
+                onChange={(e) => setPrincipal(Math.max(0, Number(e.target.value)))}
+                className="pl-8 text-base font-semibold border-border/70"
+              />
+            </div>
+            <Slider
+              value={[Math.min(2000000, Math.max(1000, Number(principal) || 0))]}
+              min={1000}
+              max={2000000}
+              step={1000}
+              onValueChange={(val) => setPrincipal(val[0])}
+            />
+            {/* Quick chips */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {PRINCIPAL_PRESETS.map((preset) => (
+                <button
+                  key={preset.value}
+                  type="button"
+                  onClick={() => setPrincipal(preset.value)}
+                  className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
+                    Number(principal) === preset.value
+                      ? 'border-primary bg-primary text-primary-foreground font-semibold'
+                      : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 2. Interest Rate Input */}
+          <div className="space-y-3 pt-2">
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-medium text-foreground">Interest Rate (% p.a.)</label>
+              <span className="font-bold text-foreground text-sm">{rate}%</span>
+            </div>
+            <div className="relative">
+              <Input
+                type="number"
+                min="0.1"
+                max="40"
+                step="0.1"
+                value={rate}
+                onChange={(e) => setRate(Math.max(0, Number(e.target.value)))}
+                className="pr-8 text-base font-semibold border-border/70"
+              />
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-sm">
+                %
+              </span>
+            </div>
+            <Slider
+              value={[Math.min(30, Math.max(1, Number(rate) || 0))]}
+              min={1}
+              max={30}
+              step={0.25}
+              onValueChange={(val) => setRate(val[0])}
+            />
+            {/* Quick chips */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {RATE_PRESETS.map((preset) => (
+                <button
+                  key={preset.value}
+                  type="button"
+                  onClick={() => setRate(preset.value)}
+                  className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
+                    Number(rate) === preset.value
+                      ? 'border-primary bg-primary text-primary-foreground font-semibold'
+                      : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 3. Time Period Input */}
+          <div className="space-y-3 pt-2">
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-medium text-foreground">Time Duration</label>
+              <span className="font-bold text-foreground text-sm">
+                {time} {timeUnit}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                type="number"
+                min="1"
+                max={timeUnit === 'years' ? 50 : timeUnit === 'months' ? 600 : 18250}
+                value={time}
+                onChange={(e) => setTime(Math.max(1, Number(e.target.value)))}
+                className="flex-1 text-base font-semibold border-border/70"
+              />
+              {/* Modern segmented pill unit toggle */}
+              <div className="flex rounded-xl border border-border/70 p-1 bg-muted/40">
+                {['years', 'months', 'days'].map((u) => (
+                  <button
+                    key={u}
+                    type="button"
+                    onClick={() => {
+                      if (timeUnit !== u) {
+                        setTimeUnit(u);
+                        if (u === 'years' && time > 50) setTime(5);
+                        else if (u === 'months' && time > 600) setTime(60);
+                      }
+                    }}
+                    className={`px-3 py-1 text-xs font-medium capitalize rounded-lg transition-colors ${
+                      timeUnit === u
+                        ? 'bg-background text-foreground shadow-xs font-semibold'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {u}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Slider
+              value={[
+                timeUnit === 'years'
+                  ? Math.min(30, Math.max(1, Number(time) || 1))
+                  : timeUnit === 'months'
+                  ? Math.min(120, Math.max(1, Number(time) || 1))
+                  : Math.min(365, Math.max(1, Number(time) || 1))
+              ]}
+              min={1}
+              max={timeUnit === 'years' ? 30 : timeUnit === 'months' ? 120 : 365}
+              step={1}
+              onValueChange={(val) => setTime(val[0])}
+            />
+            {timeUnit === 'years' && (
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {YEAR_PRESETS.map((yr) => (
+                  <button
+                    key={yr}
+                    type="button"
+                    onClick={() => setTime(yr)}
+                    className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
+                      Number(time) === yr
+                        ? 'border-primary bg-primary text-primary-foreground font-semibold'
+                        : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                    }`}
+                  >
+                    {yr} {yr === 1 ? 'Year' : 'Years'}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 4. Compounding Frequency */}
+          <div className="space-y-2 pt-2 border-t border-border/50">
+            <label className="text-sm font-medium text-foreground">
+              Compounding Frequency
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {COMPOUND_FREQUENCIES.map((freq) => (
+                <button
+                  key={freq.value}
+                  type="button"
+                  onClick={() => setCompoundFrequency(freq.value)}
+                  className={`py-2 px-3 rounded-xl border text-xs font-medium text-left transition-all ${
+                    compoundFrequency === freq.value
+                      ? 'border-primary bg-primary/10 text-primary font-semibold'
+                      : 'border-border/70 bg-background/50 text-muted-foreground hover:border-border hover:text-foreground'
+                  }`}
+                >
+                  {freq.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </Card>
+
+        {/* Right Column: Comparative Results Cards (5 cols) */}
+        <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
+          {/* Simple Interest Card */}
+          <Card className="border-border/60 bg-card shadow-xs p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500" />
+                <h3 className="font-bold text-sm text-foreground">Simple Interest</h3>
+              </div>
+              <Badge variant="outline" className="text-[10px]">
+                Linear
+              </Badge>
+            </div>
+            <div className="space-y-1.5">
+              <div className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400">
+                {formatIndianCurrency(Math.round(simpleInterest))}
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground pt-1 border-t border-border/40">
+                <span>Total Payout (Principal + Interest):</span>
+                <span className="font-semibold text-foreground">
+                  {formatIndianCurrency(Math.round(Number(principal) + simpleInterest))}
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Compound Interest Card */}
+          <Card className="border-border/60 bg-card shadow-xs p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-purple-500" />
+                <h3 className="font-bold text-sm text-foreground">Compound Interest</h3>
+              </div>
+              <Badge variant="subtle" className="text-[10px]">
+                Exponential
+              </Badge>
+            </div>
+            <div className="space-y-1.5">
+              <div className="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400">
+                {formatIndianCurrency(Math.round(compoundInterest))}
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground pt-1 border-t border-border/40">
+                <span>Total Payout (Principal + Interest):</span>
+                <span className="font-semibold text-foreground">
+                  {formatIndianCurrency(Math.round(Number(principal) + compoundInterest))}
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Extra Compound Gain / Edge Card */}
+          <Card className="border-emerald-500/30 bg-emerald-500/10 shadow-xs p-5">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-sm text-emerald-800 dark:text-emerald-300">
+                Compounding Advantage
+              </h3>
+              <Badge variant="success" className="text-[10px]">
+                Extra Gain
+              </Badge>
+            </div>
+            <div className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">
+              +{formatIndianCurrency(Math.round(differenceValue))}
+            </div>
+            <p className="text-xs text-emerald-800 dark:text-emerald-300 mt-1 leading-relaxed">
+              Compound interest yields <strong className="font-bold">{differencePercent.toFixed(1)}% more returns</strong> than simple interest on your ₹{Number(principal).toLocaleString('en-IN')} principal.
+            </p>
+          </Card>
+        </div>
+      </div>
+
+      {/* Chart Section */}
+      <Card className="border-border/60 bg-card shadow-sm p-6 mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              <span>Growth Trajectory (Visual Comparison)</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+              Watch how compounding pulls ahead of simple interest over time.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Chart Legend */}
+            <div className="flex items-center gap-4 text-xs font-medium">
+              <span className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                Simple
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-purple-600 dark:text-purple-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+                Compound
+              </span>
+            </div>
+
+            {/* Size Selector */}
+            <div className="flex items-center gap-1 rounded-xl border border-border/70 p-1 bg-muted/40">
+              {['small', 'medium', 'large'].map((sz) => (
+                <button
+                  key={sz}
+                  type="button"
+                  onClick={() => setGraphSize(sz)}
+                  className={`px-2.5 py-0.5 text-xs font-medium capitalize rounded-lg transition-colors ${
+                    graphSize === sz
+                      ? 'bg-background text-foreground shadow-xs font-semibold'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {sz}
+                </button>
+              ))}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={saveGraphAsImage}
+              className="rounded-full border-border/80 text-xs gap-1.5 h-8"
+            >
+              {imageDownloaded ? (
+                <>
+                  <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  <span>Saved!</span>
+                </>
+              ) : (
+                <>
+                  <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Export PNG</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Canvas container */}
+        <div
+          ref={canvasContainerRef}
+          className={`w-full transition-all duration-300 relative rounded-xl border border-border/40 bg-background/50 p-2 ${
+            graphSize === 'small'
+              ? 'aspect-[16/7]'
+              : graphSize === 'medium'
+              ? 'aspect-[16/9]'
+              : 'aspect-[16/11]'
+          }`}
+        >
+          <canvas ref={canvasRef} className="w-full h-full" />
+        </div>
+      </Card>
+
+      {/* Schedule Table Section */}
+      <Card className="border-border/60 bg-card shadow-sm p-6 mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-lg font-bold text-foreground">
+              Period-wise Amortization Schedule
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+              Track balance progression and divergence over intervals.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAllRows(!showAllRows)}
+              className="rounded-full border-border/80 text-xs h-8"
+            >
+              {showAllRows ? 'Show Key Milestones' : 'Show All Intervals'}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={saveTableAsCSV}
+              className="rounded-full border-border/80 text-xs gap-1.5 h-8"
+            >
+              {csvDownloaded ? (
+                <>
+                  <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  <span>Saved!</span>
+                </>
+              ) : (
+                <>
+                  <FileSpreadsheet className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Export CSV</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto rounded-xl border border-border/60">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="bg-muted/60 text-muted-foreground text-xs uppercase font-semibold">
+                <th className="px-4 py-3 text-left">Period</th>
+                <th className="px-4 py-3 text-right">Simple Interest</th>
+                <th className="px-4 py-3 text-right">Simple Total</th>
+                <th className="px-4 py-3 text-right">Compound Interest</th>
+                <th className="px-4 py-3 text-right">Compound Total</th>
+                <th className="px-4 py-3 text-right">Net Extra Gain</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/40">
+              {yearlyData
+                .filter((_, index) => {
+                  if (showAllRows) return true;
+                  const total = yearlyData.length - 1;
+                  return (
+                    index === 0 ||
+                    index === total ||
+                    index % Math.max(1, Math.floor(total / 10)) === 0
+                  );
+                })
+                .map((row) => (
+                  <tr key={row.period} className="hover:bg-accent/30 transition-colors">
+                    <td className="px-4 py-2.5 font-medium text-foreground">
+                      {row.periodLabel}
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-blue-600 dark:text-blue-400 font-medium">
+                      {formatIndianCurrency(row.simpleInterest)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-muted-foreground">
+                      {formatIndianCurrency(row.simpleAmount)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-purple-600 dark:text-purple-400 font-medium">
+                      {formatIndianCurrency(row.compoundInterest)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-foreground">
+                      {formatIndianCurrency(row.compoundAmount)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-emerald-600 dark:text-emerald-400">
+                      {row.difference > 0 ? `+${formatIndianCurrency(row.difference)}` : '₹0'}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Educational Formula Guide */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="border-border/60 bg-card/60 backdrop-blur-sm p-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <h3 className="font-bold text-sm text-foreground">Simple Interest Formula</h3>
+          </div>
+          <div className="p-3 rounded-xl bg-muted/40 font-mono text-xs text-foreground">
+            SI = (P × R × T) ÷ 100
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Interest is only earned on the initial principal. The interest amount stays strictly constant across every time period.
+          </p>
+        </Card>
+
+        <Card className="border-border/60 bg-card/60 backdrop-blur-sm p-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+            <h3 className="font-bold text-sm text-foreground">Compound Interest Formula</h3>
+          </div>
+          <div className="p-3 rounded-xl bg-muted/40 font-mono text-xs text-foreground">
+            A = P × (1 + R / (n × 100))^(n × T)
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Interest generates its own interest over each compounding cycle (<strong>n</strong>). Wealth grows exponentially rather than linearly.
+          </p>
+        </Card>
+      </div>
+    </main>
+  );
+}

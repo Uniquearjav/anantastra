@@ -1,408 +1,396 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Slider } from '@/components/ui/slider';
+import { 
+  Scale, 
+  Activity, 
+  Heart, 
+  Check, 
+  Copy, 
+  Info, 
+  TrendingDown, 
+  TrendingUp, 
+  Sparkles 
+} from 'lucide-react';
 
 export default function BMICalculator() {
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [heightUnit, setHeightUnit] = useState("cm");
-  const [weightUnit, setWeightUnit] = useState("kg");
-  const [bmi, setBmi] = useState(null);
-  const [bmiCategory, setBmiCategory] = useState("");
-  const [showInfo, setShowInfo] = useState(false);
-  const [feet, setFeet] = useState("");
-  const [inches, setInches] = useState("");
+  const [unitSystem, setUnitSystem] = useState('metric'); // 'metric' (cm/kg) | 'imperial' (ft+in/lbs)
+  
+  // Metric states
+  const [heightCm, setHeightCm] = useState(175);
+  const [weightKg, setWeightKg] = useState(70);
 
-  // Convert height to meters
-  const getHeightInMeters = () => {
-    if (heightUnit === "ft") {
-      const feetValue = parseFloat(feet) || 0;
-      const inchesValue = parseFloat(inches) || 0;
-      if (feetValue <= 0 && inchesValue <= 0) return 0;
-      return feetValue * 0.3048 + inchesValue * 0.0254;
+  // Imperial states
+  const [feet, setFeet] = useState(5);
+  const [inches, setInches] = useState(9);
+  const [weightLbs, setWeightLbs] = useState(154);
+
+  const [copied, setCopied] = useState(false);
+
+  // Derive standardized values (meters and kg)
+  const { heightMeters, weightInKg } = useMemo(() => {
+    if (unitSystem === 'metric') {
+      const hM = Math.max(0.5, heightCm / 100);
+      const wK = Math.max(10, weightKg);
+      return { heightMeters: hM, weightInKg: wK };
     } else {
-      const heightValue = parseFloat(height);
-      if (isNaN(heightValue) || heightValue <= 0) return 0;
-
-      switch (heightUnit) {
-        case "cm":
-          return heightValue / 100;
-        case "m":
-          return heightValue;
-        case "in":
-          return heightValue * 0.0254;
-        default:
-          return 0;
-      }
+      const totalInches = (feet * 12) + inches;
+      const hM = Math.max(0.5, totalInches * 0.0254);
+      const wK = Math.max(10, weightLbs * 0.45359237);
+      return { heightMeters: hM, weightInKg: wK };
     }
-  };
+  }, [unitSystem, heightCm, weightKg, feet, inches, weightLbs]);
 
-  // Convert weight to kg
-  const getWeightInKg = () => {
-    const weightValue = parseFloat(weight);
-    if (isNaN(weightValue) || weightValue <= 0) return 0;
+  // BMI Math
+  const bmiData = useMemo(() => {
+    const bmiVal = weightInKg / (heightMeters * heightMeters);
+    const roundedBmi = parseFloat(bmiVal.toFixed(1));
 
-    switch (weightUnit) {
-      case "kg":
-        return weightValue;
-      case "lb":
-        return weightValue * 0.453592;
-      case "st":
-        return weightValue * 6.35029;
-      default:
-        return 0;
-    }
-  };
+    let category = 'Normal';
+    let colorClass = 'text-emerald-500';
+    let badgeVariant = 'success';
+    let description = 'Healthy weight range. Maintain balanced nutrition and regular physical activity.';
 
-  // Calculate BMI
-  const calculateBMI = () => {
-    const heightInM = getHeightInMeters();
-    const weightInKg = getWeightInKg();
-
-    if (heightInM <= 0 || weightInKg <= 0) {
-      setBmi(null);
-      setBmiCategory("");
-      return;
-    }
-
-    const calculatedBMI = weightInKg / (heightInM * heightInM);
-    setBmi(calculatedBMI);
-
-    // Set BMI category
-    if (calculatedBMI < 18.5) {
-      setBmiCategory("Underweight");
-    } else if (calculatedBMI < 25) {
-      setBmiCategory("Normal weight");
-    } else if (calculatedBMI < 30) {
-      setBmiCategory("Overweight");
-    } else if (calculatedBMI < 35) {
-      setBmiCategory("Obesity Class I");
-    } else if (calculatedBMI < 40) {
-      setBmiCategory("Obesity Class II");
+    if (roundedBmi < 18.5) {
+      category = 'Underweight';
+      colorClass = 'text-amber-500';
+      badgeVariant = 'warning';
+      description = 'Below optimal body weight. Consider nutrient-rich caloric intake and strength training.';
+    } else if (roundedBmi < 25) {
+      category = 'Normal Weight';
+      colorClass = 'text-emerald-500';
+      badgeVariant = 'success';
+      description = 'Optimal body weight associated with lower risk of chronic metabolic conditions.';
+    } else if (roundedBmi < 30) {
+      category = 'Overweight';
+      colorClass = 'text-amber-500';
+      badgeVariant = 'warning';
+      description = 'Slightly above optimal weight. Regular cardiovascular exercise is recommended.';
+    } else if (roundedBmi < 35) {
+      category = 'Obese (Class I)';
+      colorClass = 'text-rose-500';
+      badgeVariant = 'destructive';
+      description = 'Elevated health risks. Consult healthcare professionals for structured lifestyle guidance.';
     } else {
-      setBmiCategory("Obesity Class III");
+      category = 'Obese (Class II/III)';
+      colorClass = 'text-rose-600';
+      badgeVariant = 'destructive';
+      description = 'High cardiovascular risk. Medical consultation and structured intervention advised.';
     }
-  };
 
-  // Call calculateBMI when height, weight, or units change
-  useEffect(() => {
-    calculateBMI();
-  }, [height, weight, feet, inches, heightUnit, weightUnit]);
+    // Healthy weight range for this height (BMI 18.5 to 24.9)
+    const minHealthyKg = (18.5 * heightMeters * heightMeters).toFixed(1);
+    const maxHealthyKg = (24.9 * heightMeters * heightMeters).toFixed(1);
 
-  // Reset form
-  const resetForm = () => {
-    setHeight("");
-    setWeight("");
-    setFeet("");
-    setInches("");
-    setHeightUnit("cm");
-    setWeightUnit("kg");
-    setBmi(null);
-    setBmiCategory("");
-  };
+    // Difference from ideal BMI (22.0)
+    const idealWeightKg = 22 * heightMeters * heightMeters;
+    const diffKg = (weightInKg - idealWeightKg).toFixed(1);
 
-  // Handle height unit change
-  const handleHeightUnitChange = (e) => {
-    const newUnit = e.target.value;
-    setHeightUnit(newUnit);
-    
-    // Convert existing height to the new unit if possible
-    if (height && newUnit !== "ft") {
-      const heightInMeters = getHeightInMeters();
-      let convertedHeight;
-      
-      switch (newUnit) {
-        case "cm":
-          convertedHeight = heightInMeters * 100;
-          break;
-        case "m":
-          convertedHeight = heightInMeters;
-          break;
-        case "in":
-          convertedHeight = heightInMeters / 0.0254;
-          break;
-        default:
-          convertedHeight = "";
-      }
-      
-      setHeight(convertedHeight ? convertedHeight.toFixed(2) : "");
-    }
+    // Position percentage for gauge (15 to 35 clamp)
+    const clampedBmi = Math.min(35, Math.max(15, roundedBmi));
+    const gaugePosition = ((clampedBmi - 15) / (35 - 15)) * 100;
+
+    return {
+      bmi: roundedBmi,
+      category,
+      colorClass,
+      badgeVariant,
+      description,
+      minHealthyKg,
+      maxHealthyKg,
+      diffKg,
+      gaugePosition
+    };
+  }, [heightMeters, weightInKg]);
+
+  const handleCopy = () => {
+    const report = `BODY MASS INDEX (BMI) REPORT - ANANTASTRA
+------------------------------------------
+Height: ${heightMeters.toFixed(2)} m (${unitSystem === 'imperial' ? `${feet}ft ${inches}in` : `${heightCm} cm`})
+Weight: ${weightInKg.toFixed(1)} kg (${unitSystem === 'imperial' ? `${weightLbs} lbs` : `${weightKg} kg`})
+Calculated BMI: ${bmiData.bmi} (${bmiData.category})
+Healthy Weight Range: ${bmiData.minHealthyKg} kg - ${bmiData.maxHealthyKg} kg
+------------------------------------------
+100% Client-Side Health Assessment
+`;
+    navigator.clipboard.writeText(report);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">BMI Calculator</h1>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Height input */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium mb-1">
-              Height
-            </label>
-            
-            {heightUnit === "ft" ? (
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex">
+    <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-border/40">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="p-2 rounded-lg bg-foreground text-background">
+              <Scale className="h-4 w-4" />
+            </span>
+            <Badge variant="contrast">Health Calculator</Badge>
+            <Badge variant="subtle">WHO Standards</Badge>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            BMI Calculator
+          </h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">
+            Calculate your Body Mass Index, identify healthy weight ranges, and visualize health categories
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Unit Toggle */}
+          <div className="p-1 rounded-xl bg-muted/40 border border-border/50 flex">
+            <button
+              type="button"
+              onClick={() => setUnitSystem('metric')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                unitSystem === 'metric'
+                  ? 'bg-foreground text-background shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Metric (cm, kg)
+            </button>
+            <button
+              type="button"
+              onClick={() => setUnitSystem('imperial')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                unitSystem === 'imperial'
+                  ? 'bg-foreground text-background shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Imperial (ft, lbs)
+            </button>
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopy}
+            className="h-8 text-xs gap-1 border-border/70"
+          >
+            {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Sliders & Controls (7 cols) */}
+        <div className="lg:col-span-7 space-y-6">
+          {/* Height Input Card */}
+          <Card className="p-5 border-border/60 bg-card text-card-foreground space-y-4">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Your Height
+              </label>
+              <span className="text-sm font-bold text-foreground">
+                {unitSystem === 'metric' ? `${heightCm} cm` : `${feet} ft ${inches} in`}
+              </span>
+            </div>
+
+            {unitSystem === 'metric' ? (
+              <div className="space-y-3">
+                <div className="relative">
                   <Input
                     type="number"
-                    value={feet}
-                    onChange={(e) => setFeet(e.target.value)}
-                    placeholder="Feet"
-                    min="0"
-                    className="flex-1 rounded-r-none"
+                    min="100"
+                    max="250"
+                    value={heightCm}
+                    onChange={(e) => setHeightCm(Math.max(50, parseInt(e.target.value) || 0))}
+                    className="pr-12 text-base font-semibold h-11 rounded-xl"
                   />
-                  <div className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md">
-                    ft
-                  </div>
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">
+                    cm
+                  </span>
                 </div>
-                <div className="flex">
-                  <Input
-                    type="number"
-                    value={inches}
-                    onChange={(e) => setInches(e.target.value)}
-                    placeholder="Inches"
-                    min="0"
-                    max="11.99"
-                    step="0.01"
-                    className="flex-1 rounded-r-none"
-                  />
-                  <div className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md">
-                    in
-                  </div>
-                </div>
+                <Slider
+                  value={[heightCm]}
+                  min={120}
+                  max={220}
+                  step={1}
+                  onValueChange={([val]) => setHeightCm(val)}
+                  className="py-1"
+                />
               </div>
             ) : (
-              <div className="flex">
-                <Input
-                  type="number"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
-                  placeholder="Enter height"
-                  min="0"
-                  step="0.01"
-                  className="flex-1 rounded-r-none"
-                />
-                <select
-                  value={heightUnit}
-                  onChange={handleHeightUnitChange}
-                  className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md focus:ring-primary"
-                >
-                  <option value="cm">cm</option>
-                  <option value="m">m</option>
-                  <option value="ft">ft</option>
-                  <option value="in">in</option>
-                </select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[11px] text-muted-foreground block mb-1">Feet</label>
+                  <Input
+                    type="number"
+                    min="3"
+                    max="8"
+                    value={feet}
+                    onChange={(e) => setFeet(Math.max(1, parseInt(e.target.value) || 0))}
+                    className="h-11 font-semibold rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-muted-foreground block mb-1">Inches</label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="11"
+                    value={inches}
+                    onChange={(e) => setInches(Math.max(0, parseInt(e.target.value) || 0))}
+                    className="h-11 font-semibold rounded-xl"
+                  />
+                </div>
               </div>
             )}
-            
-            {heightUnit === "ft" && (
-              <div className="text-right">
-                <button 
-                  onClick={() => setHeightUnit("cm")}
-                  className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  Switch to metric
-                </button>
-              </div>
-            )}
-          </div>
-          
-          {/* Weight input */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium mb-1">
-              Weight
-            </label>
-            <div className="flex">
-              <Input
-                type="number"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder="Enter weight"
-                min="0"
-                step="0.01"
-                className="flex-1 rounded-r-none"
-              />
-              <select
-                value={weightUnit}
-                onChange={(e) => setWeightUnit(e.target.value)}
-                className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-r-md focus:ring-primary"
-              >
-                <option value="kg">kg</option>
-                <option value="lb">lb</option>
-                <option value="st">st</option>
-              </select>
+          </Card>
+
+          {/* Weight Input Card */}
+          <Card className="p-5 border-border/60 bg-card text-card-foreground space-y-4">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Your Weight
+              </label>
+              <span className="text-sm font-bold text-foreground">
+                {unitSystem === 'metric' ? `${weightKg} kg` : `${weightLbs} lbs`}
+              </span>
             </div>
-          </div>
-        </div>
-        
-        <div className="flex justify-end mt-4">
-          <Button onClick={resetForm} variant="outline" className="mr-2">
-            Reset
-          </Button>
-          <Button onClick={calculateBMI}>
-            Calculate
-          </Button>
-        </div>
-        
-        {/* Results */}
-        {bmi !== null && (
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div className="text-center">
-              <h2 className="text-lg font-semibold mb-2">Your BMI Result</h2>
-              
-              <div className="text-4xl font-bold mb-2">
-                {bmi.toFixed(1)}
+
+            {unitSystem === 'metric' ? (
+              <div className="space-y-3">
+                <div className="relative">
+                  <Input
+                    type="number"
+                    min="20"
+                    max="300"
+                    step="0.5"
+                    value={weightKg}
+                    onChange={(e) => setWeightKg(Math.max(10, parseFloat(e.target.value) || 0))}
+                    className="pr-12 text-base font-semibold h-11 rounded-xl"
+                  />
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">
+                    kg
+                  </span>
+                </div>
+                <Slider
+                  value={[weightKg]}
+                  min={30}
+                  max={160}
+                  step={0.5}
+                  onValueChange={([val]) => setWeightKg(val)}
+                  className="py-1"
+                />
               </div>
-              
-              <div className={`text-lg font-medium mb-1 ${
-                bmiCategory === "Normal weight" 
-                  ? "text-green-600 dark:text-green-400" 
-                  : bmiCategory === "Underweight" || bmiCategory === "Overweight"
-                  ? "text-yellow-600 dark:text-yellow-400"
-                  : "text-red-600 dark:text-red-400"
-              }`}>
-                {bmiCategory}
+            ) : (
+              <div className="space-y-3">
+                <div className="relative">
+                  <Input
+                    type="number"
+                    min="40"
+                    max="600"
+                    value={weightLbs}
+                    onChange={(e) => setWeightLbs(Math.max(20, parseFloat(e.target.value) || 0))}
+                    className="pr-12 text-base font-semibold h-11 rounded-xl"
+                  />
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">
+                    lbs
+                  </span>
+                </div>
+                <Slider
+                  value={[weightLbs]}
+                  min={60}
+                  max={350}
+                  step={1}
+                  onValueChange={([val]) => setWeightLbs(val)}
+                  className="py-1"
+                />
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* Right Column: Results & Gauge (5 cols) */}
+        <div className="lg:col-span-5 space-y-6">
+          {/* Main Result Card */}
+          <Card className="p-6 border-border/60 bg-card text-card-foreground shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-border/40">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Your BMI Result
+              </h2>
+              <Badge variant={bmiData.badgeVariant}>{bmiData.category}</Badge>
+            </div>
+
+            {/* Score Big Display */}
+            <div className="my-5 p-5 rounded-xl border border-border/80 bg-muted/30 text-center">
+              <span className="text-5xl font-black tracking-tight text-foreground font-mono">
+                {bmiData.bmi}
+              </span>
+              <span className={`text-sm font-bold block mt-1 ${bmiData.colorClass}`}>
+                {bmiData.category}
+              </span>
+            </div>
+
+            {/* Visual Continuous Segmented Gauge */}
+            <div className="space-y-2 mb-6">
+              <div className="relative h-3 w-full rounded-full overflow-hidden flex bg-muted/40">
+                <div className="h-full w-[17.5%] bg-amber-500/80" title="Underweight (<18.5)" />
+                <div className="h-full w-[32.5%] bg-emerald-500/80" title="Normal (18.5-24.9)" />
+                <div className="h-full w-[25%] bg-amber-500/80" title="Overweight (25-29.9)" />
+                <div className="h-full w-[25%] bg-rose-500/80" title="Obese (>=30)" />
               </div>
 
-              <div className="mt-4">
-                <button
-                  onClick={() => setShowInfo(!showInfo)}
-                  className="text-blue-600 dark:text-blue-400 hover:underline text-sm flex items-center mx-auto"
+              {/* Marker Arrow */}
+              <div className="relative w-full h-4">
+                <div 
+                  className="absolute -top-1 -translate-x-1/2 flex flex-col items-center transition-all duration-300"
+                  style={{ left: `${bmiData.gaugePosition}%` }}
                 >
-                  {showInfo ? 'Hide information' : 'What does this mean?'}
-                  <svg 
-                    className={`ml-1 w-4 h-4 transition-transform ${showInfo ? 'rotate-180' : ''}`}
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            
-            {/* BMI information */}
-            {showInfo && (
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-semibold mb-2">BMI Categories</h3>
-                    <ul className="text-sm space-y-1">
-                      <li className="flex justify-between">
-                        <span>Underweight:</span>
-                        <span className="font-medium">Below 18.5</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Normal weight:</span>
-                        <span className="font-medium">18.5 - 24.9</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Overweight:</span>
-                        <span className="font-medium">25 - 29.9</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Obesity Class I:</span>
-                        <span className="font-medium">30 - 34.9</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Obesity Class II:</span>
-                        <span className="font-medium">35 - 39.9</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Obesity Class III:</span>
-                        <span className="font-medium">40 or above</span>
-                      </li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-semibold mb-2">Your Information</h3>
-                    <ul className="text-sm space-y-1">
-                      <li className="flex justify-between">
-                        <span>Height:</span>
-                        <span className="font-medium">
-                          {getHeightInMeters().toFixed(2)} m 
-                          {heightUnit === 'ft' && feet && inches && ` (${feet}ft ${inches}in)`}
-                          {heightUnit !== 'm' && heightUnit !== 'ft' && height && ` (${height} ${heightUnit})`}
-                        </span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Weight:</span>
-                        <span className="font-medium">
-                          {getWeightInKg().toFixed(1)} kg
-                          {weightUnit !== 'kg' && weight && ` (${weight} ${weightUnit})`}
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
+                  <span className="h-2 w-2 rotate-45 bg-foreground" />
                 </div>
-                
-                <p className="text-sm mt-4">
-                  <strong>Note:</strong> BMI is a screening tool and not a diagnostic tool. 
-                  It doesn't account for factors like muscle mass, bone density, or ethnic differences. 
-                  Always consult with healthcare professionals for a proper health assessment.
-                </p>
               </div>
-            )}
-          </div>
-        )}
-      </div>
-      
-      {/* BMI chart and explanations */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">About BMI</h2>
-        
-        <p className="mb-4">
-          Body Mass Index (BMI) is a value derived from a person's weight and height. 
-          It provides a simple numeric measure of a person's thickness or thinness, 
-          allowing health professionals to discuss weight problems more objectively with their patients.
-        </p>
-        
-        <div className="overflow-x-auto mt-6">
-          <div className="w-full min-w-[600px]">
-            <div className="h-6 flex">
-              <div className="w-1/5 bg-blue-200 dark:bg-blue-900 text-center text-xs font-medium py-1">Underweight</div>
-              <div className="w-1/5 bg-green-200 dark:bg-green-900 text-center text-xs font-medium py-1">Normal</div>
-              <div className="w-1/5 bg-yellow-200 dark:bg-yellow-900 text-center text-xs font-medium py-1">Overweight</div>
-              <div className="w-1/5 bg-orange-200 dark:bg-orange-900 text-center text-xs font-medium py-1">Obesity I/II</div>
-              <div className="w-1/5 bg-red-200 dark:bg-red-900 text-center text-xs font-medium py-1">Obesity III</div>
+
+              <div className="flex justify-between text-[10px] text-muted-foreground font-mono">
+                <span>15</span>
+                <span>18.5</span>
+                <span>25</span>
+                <span>30</span>
+                <span>35+</span>
+              </div>
             </div>
-            <div className="h-6 flex text-xs text-center font-medium">
-              <div className="w-1/5">16</div>
-              <div className="w-1/5">18.5</div>
-              <div className="w-1/5">25</div>
-              <div className="w-1/5">30</div>
-              <div className="w-1/5">35</div>
-              <div style={{ width: "4.8%" }}>40</div>
+
+            {/* Healthy Weight Guidance */}
+            <div className="space-y-2.5 text-xs border-t border-border/40 pt-4">
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">Healthy Weight Range</span>
+                <span className="font-bold text-foreground">
+                  {bmiData.minHealthyKg} - {bmiData.maxHealthyKg} kg
+                </span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">Optimal Target BMI</span>
+                <span className="font-bold text-foreground">22.0 kg/m²</span>
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-relaxed pt-1">
+                {bmiData.description}
+              </p>
             </div>
-          </div>
-        </div>
-        
-        <h3 className="text-lg font-semibold mt-6 mb-2">BMI Calculation Formula</h3>
-        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg font-mono text-sm">
-          BMI = weight(kg) / [height(m)]²
-        </div>
-        
-        <h3 className="text-lg font-semibold mt-6 mb-2">Limitations of BMI</h3>
-        <ul className="list-disc list-inside space-y-1 mb-4">
-          <li>Doesn't distinguish between muscle and fat</li>
-          <li>May overestimate body fat in athletes and others with muscular builds</li>
-          <li>May underestimate body fat in older people and those who have lost muscle mass</li>
-          <li>Doesn't account for different body types and ethnic differences</li>
-          <li>Doesn't consider where fat is distributed on the body</li>
-        </ul>
-        
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg mt-4">
-          <h3 className="font-semibold mb-2">Important Note:</h3>
-          <p className="text-sm">
-            This calculator is for informational purposes only and is not a substitute for medical advice. 
-            BMI is just one factor to consider when assessing health risks related to weight. 
-            Always consult with a healthcare provider for personalized advice.
-          </p>
+          </Card>
+
+          {/* Reference Card */}
+          <Card className="p-5 border-border/60 bg-card/60 backdrop-blur-sm text-card-foreground text-xs space-y-2">
+            <h3 className="font-bold text-foreground uppercase tracking-wider text-[11px]">
+              WHO BMI Classifications
+            </h3>
+            <div className="space-y-1 text-muted-foreground text-[11px]">
+              <div className="flex justify-between"><span>&lt; 18.5</span><span>Underweight</span></div>
+              <div className="flex justify-between"><span>18.5 – 24.9</span><span className="text-foreground font-semibold">Normal weight</span></div>
+              <div className="flex justify-between"><span>25.0 – 29.9</span><span>Overweight</span></div>
+              <div className="flex justify-between"><span>≥ 30.0</span><span>Obesity</span></div>
+            </div>
+          </Card>
         </div>
       </div>
     </div>

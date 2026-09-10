@@ -12,13 +12,17 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Anantastra - Infinite Tools",
-  description: "Free, open-source utilities that respect your privacy and don't store your data",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://anantastra.vercel.app'),
+  title: {
+    default: "Anantastra - Infinite Tools for Productivity & Calculations",
+    template: "%s | Anantastra",
+  },
+  description: "Free, high-speed, open-source utilities that respect your privacy and don't store your data.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Google tag (gtag.js) */}
         <Script
@@ -35,7 +39,7 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body
-        className={`${poppins.variable} antialiased flex flex-col min-h-screen`}
+        className={`${poppins.variable} font-sans antialiased flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary transition-colors duration-200`}
       >
         <ThemeProvider>
           <Header />

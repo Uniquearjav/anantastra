@@ -1,122 +1,306 @@
 'use client';
-import Link from 'next/link';
+
 import { useState } from 'react';
+import Link from 'next/link';
+import { 
+  Sparkles, 
+  Github, 
+  Linkedin, 
+  Globe, 
+  Heart, 
+  ExternalLink, 
+  ShieldCheck, 
+  Zap, 
+  ArrowUp, 
+  Check, 
+  Send,
+  Calculator,
+  Binary,
+  Code2,
+  Lock
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
-  
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    // Handle subscription logic here
-    alert('Thank you for subscribing!');
-    setEmail('');
+  const [feedback, setFeedback] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+    if (!feedback.trim()) return;
+    // Prefill and open GitHub issue for community tool requests
+    const issueUrl = `https://github.com/Uniquearjav/anantastra/issues/new?title=${encodeURIComponent('Tool Suggestion: ' + feedback)}&body=${encodeURIComponent('Tool or feature suggestion submitted from the Anantastra footer:\n\n' + feedback)}`;
+    if (typeof window !== 'undefined') {
+      window.open(issueUrl, '_blank', 'noopener,noreferrer');
+    }
+    setSubmitted(true);
+    setFeedback('');
+    setTimeout(() => setSubmitted(false), 3500);
+  };
+
+  const toolCategories = [
+    {
+      title: "Finance & Tax",
+      icon: Calculator,
+      links: [
+        { label: "SIP Calculator", href: "/tools/calculator/sip-calculator", badge: "Popular" },
+        { label: "Interest Calculator", href: "/interest-calculator" },
+        { label: "Income Tax (India)", href: "/tools/calculator/income-tax-calculator", badge: "FY 24-25" },
+        { label: "GST Calculator", href: "/tools/calculator/gst-calculator" },
+        { label: "Loan EMI Calculator", href: "/tools/calculator/loan-emi-calculator" },
+        { label: "Currency Converter", href: "/tools/converters/currency-converter" },
+      ]
+    },
+    {
+      title: "Dev & Text Tools",
+      icon: Code2,
+      links: [
+        { label: "Text Utilities", href: "/text" },
+        { label: "Password Generator", href: "/password-generator", badge: "Secure" },
+        { label: "Password Age Checker", href: "/tools/password-tools/password-age-checker" },
+        { label: "JSON Formatter", href: "/tools/checkers/json-formatter" },
+        { label: "Markdown to HTML", href: "/tools/converters/markdown-html-converter" },
+        { label: "SVG Converter", href: "/tools/converters/svg-converter" },
+      ]
+    },
+    {
+      title: "Math & Checkers",
+      icon: Binary,
+      links: [
+        { label: "Age Calculator", href: "/tools/calculator/age-calculator" },
+        { label: "BMI Calculator", href: "/tools/calculator/bmi-calculator" },
+        { label: "Decimal to Binary", href: "/tools/calculator/decimal-binary-calculator" },
+        { label: "Prime Checker", href: "/tools/checkers/prime-checker" },
+        { label: "Palindrome Checker", href: "/tools/checkers/palindrome-checker" },
+        { label: "Factorial Calculator", href: "/tools/calculator/factorial-calculator" },
+      ]
+    },
+    {
+      title: "Project & Legal",
+      icon: Lock,
+      links: [
+        { label: "About AnantAstra", href: "/about" },
+        { label: "All 24+ Utilities", href: "/tools" },
+        { label: "Blog & Guides (25 Posts)", href: "/blog" },
+        { label: "LLM Context (llms.txt)", href: "/llms.txt" },
+        { label: "Privacy Commitment", href: "/privacy" },
+        { label: "GitHub Repository", href: "https://github.com/Uniquearjav/anantastra", external: true },
+      ]
+    }
+  ];
+
   return (
-    <footer className="bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 border-t border-gray-200 dark:border-gray-800">
-      <div className="container mx-auto px-4 sm:px-6 py-12">
-        {/* Top section with logo, description, and newsletter */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-4 group">
-              <div className="relative w-8 h-8 transition-transform group-hover:scale-110">
-                <svg viewBox="0 0 24 24" className="w-8 h-8 text-blue-600 dark:text-blue-400">
-                  <path
-                    fill="currentColor"
-                    d="M12,1A11,11,0,0,0,1,12,11,11,0,0,0,12,23,11,11,0,0,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M19.73,12A7.73,7.73,0,1,1,12,4.27,7.73,7.73,0,0,1,19.73,12Z"
-                  />
-                </svg>
-              </div>
-              <span className="font-bold text-xl text-gray-900 dark:text-white">Anantastra</span>
-            </Link>
-            <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md">
-              Infinite Tools - Open-source utilities that respect your privacy.
-              We don't collect or store any of your data.
-            </p>
-          </div>
-          
-          {/* Links sections */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Tools
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/interest-calculator" className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-colors">
-                  Interest Calculator
-                </Link>
-              </li>
-              <li>
-                <Link href="/text" className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-colors">
-                  Text Tools
-                </Link>
-              </li>
-              <li>
-                <Link href="/tools" className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-colors">
-                  All Tools
-                </Link>
-              </li>
-              <li>
-                <Link href="/password-generator" className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-colors">
-                  Password Generator
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              About
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/about" className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="https://github.com/Uniquearjav/anantastra" target="_blank" className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-colors flex items-center">
-                  GitHub
-                  <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                  </svg>
-                </Link>
-              </li>
-            </ul>
+    <footer className="w-full border-t border-border/60 bg-card text-card-foreground">
+      {/* Top Banner: Status & Quick Feedback */}
+      <div className="border-b border-border/50 bg-muted/20">
+        <div className="container mx-auto px-4 sm:px-6 py-3.5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            {/* Live Operational Status */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-2.5 text-xs text-muted-foreground">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="font-semibold text-foreground">100% Client-Side Engine</span>
+              <span className="text-muted-foreground/40">•</span>
+              <span>Zero server latency</span>
+              <span className="text-muted-foreground/40">•</span>
+              <span>No telemetry collected</span>
+            </div>
+
+            {/* Quick Suggestion Box: Integrated Shadcn Input Group */}
+            <form onSubmit={handleFeedbackSubmit} className="relative flex items-center w-full sm:w-72">
+              <Input
+                type="text"
+                placeholder="Suggest a tool or feature..."
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="h-8.5 pl-3 pr-20 text-xs rounded-lg border-border/80 bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-ring"
+              />
+              <Button 
+                type="submit" 
+                size="sm" 
+                variant="secondary"
+                className="absolute right-1 top-1 bottom-1 h-auto px-2.5 rounded-md text-[11px] font-medium gap-1 shrink-0 border border-border/60 hover:bg-accent text-foreground transition-colors"
+              >
+                {submitted ? (
+                  <>
+                    <Check className="h-3 w-3 text-emerald-500" />
+                    <span className="text-emerald-500 font-semibold">Sent!</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-3 w-3 text-muted-foreground" />
+                    <span>Suggest</span>
+                  </>
+                )}
+              </Button>
+            </form>
           </div>
         </div>
-        
-        {/* Bottom section with copyright and social links */}
-        <div className="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              &copy; {currentYear} Anantastra. All rights reserved.
+      </div>
+
+      {/* Main Directory Links Grid */}
+      <div className="container mx-auto px-4 sm:px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          {/* Brand Info (4 cols) */}
+          <div className="md:col-span-4 space-y-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs transition-transform group-hover:scale-105">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-lg tracking-tight text-foreground">
+                  Anantastra
+                </span>
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                  v2.0
+                </span>
+              </div>
+            </Link>
+
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm">
+              An open-source, privacy-first instrument collection designed to run calculations directly inside your browser. No trackers, no data collection, pure speed.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="https://github.com/Uniquearjav/anantastra" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                <span className="sr-only">GitHub</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path>
-                </svg>
+
+            {/* Trust Pills */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border border-border/70 bg-muted/30 text-foreground">
+                <ShieldCheck className="h-3 w-3 text-emerald-500" />
+                Zero Tracking
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border border-border/70 bg-muted/30 text-foreground">
+                <Zap className="h-3 w-3 text-amber-500" />
+                No Cookies
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border border-border/70 bg-muted/30 text-foreground">
+                <Code2 className="h-3 w-3 text-primary" />
+                MIT License
+              </span>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-2 pt-2">
+              <a
+                href="https://github.com/Uniquearjav/anantastra"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Repository"
+                className="p-2 rounded-full border border-border/70 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+              >
+                <Github className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Arjav Choudhary LinkedIn"
+                className="p-2 rounded-full border border-border/70 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+              >
+                <Linkedin className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.unnatvega.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Unnat Vega Official Website"
+                className="p-2 rounded-full border border-border/70 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+              >
+                <Globe className="h-4 w-4" />
               </a>
             </div>
           </div>
-          <div className="mt-4 text-center sm:text-left text-xs text-gray-500 dark:text-gray-500">
-            Designed with ❤️ by Arjav Choudhary & {" "}
-            <a 
-              href="https://www.unnatvega.in" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-            >
-              Unnat Vega
-            </a>
+
+          {/* 4 Tool Category Columns (8 cols) */}
+          <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {toolCategories.map((col, idx) => {
+              const Icon = col.icon;
+              return (
+                <div key={idx} className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                    <Icon className="h-3.5 w-3.5 text-primary" />
+                    <span>{col.title}</span>
+                  </h3>
+                  <ul className="space-y-2 text-xs">
+                    {col.links.map((link, lIdx) => (
+                      <li key={lIdx}>
+                        {link.external ? (
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <span>{link.label}</span>
+                            <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                          </a>
+                        ) : (
+                          <Link
+                            href={link.href}
+                            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group"
+                          >
+                            <span className="group-hover:translate-x-0.5 transition-transform">
+                              {link.label}
+                            </span>
+                            {link.badge && (
+                              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                                {link.badge}
+                              </span>
+                            )}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Bottom Bar: Copyright, Credits & Back-to-Top */}
+        <div className="mt-12 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
+            <p>© {currentYear} Anantastra. Released under the MIT License.</p>
+            <span className="hidden sm:inline">•</span>
+            <div className="flex items-center gap-1">
+              <span>Created with care by</span>
+              <a
+                href="https://github.com/Uniquearjav"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+              >
+                Arjav Choudhary
+              </a>
+              <span>&</span>
+              <a
+                href="https://www.unnatvega.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+              >
+                Unnat Vega
+              </a>
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={scrollToTop}
+            className="h-8 px-3 rounded-full text-xs gap-1.5 border border-border/60 hover:bg-accent text-muted-foreground hover:text-foreground"
+          >
+            <ArrowUp className="h-3.5 w-3.5" />
+            <span>Back to top</span>
+          </Button>
         </div>
       </div>
     </footer>

@@ -1,269 +1,413 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState, useEffect, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { 
+  ArrowLeftRight, 
+  Coins, 
+  RefreshCw, 
+  Copy, 
+  Check, 
+  TrendingUp, 
+  Globe2, 
+  ShieldCheck, 
+  Info 
+} from 'lucide-react';
+
+// Default baseline rates relative to 1 USD
+const DEFAULT_RATES = {
+  USD: { name: 'US Dollar', symbol: '$', rate: 1, flag: '🇺🇸' },
+  EUR: { name: 'Euro', symbol: '€', rate: 0.92, flag: '🇪🇺' },
+  INR: { name: 'Indian Rupee', symbol: '₹', rate: 86.85, flag: '🇮🇳' },
+  GBP: { name: 'British Pound', symbol: '£', rate: 0.79, flag: '🇬🇧' },
+  JPY: { name: 'Japanese Yen', symbol: '¥', rate: 153.4, flag: '🇯🇵' },
+  CAD: { name: 'Canadian Dollar', symbol: 'C$', rate: 1.38, flag: '🇨🇦' },
+  AUD: { name: 'Australian Dollar', symbol: 'A$', rate: 1.54, flag: '🇦🇺' },
+  CHF: { name: 'Swiss Franc', symbol: 'CHF', rate: 0.89, flag: '🇨🇭' },
+  SGD: { name: 'Singapore Dollar', symbol: 'S$', rate: 1.33, flag: '🇸🇬' },
+  AED: { name: 'UAE Dirham', symbol: 'د.إ', rate: 3.67, flag: '🇦🇪' },
+  CNY: { name: 'Chinese Yuan', symbol: '¥', rate: 7.23, flag: '🇨🇳' },
+  BRL: { name: 'Brazilian Real', symbol: 'R$', rate: 5.80, flag: '🇧🇷' },
+  SAR: { name: 'Saudi Riyal', symbol: '﷼', rate: 3.75, flag: '🇸🇦' },
+  NZD: { name: 'New Zealand Dollar', symbol: 'NZ$', rate: 1.68, flag: '🇳🇿' },
+  KRW: { name: 'South Korean Won', symbol: '₩', rate: 1410.0, flag: '🇰🇷' },
+  RUB: { name: 'Russian Ruble', symbol: '₽', rate: 96.50, flag: '🇷🇺' }
+};
 
 export default function CurrencyConverter() {
-  const [amount, setAmount] = useState("1");
-  const [fromCurrency, setFromCurrency] = useState("USD");
-  const [toCurrency, setToCurrency] = useState("EUR");
-  const [result, setResult] = useState(null);
-  const [exchangeRates, setExchangeRates] = useState({});
-  const [lastUpdated, setLastUpdated] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [amount, setAmount] = useState('100');
+  const [fromCurr, setFromCurr] = useState('USD');
+  const [toCurr, setToCurr] = useState('INR');
+  const [rates, setRates] = useState(DEFAULT_RATES);
+  const [isLive, setIsLive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState('Standard Mid-Market Baseline');
+  const [copied, setCopied] = useState(false);
 
-  // Popular currencies list
-  const currencies = {
-    USD: { name: "US Dollar", symbol: "$" },
-    EUR: { name: "Euro", symbol: "€" },
-    GBP: { name: "British Pound", symbol: "£" },
-    JPY: { name: "Japanese Yen", symbol: "¥" },
-    AUD: { name: "Australian Dollar", symbol: "A$" },
-    CAD: { name: "Canadian Dollar", symbol: "C$" },
-    CHF: { name: "Swiss Franc", symbol: "Fr" },
-    CNY: { name: "Chinese Yuan", symbol: "¥" },
-    INR: { name: "Indian Rupee", symbol: "₹" },
-    MXN: { name: "Mexican Peso", symbol: "$" },
-    SGD: { name: "Singapore Dollar", symbol: "S$" },
-    NZD: { name: "New Zealand Dollar", symbol: "NZ$" },
-    BRL: { name: "Brazilian Real", symbol: "R$" },
-    RUB: { name: "Russian Ruble", symbol: "₽" },
-    ZAR: { name: "South African Rand", symbol: "R" },
+  // Fetch live exchange rates on mount
+  const fetchLiveRates = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('https://open.er-api.com/v6/latest/USD');
+      if (!res.ok) throw new Error('Network error');
+      const data = await res.json();
+      if (data && data.rates) {
+        setRates(prev => {
+          const updated = { ...prev };
+          Object.keys(updated).forEach(code => {
+            if (data.rates[code]) {
+              updated[code] = { ...updated[code], rate: data.rates[code] };
+            }
+          });
+          return updated;
+        });
+        setIsLive(true);
+        setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      }
+    } catch (e) {
+      // Gracefully retain baseline rates
+      setIsLive(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // We'll use fixed exchange rates for demo purposes
-  // In a production app, you would fetch live rates from an API
   useEffect(() => {
-    // Demo exchange rates (as of a recent date)
-    const demoRates = {
-      USD: 1,
-      EUR: 0.92,
-      GBP: 0.78,
-      JPY: 150.25,
-      AUD: 1.51,
-      CAD: 1.36,
-      CHF: 0.90,
-      CNY: 7.24,
-      INR: 83.18,
-      MXN: 16.73,
-      SGD: 1.34,
-      NZD: 1.64,
-      BRL: 5.06,
-      RUB: 89.50,
-      ZAR: 18.36
-    };
-
-    setExchangeRates(demoRates);
-    setLastUpdated(new Date());
-    setLoading(false);
-
-    // Sample function to fetch real rates (commented out)
-    // In a real app, you would use an API like this:
-    // 
-    // const fetchRates = async () => {
-    //   try {
-    //     setLoading(true);
-    //     const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-    //     const data = await response.json();
-    //     setExchangeRates({ USD: 1, ...data.rates });
-    //     setLastUpdated(new Date(data.time_last_updated * 1000));
-    //     setLoading(false);
-    //   } catch (err) {
-    //     setError("Failed to fetch exchange rates. Using demo data.");
-    //     setLoading(false);
-    //   }
-    // };
-    // 
-    // fetchRates();
-    
-    // Initial conversion
-    handleConvert();
+    fetchLiveRates();
   }, []);
 
-  const handleConvert = () => {
-    if (!amount || isNaN(parseFloat(amount)) || !fromCurrency || !toCurrency) {
-      return;
-    }
+  const numAmount = parseFloat(amount);
+  const isValidAmount = !isNaN(numAmount) && numAmount >= 0;
 
-    const amountValue = parseFloat(amount);
-    
-    // Convert to USD first (base currency), then to target currency
-    const valueInUSD = amountValue / exchangeRates[fromCurrency];
-    const convertedValue = valueInUSD * exchangeRates[toCurrency];
-    
-    setResult({
-      fromAmount: amountValue,
-      fromCurrency,
-      toAmount: convertedValue,
-      toCurrency,
-      rate: exchangeRates[toCurrency] / exchangeRates[fromCurrency]
-    });
+  // Compute exchange
+  const conversion = useMemo(() => {
+    if (!isValidAmount || !rates[fromCurr] || !rates[toCurr]) return null;
+
+    const fromRateToUSD = rates[fromCurr].rate;
+    const toRateToUSD = rates[toCurr].rate;
+
+    // Direct exchange rate: 1 From = X To
+    const exchangeRate = toRateToUSD / fromRateToUSD;
+    const inverseRate = fromRateToUSD / toRateToUSD;
+    const convertedAmount = numAmount * exchangeRate;
+
+    return {
+      convertedAmount,
+      exchangeRate,
+      inverseRate
+    };
+  }, [numAmount, fromCurr, toCurr, rates, isValidAmount]);
+
+  const handleSwap = () => {
+    setFromCurr(toCurr);
+    setToCurr(fromCurr);
   };
 
-  const handleSwapCurrencies = () => {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
-    // Trigger conversion after state update
-    setTimeout(() => handleConvert(), 0);
+  const handleCopy = () => {
+    if (!conversion) return;
+    const text = `${amount} ${fromCurr} = ${conversion.convertedAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${toCurr} (1 ${fromCurr} = ${conversion.exchangeRate.toFixed(4)} ${toCurr})`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  useEffect(() => {
-    if (amount && !isNaN(parseFloat(amount)) && fromCurrency && toCurrency) {
-      handleConvert();
-    }
-  }, [fromCurrency, toCurrency, amount]);
+  const popularPairs = [
+    { from: 'USD', to: 'INR' },
+    { from: 'EUR', to: 'USD' },
+    { from: 'GBP', to: 'USD' },
+    { from: 'USD', to: 'AED' },
+    { from: 'USD', to: 'CAD' },
+    { from: 'USD', to: 'JPY' },
+    { from: 'EUR', to: 'GBP' },
+    { from: 'USD', to: 'SAR' },
+  ];
 
-  if (loading) {
-    return (
-      <div className="container mx-auto py-10 px-4 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Currency Converter</h1>
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-        </div>
-      </div>
-    );
-  }
+  const amountPresets = [10, 50, 100, 500, 1000, 5000];
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Currency Converter</h1>
-      
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg">
-          {error}
-        </div>
-      )}
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <label className="block text-sm font-medium" htmlFor="amount">
-              Amount
-            </label>
+    <div className="container mx-auto py-8 px-4 sm:px-6 max-w-5xl">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <Badge variant="outline" className="mb-3 px-3 py-1 font-mono text-xs border-primary/30">
+          <Coins className="w-3.5 h-3.5 mr-1.5 text-primary" />
+          Real-Time Forex Calculator
+        </Badge>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          Currency Converter
+        </h1>
+        <p className="text-muted-foreground text-sm mt-1 max-w-xl mx-auto">
+          Convert world currencies with live interbank exchange rates, instant multi-currency matrix, and zero hidden markups.
+        </p>
+      </div>
+
+      {/* Popular Pair Chips */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <span className="text-xs font-medium text-muted-foreground mr-1">Popular Pairs:</span>
+        {popularPairs.map((pair, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => {
+              setFromCurr(pair.from);
+              setToCurr(pair.to);
+            }}
+            className={`text-xs px-2.5 py-1 rounded-md border font-mono transition-colors ${
+              fromCurr === pair.from && toCurr === pair.to
+                ? 'bg-primary text-primary-foreground border-primary font-bold'
+                : 'bg-muted/40 hover:bg-muted border-border/60 text-foreground'
+            }`}
+          >
+            {pair.from} / {pair.to}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Converter Card */}
+        <div className="lg:col-span-7 space-y-6">
+          <Card className="p-6 border-border/60 shadow-xs">
+            <div className="flex items-center justify-between mb-4">
+              <label htmlFor="curr-amount" className="text-sm font-semibold text-foreground">
+                Amount to Convert
+              </label>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
+                <span className={`w-2 h-2 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                <span>{isLive ? `Live (${lastUpdated})` : 'Mid-Market Baseline'}</span>
+                <button
+                  type="button"
+                  onClick={fetchLiveRates}
+                  disabled={loading}
+                  title="Refresh Rates"
+                  className="p-1 hover:text-foreground transition-colors ml-1"
+                >
+                  <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+            </div>
+
             <Input
-              id="amount"
+              id="curr-amount"
               type="number"
+              min="0"
+              step="any"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full"
-              min="0"
-              step="0.01"
+              placeholder="100.00"
+              className="font-mono text-xl py-6"
             />
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div className="w-5/12">
-                <label className="block text-sm font-medium mb-1" htmlFor="fromCurrency">
+
+            {/* Amount Presets */}
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {amountPresets.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setAmount(p.toString())}
+                  className={`text-xs px-2.5 py-1 rounded-md border font-mono transition-colors ${
+                    amount === p.toString()
+                      ? 'bg-primary text-primary-foreground border-primary font-semibold'
+                      : 'bg-muted/30 hover:bg-muted border-border/60 text-foreground'
+                  }`}
+                >
+                  {rates[fromCurr]?.symbol}{p.toLocaleString()}
+                </button>
+              ))}
+            </div>
+
+            {/* Currency Selectors & Swap */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-11 gap-3 items-center">
+              {/* From Currency */}
+              <div className="sm:col-span-5 space-y-1.5">
+                <label htmlFor="from-curr-select" className="text-xs font-medium text-muted-foreground">
                   From
                 </label>
                 <select
-                  id="fromCurrency"
-                  value={fromCurrency}
-                  onChange={(e) => setFromCurrency(e.target.value)}
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                  id="from-curr-select"
+                  value={fromCurr}
+                  onChange={(e) => setFromCurr(e.target.value)}
+                  className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  {Object.keys(currencies).map(code => (
+                  {Object.entries(rates).map(([code, item]) => (
                     <option key={code} value={code}>
-                      {code} - {currencies[code].name}
+                      {item.flag} {code} - {item.name} ({item.symbol})
                     </option>
                   ))}
                 </select>
               </div>
-              
-              <div className="flex items-center justify-center">
+
+              {/* Swap Button */}
+              <div className="sm:col-span-1 flex justify-center pt-5">
                 <Button
-                  onClick={handleSwapCurrencies}
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  className="rounded-full"
+                  onClick={handleSwap}
+                  className="rounded-full h-10 w-10 shrink-0"
+                  title="Swap Currencies"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transform rotate-90">
-                    <path d="M17 1l4 4-4 4"></path>
-                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                    <path d="M7 23l-4-4 4-4"></path>
-                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                  </svg>
+                  <ArrowLeftRight className="w-4 h-4" />
                 </Button>
               </div>
-              
-              <div className="w-5/12">
-                <label className="block text-sm font-medium mb-1" htmlFor="toCurrency">
+
+              {/* To Currency */}
+              <div className="sm:col-span-5 space-y-1.5">
+                <label htmlFor="to-curr-select" className="text-xs font-medium text-muted-foreground">
                   To
                 </label>
                 <select
-                  id="toCurrency"
-                  value={toCurrency}
-                  onChange={(e) => setToCurrency(e.target.value)}
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                  id="to-curr-select"
+                  value={toCurr}
+                  onChange={(e) => setToCurr(e.target.value)}
+                  className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  {Object.keys(currencies).map(code => (
+                  {Object.entries(rates).map(([code, item]) => (
                     <option key={code} value={code}>
-                      {code} - {currencies[code].name}
+                      {item.flag} {code} - {item.name} ({item.symbol})
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-          </div>
-        </div>
-        
-        <div className="mt-8">
-          <Button onClick={handleConvert} className="w-full">
-            Convert
-          </Button>
-        </div>
-        
-        {result && (
-          <div className="mt-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-            <div className="text-center">
-              <div className="text-lg mb-2">
-                <span className="font-semibold">{result.fromAmount.toLocaleString()} {result.fromCurrency}</span>
-                {" "} = {" "}
-                <span className="font-bold text-xl">{result.toAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.toCurrency}</span>
+
+            {/* Rate Banner */}
+            {conversion && (
+              <div className="mt-6 p-4 rounded-xl border border-border/60 bg-muted/30 flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-xs">
+                <div>
+                  <span className="text-muted-foreground">Exchange Rate: </span>
+                  <span className="font-mono font-bold text-foreground">
+                    1 {fromCurr} = {conversion.exchangeRate.toFixed(4)} {toCurr}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Inverse: </span>
+                  <span className="font-mono font-medium text-foreground">
+                    1 {toCurr} = {conversion.inverseRate.toFixed(4)} {fromCurr}
+                  </span>
+                </div>
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                1 {result.fromCurrency} = {result.rate.toFixed(4)} {result.toCurrency}
-              </div>
+            )}
+
+            {/* Action buttons */}
+            <div className="mt-5 flex gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopy}
+                disabled={!conversion}
+                className="text-xs"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 mr-1 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 mr-1" />}
+                {copied ? 'Copied Details' : 'Copy Conversion'}
+              </Button>
             </div>
+          </Card>
+        </div>
+
+        {/* Right Output & Multi-Currency Matrix */}
+        <div className="lg:col-span-5 space-y-6">
+          <Card className="p-6 border-border/60 shadow-xs">
+            <h2 className="text-base font-bold text-foreground mb-4">
+              Conversion Result
+            </h2>
+
+            {conversion ? (
+              <div className="space-y-4">
+                {/* Large Result Box */}
+                <div className="p-5 rounded-2xl border border-border/70 bg-card">
+                  <div className="text-xs text-muted-foreground font-mono">
+                    {rates[fromCurr]?.flag} {Number(amount).toLocaleString()} {fromCurr} =
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-primary font-mono tracking-tight mt-1.5 break-all">
+                    {rates[toCurr]?.symbol}{conversion.convertedAmount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 4
+                    })}
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-2 font-medium">
+                    {toCurr} • {rates[toCurr]?.name}
+                  </div>
+                </div>
+
+                {/* Multi-Currency Matrix */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center justify-between text-xs font-semibold text-foreground mb-2">
+                    <span className="flex items-center gap-1.5">
+                      <Globe2 className="w-3.5 h-3.5 text-primary" />
+                      Live World Currency Matrix
+                    </span>
+                    <span className="text-muted-foreground font-mono">{rates[fromCurr]?.symbol}{amount}</span>
+                  </div>
+
+                  <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                    {Object.entries(rates)
+                      .filter(([code]) => code !== fromCurr)
+                      .slice(0, 8)
+                      .map(([code, item]) => {
+                        const targetAmt = (numAmount / rates[fromCurr].rate) * item.rate;
+                        return (
+                          <div
+                            key={code}
+                            onClick={() => setToCurr(code)}
+                            className="flex items-center justify-between p-2 rounded-lg border border-border/40 hover:bg-muted/30 cursor-pointer transition-colors text-xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-base leading-none">{item.flag}</span>
+                              <span className="font-mono font-semibold text-foreground">{code}</span>
+                              <span className="text-muted-foreground truncate max-w-[100px]">{item.name}</span>
+                            </div>
+                            <span className="font-mono font-bold text-foreground">
+                              {item.symbol}{targetAmt.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-muted-foreground text-sm border border-dashed border-border/60 rounded-xl">
+                Please enter a valid numeric amount.
+              </div>
+            )}
+          </Card>
+
+          {/* Guarantee */}
+          <div className="p-4 rounded-xl border border-border/60 bg-card/60 text-xs text-muted-foreground flex items-center gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>Pure mid-market exchange rates without markup spreads or hidden bank fees.</span>
           </div>
-        )}
-        
-        {lastUpdated && (
-          <div className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
-            <p>
-              Note: Using demo exchange rates for educational purposes.
-            </p>
-            <p>
-              Last updated: {lastUpdated.toLocaleString()}
-            </p>
-          </div>
-        )}
-      </div>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">About Currency Conversion</h2>
-        <p className="mb-4">
-          Currency conversion is the process of changing one currency into another at a specific exchange rate.
-          Exchange rates fluctuate based on market forces, central bank policies, economic indicators, and geopolitical events.
-        </p>
-        
-        <h3 className="text-lg font-semibold mb-2">Exchange Rate Basics:</h3>
-        <ul className="list-disc list-inside space-y-1 mb-4">
-          <li>Exchange rates represent the value of one currency in terms of another</li>
-          <li>Rates are influenced by inflation, interest rates, political stability, and economic performance</li>
-          <li>Most currencies use a floating exchange rate system, allowing values to fluctuate with the market</li>
-        </ul>
-        
-        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-lg">
-          <p>
-            <strong>Note:</strong> This converter uses fixed demo exchange rates for educational purposes.
-            In real-world applications, live exchange rates should be obtained from financial data providers or banks.
-          </p>
         </div>
       </div>
+
+      {/* Forex Info Guide */}
+      <Card className="mt-8 p-6 border-border/60 shadow-xs">
+        <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+          <Info className="w-5 h-5 text-primary" />
+          Understanding Real-Time Foreign Exchange
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Mid-Market Rate</h3>
+            <p className="text-xs text-muted-foreground">
+              The midpoint between the global buy (bid) and sell (ask) prices on wholesale currency markets.
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Bank Spread & Markups</h3>
+            <p className="text-xs text-muted-foreground">
+              Retail banks and money transfer services typically add hidden markups of 2% to 4% above the mid-market rate.
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Direct vs Indirect Quotes</h3>
+            <p className="text-xs text-muted-foreground">
+              A direct quote expresses how much foreign currency 1 unit of local currency buys (or vice-versa).
+            </p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

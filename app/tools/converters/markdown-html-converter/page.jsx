@@ -1,320 +1,482 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  FileCode, 
+  Eye, 
+  Code2, 
+  Copy, 
+  Check, 
+  Download, 
+  RotateCcw, 
+  FileText, 
+  Bold, 
+  Italic, 
+  Strikethrough, 
+  Heading1, 
+  Heading2, 
+  List, 
+  ListOrdered, 
+  Quote, 
+  Table, 
+  Link2, 
+  ShieldCheck, 
+  Info 
+} from 'lucide-react';
 
-export default function MarkdownHTMLConverter() {
-  const [markdownInput, setMarkdownInput] = useState("");
-  const [htmlOutput, setHtmlOutput] = useState("");
-  const [previewMode, setPreviewMode] = useState("preview"); // preview, raw
-  const [copied, setCopied] = useState(false);
+const SAMPLE_MARKDOWN = `# Modern Markdown Document
 
-  useEffect(() => {
-    if (markdownInput) {
-      convertMarkdownToHtml();
-    }
-  }, [markdownInput]);
-
-  const convertMarkdownToHtml = () => {
-    // Basic markdown to HTML conversion
-    let html = markdownInput;
-
-    // Convert headers
-    html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
-    html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-    html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-    html = html.replace(/^#### (.*$)/gm, '<h4>$1</h4>');
-    html = html.replace(/^##### (.*$)/gm, '<h5>$1</h5>');
-    html = html.replace(/^###### (.*$)/gm, '<h6>$1</h6>');
-
-    // Convert blockquotes
-    html = html.replace(/^\> (.*$)/gm, '<blockquote>$1</blockquote>');
-
-    // Convert bold and italic
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    html = html.replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>');
-    html = html.replace(/\_(.*?)\_/g, '<em>$1</em>');
-
-    // Convert code blocks
-    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-    
-    // Convert inline code
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-    // Convert links
-    html = html.replace(/\[([^\[]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-    // Convert images
-    html = html.replace(/!\[([^\[]+)\]\(([^\)]+)\)/g, '<img src="$2" alt="$1" />');
-
-    // Convert unordered lists
-    let inList = false;
-    let listLines = html.split('\n').map(line => {
-      if (line.match(/^- (.+)/)) {
-        const content = line.replace(/^- (.+)/, '$1');
-        if (!inList) {
-          inList = true;
-          return `<ul>\n<li>${content}</li>`;
-        }
-        return `<li>${content}</li>`;
-      } else if (inList) {
-        inList = false;
-        return `</ul>\n${line}`;
-      } else {
-        return line;
-      }
-    });
-    if (inList) {
-      listLines.push('</ul>');
-    }
-    html = listLines.join('\n');
-    
-    // Convert ordered lists
-    inList = false;
-    listLines = html.split('\n').map(line => {
-      if (line.match(/^\d+\. (.+)/)) {
-        const content = line.replace(/^\d+\. (.+)/, '$1');
-        if (!inList) {
-          inList = true;
-          return `<ol>\n<li>${content}</li>`;
-        }
-        return `<li>${content}</li>`;
-      } else if (inList) {
-        inList = false;
-        return `</ol>\n${line}`;
-      } else {
-        return line;
-      }
-    });
-    if (inList) {
-      listLines.push('</ol>');
-    }
-    html = listLines.join('\n');
-
-    // Convert horizontal rules
-    html = html.replace(/^---$/gm, '<hr />');
-    
-    // Convert paragraphs
-    // We need to be careful not to convert lines that already have HTML tags
-    const paragraphs = html.split('\n\n');
-    html = paragraphs
-      .map(paragraph => {
-        // Skip if this is already HTML content
-        if (paragraph.trim().startsWith('<')) return paragraph;
-        
-        // Skip empty lines
-        if (!paragraph.trim()) return '';
-        
-        // Wrap in paragraph tags
-        return `<p>${paragraph}</p>`;
-      })
-      .join('\n\n');
-
-    setHtmlOutput(html);
-  };
-
-  const copyHtmlToClipboard = () => {
-    if (htmlOutput) {
-      navigator.clipboard.writeText(htmlOutput);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const handleExampleClick = () => {
-    const example = `# Markdown Example
-
-## Headers
-
-### This is an H3
-
-#### This is an H4
-
-## Formatting
-
-**Bold text** and *italic text*
-
-__Also bold__ and _also italic_
-
-## Lists
-
-### Unordered List
-- Item 1
-- Item 2
-- Item 3
-
-### Ordered List
-1. First item
-2. Second item
-3. Third item
-
-## Links and Images
-
-[Visit GitHub](https://github.com)
-
-![Markdown Logo](https://markdown-here.com/img/icon256.png)
-
-## Blockquotes
-
-> This is a blockquote
-
-## Code
-
-Inline \`code\` example
-
-\`\`\`
-function helloWorld() {
-  console.log("Hello, world!");
-}
-\`\`\`
-
-## Horizontal Rule
+Welcome to the **AnantAstra Markdown to HTML Converter**. This tool converts standard and extended markdown into clean, semantic HTML in real-time.
 
 ---
 
-That's it!`;
+## Typography & Inline Styling
 
-    setMarkdownInput(example);
+You can format text with **bold emphasis**, *italics*, or ~~strikethrough text~~.
+You can also highlight \`inline code tokens\` or embed [external hyperlinks](https://github.com).
+
+## Blockquotes & Insights
+
+> "Simplicity is prerequisite for reliability."
+> — Edsger W. Dijkstra
+
+## Code Blocks
+
+\`\`\`javascript
+function calculateFactorial(n) {
+  if (n <= 1) return 1n;
+  return BigInt(n) * calculateFactorial(n - 1);
+}
+\`\`\`
+
+## Lists & Tables
+
+### Feature List
+- 100% Client-side conversion
+- Instant live preview
+- Raw semantic HTML export
+- Zero external tracking
+
+### Comparison Table
+| Feature | Traditional | AnantAstra |
+| :--- | :--- | :--- |
+| Privacy | Server-stored | 100% Local Browser |
+| Performance | Roundtrip API | Instant 0ms Latency |
+| Design | Gradients | Clean Minimalist |
+`;
+
+// Robust pure client-side Markdown to HTML converter
+function parseMarkdownToHTML(md) {
+  if (!md) return '';
+
+  let html = md;
+
+  // Escape HTML tags to prevent XSS injection in raw inputs
+  html = html
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Fenced Code Blocks: ```lang ... ```
+  html = html.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    return `<pre class="p-4 rounded-xl bg-muted/70 font-mono text-xs overflow-x-auto my-4 border border-border/60"><code>${code.trim()}</code></pre>`;
+  });
+
+  // Inline Code: `code`
+  html = html.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-muted/60 font-mono text-xs text-primary">$1</code>');
+
+  // Headings
+  html = html.replace(/^######\s+(.*$)/gim, '<h6 class="text-sm font-bold mt-4 mb-1 text-foreground">$1</h6>');
+  html = html.replace(/^#####\s+(.*$)/gim, '<h5 class="text-base font-bold mt-4 mb-1.5 text-foreground">$1</h5>');
+  html = html.replace(/^####\s+(.*$)/gim, '<h4 class="text-lg font-bold mt-5 mb-2 text-foreground">$1</h4>');
+  html = html.replace(/^###\s+(.*$)/gim, '<h3 class="text-xl font-bold mt-6 mb-2 text-foreground">$1</h3>');
+  html = html.replace(/^##\s+(.*$)/gim, '<h2 class="text-2xl font-bold mt-6 mb-3 text-foreground pb-1 border-b border-border/40">$1</h2>');
+  html = html.replace(/^#\s+(.*$)/gim, '<h1 class="text-3xl font-extrabold mt-6 mb-4 text-foreground pb-2 border-b border-border/60">$1</h1>');
+
+  // Horizontal rules
+  html = html.replace(/^---+$/gim, '<hr class="my-6 border-border/60" />');
+
+  // Blockquotes
+  html = html.replace(/^\&gt;\s+(.*$)/gim, '<blockquote class="border-l-4 border-primary pl-4 py-1 italic my-3 text-muted-foreground bg-muted/20 rounded-r-lg">$1</blockquote>');
+
+  // Bold & Italic & Strike
+  html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  html = html.replace(/~~(.*?)~~/g, '<del class="opacity-75">$1</del>');
+
+  // Images
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-xl border border-border/60 max-w-full my-4" />');
+
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary underline font-medium hover:opacity-80">$1</a>');
+
+  // Tables
+  html = html.replace(/((?:\|[^\n]+\|\r?\n)+)/g, (match) => {
+    const rows = match.trim().split('\n').map(r => r.trim());
+    if (rows.length < 2) return match;
+
+    let tableHtml = '<div class="overflow-x-auto my-4 rounded-xl border border-border/60"><table class="w-full text-xs text-left">';
+    const headerCols = rows[0].split('|').filter((c, i, a) => i > 0 && i < a.length - 1);
+    tableHtml += '<thead><tr class="bg-muted/50 border-b border-border/60">';
+    headerCols.forEach(col => {
+      tableHtml += `<th class="p-2.5 font-bold text-foreground">${col.trim()}</th>`;
+    });
+    tableHtml += '</tr></thead><tbody>';
+
+    for (let r = 2; r < rows.length; r++) {
+      const cols = rows[r].split('|').filter((c, i, a) => i > 0 && i < a.length - 1);
+      tableHtml += '<tr class="border-b border-border/40 hover:bg-muted/20">';
+      cols.forEach(col => {
+        tableHtml += `<td class="p-2.5 text-muted-foreground">${col.trim()}</td>`;
+      });
+      tableHtml += '</tr>';
+    }
+    tableHtml += '</tbody></table></div>';
+    return tableHtml;
+  });
+
+  // Task lists
+  html = html.replace(/^-\s+\[ \]\s+(.*$)/gim, '<li class="flex items-center gap-2 list-none my-1"><input type="checkbox" disabled class="rounded" /> <span>$1</span></li>');
+  html = html.replace(/^-\s+\[x\]\s+(.*$)/gim, '<li class="flex items-center gap-2 list-none my-1"><input type="checkbox" checked disabled class="rounded text-primary" /> <span class="line-through opacity-80">$1</span></li>');
+
+  // Unordered Lists
+  html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-4 list-disc text-foreground/90 my-0.5">$1</li>');
+
+  // Paragraphs (lines that aren't already wrapped in tags)
+  const lines = html.split('\n');
+  const processed = lines.map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('<h') || 
+        trimmed.startsWith('<pre') || 
+        trimmed.startsWith('<hr') || 
+        trimmed.startsWith('<block') || 
+        trimmed.startsWith('<li') || 
+        trimmed.startsWith('<div') || 
+        trimmed.startsWith('<table')) {
+      return line;
+    }
+    return `<p class="my-2 leading-relaxed text-foreground/90 text-sm">${trimmed}</p>`;
+  });
+
+  return processed.join('\n');
+}
+
+export default function MarkdownHTMLConverter() {
+  const [markdown, setMarkdown] = useState(SAMPLE_MARKDOWN);
+  const [viewMode, setViewMode] = useState('preview'); // 'preview' | 'raw'
+  const [copied, setCopied] = useState(false);
+
+  // Compute parsed HTML
+  const parsedHTML = useMemo(() => {
+    return parseMarkdownToHTML(markdown);
+  }, [markdown]);
+
+  // Document statistics
+  const stats = useMemo(() => {
+    const words = markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
+    const chars = markdown.length;
+    const lines = markdown ? markdown.split('\n').length : 0;
+    const readTimeMinutes = Math.ceil(words / 200);
+    return { words, chars, lines, readTimeMinutes };
+  }, [markdown]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(parsedHTML);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([parsedHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'converted-document.html';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Helper toolbar inserter
+  const insertToken = (before, after = '') => {
+    const textarea = document.getElementById('markdown-editor');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = markdown.substring(start, end) || 'text';
+    const replacement = `${before}${selected}${after}`;
+
+    const newMd = markdown.substring(0, start) + replacement + markdown.substring(end);
+    setMarkdown(newMd);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+    }, 0);
   };
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Markdown to HTML Converter</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="container mx-auto py-8 px-4 sm:px-6 max-w-6xl">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <Badge variant="outline" className="mb-3 px-3 py-1 font-mono text-xs border-primary/30">
+          <FileCode className="w-3.5 h-3.5 mr-1.5 text-primary" />
+          Semantic HTML5 Generator
+        </Badge>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          Markdown to HTML Converter
+        </h1>
+        <p className="text-muted-foreground text-sm mt-1 max-w-xl mx-auto">
+          Write or paste Markdown syntax with real-time live preview, formatted semantic code output, and one-click HTML download.
+        </p>
+      </div>
+
+      {/* Editor & Preview Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Markdown Editor Column */}
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Markdown Input</h2>
-            <Button
-              onClick={handleExampleClick}
-              variant="outline"
-              size="sm"
-            >
-              Load Example
-            </Button>
-          </div>
-          
-          <textarea
-            value={markdownInput}
-            onChange={(e) => setMarkdownInput(e.target.value)}
-            placeholder="Type or paste your Markdown here..."
-            className="w-full h-80 p-4 font-mono text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg"
-          />
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">HTML Output</h2>
-            <div className="flex items-center gap-2">
-              <div className="flex rounded-md shadow-sm">
+          <Card className="p-4 border-border/60 shadow-xs flex flex-col h-[600px]">
+            {/* Toolbar */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border/60">
+              <div className="flex items-center gap-1">
                 <button
-                  onClick={() => setPreviewMode("preview")}
-                  className={`px-3 py-1 text-sm font-medium rounded-l-md ${
-                    previewMode === "preview"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-white dark:bg-gray-700"
-                  }`}
+                  type="button"
+                  onClick={() => insertToken('**', '**')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Bold"
                 >
-                  Preview
+                  <Bold className="w-3.5 h-3.5" />
                 </button>
                 <button
-                  onClick={() => setPreviewMode("raw")}
-                  className={`px-3 py-1 text-sm font-medium rounded-r-md ${
-                    previewMode === "raw"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-white dark:bg-gray-700"
+                  type="button"
+                  onClick={() => insertToken('*', '*')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Italic"
+                >
+                  <Italic className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertToken('~~', '~~')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Strikethrough"
+                >
+                  <Strikethrough className="w-3.5 h-3.5" />
+                </button>
+                <div className="w-px h-4 bg-border/60 mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertToken('# ')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Heading 1"
+                >
+                  <Heading1 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertToken('## ')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Heading 2"
+                >
+                  <Heading2 className="w-3.5 h-3.5" />
+                </button>
+                <div className="w-px h-4 bg-border/60 mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertToken('- ')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Unordered List"
+                >
+                  <List className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertToken('> ')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Quote"
+                >
+                  <Quote className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertToken('`', '`')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Inline Code"
+                >
+                  <Code2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertToken('[', '](https://example.com)')}
+                  className="p-1.5 rounded hover:bg-muted text-foreground"
+                  title="Hyperlink"
+                >
+                  <Link2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMarkdown(SAMPLE_MARKDOWN)}
+                  className="h-7 text-xs px-2"
+                >
+                  Sample
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMarkdown('')}
+                  className="h-7 text-xs px-2 text-rose-500 hover:text-rose-600"
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+
+            {/* Markdown Textarea */}
+            <div className="flex-1 pt-3">
+              <textarea
+                id="markdown-editor"
+                value={markdown}
+                onChange={(e) => setMarkdown(e.target.value)}
+                placeholder="Type or paste markdown content here..."
+                className="w-full h-full p-2 bg-transparent text-foreground font-mono text-xs leading-relaxed resize-none focus:outline-none"
+              />
+            </div>
+
+            {/* Word Count Footer */}
+            <div className="pt-2 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+              <span>{stats.words} words • {stats.chars} chars • {stats.lines} lines</span>
+              <span>~{stats.readTimeMinutes} min read</span>
+            </div>
+          </Card>
+        </div>
+
+        {/* Right Output Column */}
+        <div className="space-y-4">
+          <Card className="p-4 border-border/60 shadow-xs flex flex-col h-[600px]">
+            {/* Header / Tabs */}
+            <div className="flex items-center justify-between pb-3 border-b border-border/60">
+              <div className="flex items-center gap-1 bg-muted/50 p-0.5 rounded-lg border border-border/50">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('preview')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                    viewMode === 'preview'
+                      ? 'bg-background text-foreground shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
+                  <Eye className="w-3 h-3" />
+                  Live Preview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('raw')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                    viewMode === 'raw'
+                      ? 'bg-background text-foreground shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Code2 className="w-3 h-3" />
                   Raw HTML
                 </button>
               </div>
-              
-              <Button
-                onClick={copyHtmlToClipboard}
-                variant="outline"
-                size="sm"
-                disabled={!htmlOutput}
-              >
-                {copied ? "Copied!" : "Copy HTML"}
-              </Button>
+
+              <div className="flex items-center gap-1.5">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleCopy}
+                  className="h-7 text-xs px-2.5"
+                >
+                  {copied ? <Check className="w-3 h-3 mr-1 text-emerald-500" /> : <Copy className="w-3 h-3 mr-1" />}
+                  {copied ? 'Copied' : 'Copy HTML'}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleDownload}
+                  className="h-7 text-xs px-2.5"
+                >
+                  <Download className="w-3 h-3 mr-1" />
+                  Export .html
+                </Button>
+              </div>
             </div>
-          </div>
-          
-          {previewMode === "preview" ? (
-            <div 
-              className="w-full h-80 p-4 overflow-auto bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg prose dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: htmlOutput }}
-            />
-          ) : (
-            <pre className="w-full h-80 p-4 overflow-auto font-mono text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg">
-              {htmlOutput}
-            </pre>
-          )}
+
+            {/* Display Area */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {viewMode === 'preview' ? (
+                <div 
+                  className="prose dark:prose-invert max-w-none text-foreground"
+                  dangerouslySetInnerHTML={{ __html: parsedHTML }}
+                />
+              ) : (
+                <pre className="font-mono text-xs text-foreground/90 whitespace-pre-wrap leading-relaxed select-all">
+                  {parsedHTML}
+                </pre>
+              )}
+            </div>
+
+            {/* Privacy note */}
+            <div className="pt-2 border-t border-border/40 flex items-center gap-2 text-[11px] text-muted-foreground">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              <span>Processed 100% locally. Safe for sensitive documentation.</span>
+            </div>
+          </Card>
         </div>
       </div>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-8">
-        <h2 className="text-xl font-bold mb-4">Markdown Cheat Sheet</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Basic Syntax</h3>
-            <table className="min-w-full text-sm">
-              <tbody>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono"># Heading 1</td>
-                  <td className="py-2">&rarr; <code>&lt;h1&gt;</code></td>
-                </tr>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">## Heading 2</td>
-                  <td className="py-2">&rarr; <code>&lt;h2&gt;</code></td>
-                </tr>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">**Bold**</td>
-                  <td className="py-2">&rarr; <code>&lt;strong&gt;</code></td>
-                </tr>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">*Italic*</td>
-                  <td className="py-2">&rarr; <code>&lt;em&gt;</code></td>
-                </tr>
-                <tr>
-                  <td className="py-2 font-mono">[Link](url)</td>
-                  <td className="py-2">&rarr; <code>&lt;a href="url"&gt;</code></td>
-                </tr>
-              </tbody>
-            </table>
+
+      {/* Markdown Reference Guide */}
+      <Card className="mt-8 p-6 border-border/60 shadow-xs">
+        <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+          <Info className="w-5 h-5 text-primary" />
+          Common Markdown Syntax Quick Reference
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Headings</h3>
+            <p className="text-xs font-mono text-muted-foreground">
+              # H1<br />
+              ## H2<br />
+              ### H3
+            </p>
           </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Extended Syntax</h3>
-            <table className="min-w-full text-sm">
-              <tbody>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">- Item</td>
-                  <td className="py-2">&rarr; Unordered list</td>
-                </tr>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">1. Item</td>
-                  <td className="py-2">&rarr; Ordered list</td>
-                </tr>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">\`code\`</td>
-                  <td className="py-2">&rarr; Inline code</td>
-                </tr>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-2 font-mono">\`\`\`code block\`\`\`</td>
-                  <td className="py-2">&rarr; Code block</td>
-                </tr>
-                <tr>
-                  <td className="py-2 font-mono">![Alt](img-url)</td>
-                  <td className="py-2">&rarr; Image</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Emphasis</h3>
+            <p className="text-xs font-mono text-muted-foreground">
+              **Bold text**<br />
+              *Italic text*<br />
+              ~~Strikethrough~~
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Links & Code</h3>
+            <p className="text-xs font-mono text-muted-foreground">
+              [Link](url)<br />
+              `inline code`<br />
+              ```fenced block```
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Tables & Quotes</h3>
+            <p className="text-xs font-mono text-muted-foreground">
+              | Col 1 | Col 2 |<br />
+              | --- | --- |<br />
+              &gt; Blockquote
+            </p>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

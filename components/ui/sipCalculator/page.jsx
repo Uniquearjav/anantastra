@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
+import { useTheme } from '@/components/ui/theme-provider';
 import dynamic from 'next/dynamic';
 import { formatIndianCurrency, formatIndianNumber } from '@/lib/formatters';
 
@@ -10,6 +11,9 @@ import { formatIndianCurrency, formatIndianNumber } from '@/lib/formatters';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export default function SIPCalculator() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
   const [years, setYears] = useState(10);
   const [expectedReturnRate, setExpectedReturnRate] = useState(12);
@@ -68,16 +72,25 @@ export default function SIPCalculator() {
   const pieChartData = {
     series: [result.totalInvestment, result.totalReturns],
     options: {
+      chart: {
+        background: 'transparent',
+      },
+      theme: {
+        mode: isDark ? 'dark' : 'light',
+      },
       labels: ['Your Investment', 'Est. Returns'],
-      colors: ['#4299e1', '#48bb78'],
+      colors: ['#6366f1', '#10b981'],
       legend: {
         position: 'bottom',
+        labels: {
+          colors: isDark ? '#cbd5e1' : '#475569',
+        },
       },
       responsive: [{
         breakpoint: 480,
         options: {
           chart: {
-            width: 300
+            width: 280
           },
           legend: {
             position: 'bottom'
@@ -85,6 +98,7 @@ export default function SIPCalculator() {
         }
       }],
       tooltip: {
+        theme: isDark ? 'dark' : 'light',
         y: {
           formatter: (value) => formatIndianCurrency(value)
         }
@@ -93,13 +107,16 @@ export default function SIPCalculator() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold text-center mb-8">SIP Calculator</h1>
+    <div className="container mx-auto py-8 px-4 sm:px-6 max-w-5xl">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">SIP Calculator</h1>
+        <p className="text-muted-foreground text-sm mt-1">Estimate wealth creation through Systematic Investment Plans</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Input Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-6">Input Parameters</h2>
+        <div className="rounded-2xl border border-border/60 bg-card text-card-foreground shadow-sm p-6">
+          <h2 className="text-lg font-bold text-foreground mb-6">Input Parameters</h2>
 
           <div className="space-y-6">
             {/* Monthly Investment Input */}
@@ -196,34 +213,34 @@ export default function SIPCalculator() {
         </div>
 
         {/* Results Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-6">Results</h2>
+        <div className="rounded-2xl border border-border/60 bg-card text-card-foreground shadow-sm p-6">
+          <h2 className="text-lg font-bold text-foreground mb-6">Results</h2>
 
           <div className="space-y-4">
-            <div className="flex justify-between py-2 border-b">
-              <span>Total Invested Amount:</span>
-              <span className="font-semibold">{formatIndianCurrency(Math.round(result.totalInvestment))}</span>
+            <div className="flex justify-between py-2.5 border-b border-border/50 text-sm">
+              <span className="text-muted-foreground">Total Invested Amount:</span>
+              <span className="font-semibold text-foreground">{formatIndianCurrency(Math.round(result.totalInvestment))}</span>
             </div>
 
-            <div className="flex justify-between py-2 border-b">
-              <span>Estimated Returns:</span>
-              <span className="font-semibold text-green-600">{formatIndianCurrency(Math.round(result.totalReturns))}</span>
+            <div className="flex justify-between py-2.5 border-b border-border/50 text-sm">
+              <span className="text-muted-foreground">Estimated Returns:</span>
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400">{formatIndianCurrency(Math.round(result.totalReturns))}</span>
             </div>
 
-            <div className="flex justify-between py-2 border-b">
-              <span>Total Value:</span>
-              <span className="font-semibold">{formatIndianCurrency(Math.round(result.totalAmount))}</span>
+            <div className="flex justify-between py-2.5 border-b border-border/50 text-sm">
+              <span className="text-muted-foreground">Total Expected Value:</span>
+              <span className="font-bold text-primary text-base">{formatIndianCurrency(Math.round(result.totalAmount))}</span>
             </div>
 
             {/* Pie Chart */}
-            <div className="mt-8">
-              <h3 className="text-lg font-medium mb-4">Investment Breakup</h3>
+            <div className="mt-8 pt-4 border-t border-border/40">
+              <h3 className="text-sm font-semibold text-foreground mb-4">Investment Breakup</h3>
               {typeof window !== 'undefined' && (
                 <Chart
                   options={pieChartData.options}
                   series={pieChartData.series}
                   type="pie"
-                  height="300"
+                  height="280"
                 />
               )}
             </div>
@@ -232,26 +249,26 @@ export default function SIPCalculator() {
       </div>
 
       {/* SIP Breakup Table */}
-      <div className="mt-12 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-6">SIP Breakup Year-wise</h2>
+      <div className="mt-10 rounded-2xl border border-border/60 bg-card text-card-foreground shadow-sm p-6">
+        <h2 className="text-lg font-bold text-foreground mb-6">SIP Breakup Year-wise</h2>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
+        <div className="overflow-x-auto rounded-xl border border-border/50">
+          <table className="min-w-full table-auto text-sm">
             <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700">
-                <th className="px-4 py-2">Year</th>
-                <th className="px-4 py-2">Invested Amount</th>
-                <th className="px-4 py-2">Est. Returns</th>
-                <th className="px-4 py-2">Total Value</th>
+              <tr className="bg-muted/60 text-muted-foreground text-xs uppercase">
+                <th className="px-4 py-3 text-left">Year</th>
+                <th className="px-4 py-3 text-right">Invested Amount</th>
+                <th className="px-4 py-3 text-right">Est. Returns</th>
+                <th className="px-4 py-3 text-right">Total Value</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border/40">
               {result.monthlyBreakup.map((item, index) => (
-                <tr key={index} className="border-b">
-                  <td className="px-4 py-2 text-center">{item.month / 12}</td>
-                  <td className="px-4 py-2 text-center">{formatIndianCurrency(Math.round(item.investment))}</td>
-                  <td className="px-4 py-2 text-center text-green-600">{formatIndianCurrency(Math.round(item.returns))}</td>
-                  <td className="px-4 py-2 text-center">{formatIndianCurrency(Math.round(item.amount))}</td>
+                <tr key={index} className="hover:bg-accent/30 transition-colors">
+                  <td className="px-4 py-3 text-left font-medium">{item.month / 12}</td>
+                  <td className="px-4 py-3 text-right text-muted-foreground">{formatIndianCurrency(Math.round(item.investment))}</td>
+                  <td className="px-4 py-3 text-right text-emerald-600 dark:text-emerald-400 font-medium">{formatIndianCurrency(Math.round(item.returns))}</td>
+                  <td className="px-4 py-3 text-right font-semibold text-foreground">{formatIndianCurrency(Math.round(item.amount))}</td>
                 </tr>
               ))}
             </tbody>
@@ -260,28 +277,27 @@ export default function SIPCalculator() {
       </div>
 
       {/* Information Section */}
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">What is a SIP Calculator?</h2>
-        <p className="mb-4">
+      <div className="mt-8 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm text-card-foreground shadow-xs p-6">
+        <h2 className="text-lg font-bold text-foreground mb-3">What is a SIP Calculator?</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
           A Systematic Investment Plan (SIP) calculator helps you estimate the returns on your regular investments in mutual funds over a period of time.
         </p>
 
-        <h3 className="text-lg font-medium mt-4 mb-2">How does this calculator work?</h3>
-        <p className="mb-4">
-          This calculator uses the compound interest formula to calculate the future value of your SIP investments.
-          The formula used is: P × (((1 + r)^n - 1) × (1 + r)) ÷ r, where:
+        <h3 className="text-sm font-semibold text-foreground mt-4 mb-2">How does this calculator work?</h3>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+          This calculator uses the compound interest formula to calculate the future value of your SIP investments:
         </p>
-        <ul className="list-disc list-inside mb-4 ml-4">
-          <li>P = Monthly investment amount</li>
-          <li>r = Monthly interest rate (annual rate ÷ 12 ÷ 100)</li>
-          <li>n = Total number of payments (investment period in years × 12)</li>
+        <div className="p-3 rounded-xl bg-muted/40 font-mono text-xs text-foreground mb-4">
+          P × (((1 + r)^n - 1) × (1 + r)) ÷ r
+        </div>
+        <ul className="text-xs text-muted-foreground space-y-1 mb-4 ml-4 list-disc">
+          <li><strong>P</strong> = Monthly investment amount</li>
+          <li><strong>r</strong> = Monthly interest rate (annual rate ÷ 12 ÷ 100)</li>
+          <li><strong>n</strong> = Total number of payments (investment period in years × 12)</li>
         </ul>
 
-        <div className="bg-yellow-50 dark:bg-yellow-900/30 p-4 rounded-md mt-4">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            Note: The values shown are estimates based on the provided expected return rate. Actual returns may vary
-            depending on market conditions and fund performance.
-          </p>
+        <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs leading-relaxed">
+          <strong>Note:</strong> Values shown are estimates based on the expected return rate. Actual returns depend on market performance.
         </div>
       </div>
     </div>

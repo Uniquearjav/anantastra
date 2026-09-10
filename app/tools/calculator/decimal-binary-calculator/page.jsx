@@ -1,552 +1,373 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Binary, 
+  Copy, 
+  Check, 
+  RotateCcw, 
+  Sparkles, 
+  HelpCircle, 
+  Cpu,
+  Layers
+} from 'lucide-react';
 
 export default function DecimalBinaryCalculator() {
-  const [decimalValue, setDecimalValue] = useState("");
-  const [binaryValue, setBinaryValue] = useState("");
-  const [hexValue, setHexValue] = useState("");
-  const [octalValue, setOctalValue] = useState("");
-  const [conversionSteps, setConversionSteps] = useState([]);
-  const [showSteps, setShowSteps] = useState(false);
-  const [conversionType, setConversionType] = useState("decimal-to-binary");
-  const [error, setError] = useState("");
+  const [decInput, setDecInput] = useState('42');
+  const [copiedKey, setCopiedKey] = useState(null);
+  const [activeBitWidth, setActiveBitWidth] = useState(8); // 8, 16, 32
 
-  // Function to convert decimal to binary with steps
-  const convertDecimalToBinary = (decimal) => {
-    const steps = [];
-    let quotient = parseInt(decimal);
-    let result = "";
-    
-    if (quotient === 0) {
-      return { binary: "0", steps: [{ quotient: 0, remainder: 0, result: "0" }] };
-    }
-
-    while (quotient > 0) {
-      const remainder = quotient % 2;
-      result = remainder + result;
-      
-      steps.push({
-        quotient: quotient,
-        remainder: remainder,
-        result: result
-      });
-      
-      quotient = Math.floor(quotient / 2);
-    }
-    
-    return { binary: result, steps };
-  };
-
-  // Function to convert binary to decimal with steps
-  const convertBinaryToDecimal = (binary) => {
-    const steps = [];
-    let result = 0;
-    
-    for (let i = 0; i < binary.length; i++) {
-      const digit = parseInt(binary[i]);
-      const position = binary.length - 1 - i;
-      const positionValue = digit * Math.pow(2, position);
-      
-      result += positionValue;
-      
-      steps.push({
-        digit,
-        position,
-        calculation: `${digit} × 2^${position}`,
-        positionValue,
-        runningTotal: result
-      });
-    }
-    
-    return { decimal: result, steps };
-  };
-
-  // Function to convert decimal to hexadecimal
-  const convertDecimalToHex = (decimal) => {
-    return parseInt(decimal).toString(16).toUpperCase();
-  };
-
-  // Function to convert decimal to octal
-  const convertDecimalToOctal = (decimal) => {
-    return parseInt(decimal).toString(8);
-  };
-
-  // Function to convert hexadecimal to decimal
-  const convertHexToDecimal = (hex) => {
-    return parseInt(hex, 16).toString();
-  };
-
-  // Function to convert binary to hexadecimal
-  const convertBinaryToHex = (binary) => {
-    const decimal = parseInt(binary, 2);
-    return decimal.toString(16).toUpperCase();
-  };
-
-  // Function to convert binary to octal
-  const convertBinaryToOctal = (binary) => {
-    const decimal = parseInt(binary, 2);
-    return decimal.toString(8);
-  };
-
-  // Function to convert hexadecimal to binary
-  const convertHexToBinary = (hex) => {
+  // Derive all bases from decimal BigInt/number
+  const baseData = useMemo(() => {
     try {
-      const decimal = parseInt(hex, 16);
-      return decimal.toString(2);
-    } catch (e) {
-      return "";
+      const trimmed = decInput.trim();
+      if (!trimmed) {
+        return {
+          dec: '',
+          bin: '',
+          hex: '',
+          oct: '',
+          ascii: '',
+          valid: false,
+          error: ''
+        };
+      }
+
+      // Support negative numbers or BigInt
+      const n = BigInt(trimmed);
+      const bin = n.toString(2);
+      const hex = n.toString(16).toUpperCase();
+      const oct = n.toString(8);
+
+      // Printable ASCII if in range
+      let ascii = '';
+      if (n >= 32n && n <= 126n) {
+        ascii = String.fromCharCode(Number(n));
+      } else if (n === 0n) {
+        ascii = 'NUL';
+      }
+
+      // Bit array for interactive bitboard (clamp to positive 32-bit for visualization)
+      const numForBits = Number(n & ((1n << BigInt(activeBitWidth)) - 1n));
+      const bits = [];
+      for (let i = activeBitWidth - 1; i >= 0; i--) {
+        bits.push((numForBits >> i) & 1);
+      }
+
+      return {
+        dec: trimmed,
+        bin,
+        hex,
+        oct,
+        ascii,
+        bits,
+        valid: true,
+        error: ''
+      };
+    } catch {
+      return {
+        dec: decInput,
+        bin: '',
+        hex: '',
+        oct: '',
+        ascii: '',
+        bits: [],
+        valid: false,
+        error: 'Invalid decimal number'
+      };
     }
-  };
+  }, [decInput, activeBitWidth]);
 
-  // Function to convert octal to decimal
-  const convertOctalToDecimal = (octal) => {
-    return parseInt(octal, 8).toString();
-  };
-
-  // Function to convert octal to binary
-  const convertOctalToBinary = (octal) => {
+  const updateFromBase = (val, base) => {
     try {
-      const decimal = parseInt(octal, 8);
-      return decimal.toString(2);
-    } catch (e) {
-      return "";
+      const clean = val.trim();
+      if (!clean) {
+        setDecInput('');
+        return;
+      }
+      let decVal = 0n;
+      if (base === 2) {
+        if (!/^[01]+$/.test(clean)) throw new Error();
+        decVal = BigInt(`0b${clean}`);
+      } else if (base === 16) {
+        if (!/^[0-9a-fA-F]+$/.test(clean)) throw new Error();
+        decVal = BigInt(`0x${clean}`);
+      } else if (base === 8) {
+        if (!/^[0-7]+$/.test(clean)) throw new Error();
+        decVal = BigInt(`0o${clean}`);
+      } else {
+        decVal = BigInt(clean);
+      }
+      setDecInput(decVal.toString(10));
+    } catch {
+      // Ignored for partial typing
     }
   };
 
-  // Validate input values
-  const validateInput = (value, type) => {
-    if (!value.trim()) {
-      return { isValid: false, message: "Please enter a value" };
-    }
-    
-    if (type === "decimal" && !/^\d+$/.test(value)) {
-      return { isValid: false, message: "Decimal must contain only digits (0-9)" };
-    }
-    
-    if (type === "binary" && !/^[01]+$/.test(value)) {
-      return { isValid: false, message: "Binary must contain only 0s and 1s" };
-    }
-    
-    if (type === "hex" && !/^[0-9A-Fa-f]+$/.test(value)) {
-      return { isValid: false, message: "Hexadecimal must contain only digits and A-F letters" };
-    }
-    
-    if (type === "octal" && !/^[0-7]+$/.test(value)) {
-      return { isValid: false, message: "Octal must contain only digits 0-7" };
-    }
-
-    // Check if the decimal value is within safe integer bounds
-    if (type === "decimal" && parseInt(value) > Number.MAX_SAFE_INTEGER) {
-      return { isValid: false, message: "Number too large for accurate conversion" };
-    }
-    
-    return { isValid: true };
-  };
-
-  // Handle conversion based on selected type
-  const handleConvert = () => {
-    setError("");
-    setConversionSteps([]);
-    
-    switch (conversionType) {
-      case "decimal-to-binary":
-        const decimalValidation = validateInput(decimalValue, "decimal");
-        if (!decimalValidation.isValid) {
-          setError(decimalValidation.message);
-          setBinaryValue("");
-          setHexValue("");
-          setOctalValue("");
-          return;
-        }
-        
-        try {
-          const { binary, steps } = convertDecimalToBinary(decimalValue);
-          setBinaryValue(binary);
-          setConversionSteps(steps);
-          setHexValue(convertDecimalToHex(decimalValue));
-          setOctalValue(convertDecimalToOctal(decimalValue));
-        } catch (e) {
-          setError("Error converting decimal to binary");
-        }
-        break;
-        
-      case "binary-to-decimal":
-        const binaryValidation = validateInput(binaryValue, "binary");
-        if (!binaryValidation.isValid) {
-          setError(binaryValidation.message);
-          setDecimalValue("");
-          setHexValue("");
-          setOctalValue("");
-          return;
-        }
-        
-        try {
-          const { decimal, steps } = convertBinaryToDecimal(binaryValue);
-          setDecimalValue(decimal.toString());
-          setConversionSteps(steps);
-          setHexValue(convertBinaryToHex(binaryValue));
-          setOctalValue(convertBinaryToOctal(binaryValue));
-        } catch (e) {
-          setError("Error converting binary to decimal");
-        }
-        break;
-        
-      case "hex-to-decimal":
-        const hexValidation = validateInput(hexValue, "hex");
-        if (!hexValidation.isValid) {
-          setError(hexValidation.message);
-          setDecimalValue("");
-          setBinaryValue("");
-          setOctalValue("");
-          return;
-        }
-        
-        try {
-          const decimal = convertHexToDecimal(hexValue);
-          setDecimalValue(decimal);
-          setBinaryValue(convertHexToBinary(hexValue));
-          setOctalValue(convertDecimalToOctal(decimal));
-        } catch (e) {
-          setError("Error converting hexadecimal to decimal");
-        }
-        break;
-        
-      case "octal-to-decimal":
-        const octalValidation = validateInput(octalValue, "octal");
-        if (!octalValidation.isValid) {
-          setError(octalValidation.message);
-          setDecimalValue("");
-          setBinaryValue("");
-          setHexValue("");
-          return;
-        }
-        
-        try {
-          const decimal = convertOctalToDecimal(octalValue);
-          setDecimalValue(decimal);
-          setBinaryValue(convertOctalToBinary(octalValue));
-          setHexValue(convertDecimalToHex(decimal));
-        } catch (e) {
-          setError("Error converting octal to decimal");
-        }
-        break;
+  const toggleBit = (bitIndex) => {
+    try {
+      const current = BigInt(decInput || '0');
+      const mask = 1n << BigInt(activeBitWidth - 1 - bitIndex);
+      const next = current ^ mask;
+      setDecInput(next.toString(10));
+    } catch {
+      // Ignore
     }
   };
 
-  // Handle input changes based on conversion type
-  const handleInputChange = (e) => {
-    const { value } = e.target;
-    
-    switch (conversionType) {
-      case "decimal-to-binary":
-        setDecimalValue(value);
-        break;
-      case "binary-to-decimal":
-        setBinaryValue(value);
-        break;
-      case "hex-to-decimal":
-        setHexValue(value.toUpperCase());
-        break;
-      case "octal-to-decimal":
-        setOctalValue(value);
-        break;
-    }
-  };
-
-  // Reset all values
-  const handleReset = () => {
-    setDecimalValue("");
-    setBinaryValue("");
-    setHexValue("");
-    setOctalValue("");
-    setConversionSteps([]);
-    setError("");
-    setShowSteps(false);
+  const handleCopy = (val, key) => {
+    if (!val) return;
+    navigator.clipboard.writeText(val);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Number Base Converter</h1>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">
-            Conversion Type
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {[
-              { id: "decimal-to-binary", label: "Decimal to Binary" },
-              { id: "binary-to-decimal", label: "Binary to Decimal" },
-              { id: "hex-to-decimal", label: "Hex to Decimal" },
-              { id: "octal-to-decimal", label: "Octal to Decimal" },
-            ].map((option) => (
-              <label
-                key={option.id}
-                className={`flex items-center p-3 rounded-md cursor-pointer border ${
-                  conversionType === option.id
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-gray-300 dark:border-gray-600"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="conversionType"
-                  value={option.id}
-                  checked={conversionType === option.id}
-                  onChange={() => {
-                    setConversionType(option.id);
-                    setError("");
-                    setShowSteps(false);
-                    setConversionSteps([]);
-                  }}
-                  className="sr-only"
-                />
-                <span>{option.label}</span>
+    <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-border/40">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="p-2 rounded-lg bg-foreground text-background">
+              <Binary className="h-4 w-4" />
+            </span>
+            <Badge variant="contrast">Number Systems</Badge>
+            <Badge variant="subtle">Real-Time Bi-Directional</Badge>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            Decimal & Binary Base Converter
+          </h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">
+            Convert seamlessly across Decimal, Binary, Hexadecimal, and Octal with an interactive bit inspector
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setDecInput('0')}
+            className="h-8 text-xs gap-1 border-border/70"
+          >
+            <RotateCcw className="h-3 w-3" />
+            <span>Reset</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Synchronized Base Inputs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+        {/* Decimal (Base 10) */}
+        <Card className="p-4 border-border/60 bg-card text-card-foreground space-y-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="contrast" className="text-[10px]">Base 10</Badge>
+              <label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Decimal
               </label>
-            ))}
-          </div>
-        </div>
-        
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium mb-2" htmlFor="inputValue">
-              {conversionType === "decimal-to-binary" ? "Decimal Value" :
-               conversionType === "binary-to-decimal" ? "Binary Value" :
-               conversionType === "hex-to-decimal" ? "Hexadecimal Value" : "Octal Value"}
-            </label>
-            <Input
-              id="inputValue"
-              value={
-                conversionType === "decimal-to-binary" ? decimalValue :
-                conversionType === "binary-to-decimal" ? binaryValue :
-                conversionType === "hex-to-decimal" ? hexValue : octalValue
-              }
-              onChange={handleInputChange}
-              placeholder={
-                conversionType === "decimal-to-binary" ? "Enter decimal number (e.g., 42)" :
-                conversionType === "binary-to-decimal" ? "Enter binary number (e.g., 101010)" :
-                conversionType === "hex-to-decimal" ? "Enter hexadecimal number (e.g., 2A)" :
-                "Enter octal number (e.g., 52)"
-              }
-              className="font-mono"
-            />
-            
-            {error && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                {error}
-              </p>
-            )}
-          </div>
-          
-          <div className="flex space-x-3">
-            <Button onClick={handleConvert} className="flex-1">
-              Convert
-            </Button>
-            
-            <Button onClick={handleReset} variant="outline">
-              Reset
-            </Button>
-          </div>
-          
-          {/* Results section */}
-          {(decimalValue || binaryValue || hexValue || octalValue) && !error && (
-            <div className="mt-8 space-y-4">
-              <h2 className="text-xl font-medium mb-4">Conversion Results</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-sm font-medium mb-1 text-gray-500 dark:text-gray-400">
-                    Decimal
-                  </div>
-                  <div className="font-mono break-all">
-                    {decimalValue || "-"}
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-sm font-medium mb-1 text-gray-500 dark:text-gray-400">
-                    Binary
-                  </div>
-                  <div className="font-mono break-all">
-                    {binaryValue || "-"}
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-sm font-medium mb-1 text-gray-500 dark:text-gray-400">
-                    Hexadecimal
-                  </div>
-                  <div className="font-mono break-all">
-                    {hexValue || "-"}
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-sm font-medium mb-1 text-gray-500 dark:text-gray-400">
-                    Octal
-                  </div>
-                  <div className="font-mono break-all">
-                    {octalValue || "-"}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Show conversion steps for decimal-to-binary and binary-to-decimal */}
-              {(conversionType === "decimal-to-binary" || conversionType === "binary-to-decimal") && 
-               conversionSteps.length > 0 && (
-                <div className="mt-6">
-                  <button
-                    onClick={() => setShowSteps(!showSteps)}
-                    className="text-blue-600 dark:text-blue-400 hover:underline text-sm flex items-center"
-                  >
-                    {showSteps ? 'Hide Conversion Steps' : 'Show Conversion Steps'}
-                    <svg 
-                      className={`ml-1 w-4 h-4 transition-transform ${showSteps ? 'rotate-180' : ''}`}
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  {showSteps && (
-                    <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg overflow-x-auto">
-                      {conversionType === "decimal-to-binary" ? (
-                        <table className="min-w-full text-sm">
-                          <thead>
-                            <tr className="border-b dark:border-gray-600">
-                              <th className="text-left py-2 px-4">Decimal</th>
-                              <th className="text-left py-2 px-4">Division by 2</th>
-                              <th className="text-left py-2 px-4">Remainder (Binary Digit)</th>
-                              <th className="text-left py-2 px-4">Binary Result</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {conversionSteps.map((step, index) => (
-                              <tr key={index} className="border-b dark:border-gray-600">
-                                <td className="py-2 px-4">{step.quotient}</td>
-                                <td className="py-2 px-4">{step.quotient} ÷ 2 = {Math.floor(step.quotient / 2)}</td>
-                                <td className="py-2 px-4">{step.remainder}</td>
-                                <td className="py-2 px-4 font-mono">{step.result}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <table className="min-w-full text-sm">
-                          <thead>
-                            <tr className="border-b dark:border-gray-600">
-                              <th className="text-left py-2 px-4">Position</th>
-                              <th className="text-left py-2 px-4">Binary Digit</th>
-                              <th className="text-left py-2 px-4">Calculation</th>
-                              <th className="text-left py-2 px-4">Value</th>
-                              <th className="text-left py-2 px-4">Running Total</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {conversionSteps.map((step, index) => (
-                              <tr key={index} className="border-b dark:border-gray-600">
-                                <td className="py-2 px-4">{step.position}</td>
-                                <td className="py-2 px-4">{step.digit}</td>
-                                <td className="py-2 px-4">{step.calculation}</td>
-                                <td className="py-2 px-4">{step.positionValue}</td>
-                                <td className="py-2 px-4">{step.runningTotal}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-          )}
-        </div>
+            <button
+              type="button"
+              onClick={() => handleCopy(baseData.dec, 'dec')}
+              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              {copiedKey === 'dec' ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copiedKey === 'dec' ? 'Copied' : 'Copy'}</span>
+            </button>
+          </div>
+          <Input
+            type="text"
+            value={decInput}
+            onChange={(e) => setDecInput(e.target.value)}
+            placeholder="e.g. 255"
+            className="font-mono text-base font-bold h-11 bg-background"
+          />
+        </Card>
+
+        {/* Binary (Base 2) */}
+        <Card className="p-4 border-border/60 bg-card text-card-foreground space-y-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="subtle" className="text-[10px]">Base 2</Badge>
+              <label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Binary
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCopy(baseData.bin, 'bin')}
+              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              {copiedKey === 'bin' ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copiedKey === 'bin' ? 'Copied' : 'Copy'}</span>
+            </button>
+          </div>
+          <Input
+            type="text"
+            value={baseData.bin}
+            onChange={(e) => updateFromBase(e.target.value, 2)}
+            placeholder="e.g. 11111111"
+            className="font-mono text-base font-bold h-11 bg-background"
+          />
+        </Card>
+
+        {/* Hexadecimal (Base 16) */}
+        <Card className="p-4 border-border/60 bg-card text-card-foreground space-y-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="subtle" className="text-[10px]">Base 16</Badge>
+              <label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Hexadecimal
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCopy(baseData.hex, 'hex')}
+              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              {copiedKey === 'hex' ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copiedKey === 'hex' ? 'Copied' : 'Copy'}</span>
+            </button>
+          </div>
+          <Input
+            type="text"
+            value={baseData.hex}
+            onChange={(e) => updateFromBase(e.target.value, 16)}
+            placeholder="e.g. FF"
+            className="font-mono text-base font-bold h-11 bg-background"
+          />
+        </Card>
+
+        {/* Octal (Base 8) */}
+        <Card className="p-4 border-border/60 bg-card text-card-foreground space-y-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-1.5">
+              <Badge variant="subtle" className="text-[10px]">Base 8</Badge>
+              <label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Octal
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCopy(baseData.oct, 'oct')}
+              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              {copiedKey === 'oct' ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copiedKey === 'oct' ? 'Copied' : 'Copy'}</span>
+            </button>
+          </div>
+          <Input
+            type="text"
+            value={baseData.oct}
+            onChange={(e) => updateFromBase(e.target.value, 8)}
+            placeholder="e.g. 377"
+            className="font-mono text-base font-bold h-11 bg-background"
+          />
+        </Card>
       </div>
-      
-      {/* Educational section about number systems */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Understanding Number Systems</h2>
-        
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Decimal (Base 10)</h3>
-            <p className="mb-2">
-              The decimal system is the most common number system, using digits 0-9. Each position represents a power of 10.
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg font-mono">
-              123<sub>10</sub> = 1×10<sup>2</sup> + 2×10<sup>1</sup> + 3×10<sup>0</sup> = 100 + 20 + 3 = 123
+
+      {/* Interactive Bitboard / Bit Inspector */}
+      {baseData.valid && baseData.bits.length > 0 && (
+        <Card className="p-6 border-border/60 bg-card text-card-foreground shadow-sm mb-8 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/40">
+            <div className="flex items-center gap-2">
+              <Cpu className="h-4 w-4 text-primary" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Interactive Bit Inspector (Click to flip bits)
+              </h2>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-muted-foreground">Bit Width:</span>
+              {[8, 16, 32].map((w) => (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => setActiveBitWidth(w)}
+                  className={`px-2 py-0.5 rounded text-[11px] font-semibold border transition-all ${
+                    activeBitWidth === w
+                      ? 'border-foreground bg-foreground text-background shadow-xs'
+                      : 'border-border/60 text-muted-foreground'
+                  }`}
+                >
+                  {w}-bit
+                </button>
+              ))}
             </div>
           </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Binary (Base 2)</h3>
-            <p className="mb-2">
-              The binary system uses only 0 and 1. Each position represents a power of 2.
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg font-mono">
-              1101<sub>2</sub> = 1×2<sup>3</sup> + 1×2<sup>2</sup> + 0×2<sup>1</sup> + 1×2<sup>0</sup> = 8 + 4 + 0 + 1 = 13<sub>10</sub>
-            </div>
+
+          {/* Clickable Bit Tiles */}
+          <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start">
+            {baseData.bits.map((bitVal, idx) => {
+              const bitPower = activeBitWidth - 1 - idx;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => toggleBit(idx)}
+                  className={`flex flex-col items-center justify-center w-10 h-14 rounded-lg border font-mono transition-all ${
+                    bitVal === 1
+                      ? 'border-foreground bg-foreground text-background shadow-xs font-extrabold scale-105'
+                      : 'border-border/60 bg-muted/20 text-muted-foreground hover:border-border hover:bg-muted/40 font-medium'
+                  }`}
+                >
+                  <span className="text-base leading-none">{bitVal}</span>
+                  <span className="text-[9px] opacity-60 mt-1">2^{bitPower}</span>
+                </button>
+              );
+            })}
           </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Hexadecimal (Base 16)</h3>
-            <p className="mb-2">
-              The hexadecimal system uses digits 0-9 and letters A-F (representing values 10-15). Each position represents a power of 16.
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg font-mono">
-              1A<sub>16</sub> = 1×16<sup>1</sup> + 10×16<sup>0</sup> = 16 + 10 = 26<sub>10</sub>
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Octal (Base 8)</h3>
-            <p className="mb-2">
-              The octal system uses digits 0-7. Each position represents a power of 8.
-            </p>
-            <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg font-mono">
-              52<sub>8</sub> = 5×8<sup>1</sup> + 2×8<sup>0</sup> = 40 + 2 = 42<sub>10</sub>
-            </div>
-          </div>
+
+          <p className="text-[11px] text-muted-foreground">
+            Click any bit box above to toggle it between 0 and 1. Values in all 4 bases recalculate instantly.
+          </p>
+        </Card>
+      )}
+
+      {/* Quick Common Values Reference */}
+      <Card className="p-5 border-border/60 bg-card/60 backdrop-blur-sm text-card-foreground text-xs">
+        <h3 className="font-bold text-foreground uppercase tracking-wider text-[11px] mb-3 flex items-center gap-1.5">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span>Common Computing Constants</span>
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[11px]">
+          <button
+            type="button"
+            onClick={() => setDecInput('255')}
+            className="p-2.5 rounded-lg border border-border/40 bg-muted/20 text-left hover:bg-muted/40"
+          >
+            <span className="font-sans font-bold text-foreground block">8-bit Max (255)</span>
+            0xFF • 11111111
+          </button>
+          <button
+            type="button"
+            onClick={() => setDecInput('65535')}
+            className="p-2.5 rounded-lg border border-border/40 bg-muted/20 text-left hover:bg-muted/40"
+          >
+            <span className="font-sans font-bold text-foreground block">16-bit Max (65,535)</span>
+            0xFFFF
+          </button>
+          <button
+            type="button"
+            onClick={() => setDecInput('1024')}
+            className="p-2.5 rounded-lg border border-border/40 bg-muted/20 text-left hover:bg-muted/40"
+          >
+            <span className="font-sans font-bold text-foreground block">1 Kilobyte (1024)</span>
+            0x400 • 2^10
+          </button>
+          <button
+            type="button"
+            onClick={() => setDecInput('42')}
+            className="p-2.5 rounded-lg border border-border/40 bg-muted/20 text-left hover:bg-muted/40"
+          >
+            <span className="font-sans font-bold text-foreground block">Sample (42)</span>
+            0x2A • 101010
+          </button>
         </div>
-        
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Conversion Methods</h3>
-          
-          <div className="mt-4">
-            <h4 className="font-medium mb-1">Decimal to Binary Conversion</h4>
-            <ol className="list-decimal list-inside space-y-1 mb-3">
-              <li>Divide the decimal number by 2</li>
-              <li>Record the remainder (0 or 1)</li>
-              <li>Divide the quotient by 2</li>
-              <li>Repeat until the quotient becomes 0</li>
-              <li>Read the remainders from bottom to top</li>
-            </ol>
-          </div>
-          
-          <div className="mt-4">
-            <h4 className="font-medium mb-1">Binary to Decimal Conversion</h4>
-            <ol className="list-decimal list-inside space-y-1">
-              <li>Multiply each binary digit by its position value (power of 2)</li>
-              <li>Add all the results</li>
-            </ol>
-          </div>
-        </div>
-        
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg">
-          <h3 className="font-semibold mb-2">Common Applications</h3>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Binary is used in computer memory and digital systems</li>
-            <li>Hexadecimal is commonly used in programming for memory addresses and color codes</li>
-            <li>Octal was historically used in some computing systems</li>
-          </ul>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 }

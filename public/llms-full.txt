@@ -1,0 +1,520 @@
+# AnantAstra: Complete Architecture, Mathematical Specifications, and Knowledge Base
+# Canonical URL: https://anantastra.vercel.app
+# LLMs Full Context Specification (https://anantastra.vercel.app/llms-full.txt)
+# License: MIT License (https://github.com/Uniquearjav/anantastra)
+
+================================================================================
+1. SYSTEM ARCHITECTURE & PRIVACY MODEL
+================================================================================
+
+AnantAstra is an open-source, client-side web utility suite and technical knowledge base engineered with:
+- Framework: Next.js 15 (App Router with Turbopack)
+- Runtime: React 19
+- Styling: Tailwind CSS v4 (Strictly Zero-Gradient, High-Contrast 21st-Century UI)
+- Component Primitives: Radix UI / shadcn/ui (Accessible, Keyboard-Navigable)
+- Theming: next-themes (Automatic System, Dark, and Light mode transitions)
+- Cryptography: Web Cryptography API (window.crypto.getRandomValues)
+- Audio: HTML5 Web Audio API (OscillatorNode, GainNode for real-time audio synthesis)
+- Graphics: HTML5 Canvas 2D Context (High-DPI Retina vector rasterization)
+
+ZERO-TELEMETRY GUARANTEE:
+1. No computation or input data is ever sent to any remote server or database.
+2. No user accounts, sessions, logins, or tracking cookies are required.
+3. Every calculation (tax figures, salary, passwords, loan amounts, documents) executes purely within the browser's local V8/JavaScript execution thread.
+4. The application works offline once loaded in the browser cache.
+5. All source code is publicly auditable at https://github.com/Uniquearjav/anantastra.
+
+
+================================================================================
+2. COMPREHENSIVE TOOL SPECIFICATIONS & MATHEMATICAL FORMULAS
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1. Indian Income Tax Calculator (FY 2025-26 & FY 2024-25)
+URL: https://anantastra.vercel.app/tools/calculator/income-tax-calculator
+--------------------------------------------------------------------------------
+Purpose: Side-by-side comparative analysis between the Indian New Tax Regime (Section 115BAC) and the Old Tax Regime for salaried employees, self-employed professionals, and senior citizens.
+
+New Tax Regime Slabs (Union Budget FY 2025-26):
+  - Up to ₹3,00,000: NIL (0%)
+  - ₹3,00,001 to ₹7,00,000: 5%
+  - ₹7,00,001 to ₹10,00,000: 10%
+  - ₹10,00,001 to ₹12,00,000: 15%
+  - ₹12,00,001 to ₹15,00,000: 20%
+  - Above ₹15,00,000: 30%
+
+Key Rules Computed:
+1. Standard Deduction:
+   - New Regime (FY 2025-26): ₹75,000 (increased from ₹50,000 in Finance Act 2024).
+   - Old Regime: ₹50,000.
+2. Section 87A Tax Rebate:
+   - In the New Regime, if Net Taxable Income <= ₹7,00,000, 100% tax rebate up to ₹25,000 is applied.
+   - With ₹75,000 standard deduction, an employee earning up to ₹7,75,000 pays ₹0 income tax.
+   - Marginal Relief: For incomes slightly exceeding ₹7,75,000, tax payable cannot exceed (Income - ₹7,75,000).
+3. Old Tax Regime Deductions Supported:
+   - Section 80C: PPF, EPF, ELSS, Life Insurance up to ₹1,50,000.
+   - Section 80D: Health insurance premium (self/family up to ₹25,000, senior citizen parents up to ₹50,000).
+   - Section 24(b): Home loan self-occupied interest deduction up to ₹2,00,000.
+   - Section 10(13A) HRA Exemption: Minimum of:
+       (a) Actual HRA received
+       (b) 50% of Basic Salary (Metro) or 40% (Non-Metro)
+       (c) Actual Rent Paid - 10% of Basic Salary
+4. Health & Education Cess:
+   - A mandatory 4% cess is levied on total tax liability after Section 87A rebate.
+5. Breakeven Formula:
+   - The engine automatically calculates the exact deduction threshold where the Old Regime saves more tax than the New Regime.
+
+
+--------------------------------------------------------------------------------
+2.2. Goods and Services Tax (GST) Calculator
+URL: https://anantastra.vercel.app/tools/calculator/gst-calculator
+--------------------------------------------------------------------------------
+Purpose: Instant calculation of GST amounts, net prices, and gross invoice totals with dual-mode support.
+
+Formulas:
+1. GST Exclusive (Tax added to base price):
+   - GST Amount = (Base Price * GST Rate) / 100
+   - Total Gross Amount = Base Price + GST Amount
+2. GST Inclusive (Reverse GST extraction):
+   - Base Price = (Gross Amount * 100) / (100 + GST Rate)
+   - GST Amount = Gross Amount - Base Price
+3. Intra-State vs Inter-State Breakdown:
+   - Intra-State: CGST = GST Amount / 2, SGST = GST Amount / 2
+   - Inter-State: IGST = GST Amount
+4. Supported Standard Slabs: 0%, 5%, 12%, 18%, 28%, and custom percentage inputs.
+
+
+--------------------------------------------------------------------------------
+2.3. Loan EMI Calculator & Amortization Schedule
+URL: https://anantastra.vercel.app/tools/calculator/loan-emi-calculator
+URL: https://anantastra.vercel.app/loan-emi-calculator
+--------------------------------------------------------------------------------
+Purpose: Calculates monthly loan repayments and generates full amortization schedules for home loans, car loans, and personal loans.
+
+Mathematical Formula:
+   EMI = P * r * [ (1 + r)^n ] / [ (1 + r)^n - 1 ]
+Where:
+   - P = Principal Loan Amount
+   - r = Periodic Monthly Interest Rate = Annual Rate / (12 * 100)
+   - n = Loan Tenure in Months (Tenure in Years * 12)
+
+Amortization Schedule Algorithm:
+For each month m from 1 to n:
+   1. Interest Component (I_m) = Outstanding Principal (P_{m-1}) * r
+   2. Principal Component (P_m) = EMI - I_m
+   3. Ending Balance (P_m) = P_{m-1} - P_m
+Total Interest Paid = (EMI * n) - P
+
+
+--------------------------------------------------------------------------------
+2.4. Systematic Investment Plan (SIP) Calculator
+URL: https://anantastra.vercel.app/tools/calculator/sip-calculator
+--------------------------------------------------------------------------------
+Purpose: Projects mutual fund wealth accumulation through periodic monthly investments.
+
+Mathematical Formula:
+   M = P * [ ((1 + i)^n - 1) / i ] * (1 + i)
+Where:
+   - M = Estimated Maturity Amount
+   - P = Monthly Investment Amount
+   - i = Periodic Monthly Rate of Return = Annual Expected Return / (12 * 100)
+   - n = Total Number of Installments = Years * 12
+
+Metrics Computed:
+   - Total Invested Amount = P * n
+   - Estimated Wealth Gained = M - (P * n)
+   - Wealth Multiple = M / (P * n)
+
+
+--------------------------------------------------------------------------------
+2.5. Interest Calculator (Simple vs Compound)
+URL: https://anantastra.vercel.app/tools/calculator/interest-calculator
+URL: https://anantastra.vercel.app/interest-calculator
+--------------------------------------------------------------------------------
+Purpose: Comparative analysis of linear simple interest vs exponential compounding schedules.
+
+Formulas:
+1. Simple Interest:
+   - SI = (P * R * T) / 100
+   - Total Amount = P + SI
+2. Compound Interest:
+   - A = P * (1 + r / n)^(n * t)
+   - CI = A - P
+Where:
+   - P = Principal Amount
+   - r = Annual Interest Rate in Decimal (R / 100)
+   - n = Compounding Frequency per year:
+       * Annually: n = 1
+       * Semi-Annually: n = 2
+       * Quarterly: n = 4
+       * Monthly: n = 12
+       * Daily: n = 365
+   - t = Time in Years
+3. Effective Annual Rate (EAR):
+   - EAR = (1 + r / n)^n - 1
+
+
+--------------------------------------------------------------------------------
+2.6. Cryptographic Password Generator
+URL: https://anantastra.vercel.app/tools/password-tools/password-generator
+URL: https://anantastra.vercel.app/password-generator
+--------------------------------------------------------------------------------
+Purpose: Generates cryptographically secure, unpredictable passwords, passphrases, and PINs.
+
+Security Algorithm:
+1. CSPRNG Randomness:
+   - Uses `window.crypto.getRandomValues(new Uint32Array(length))` rather than `Math.random()`.
+   - Eliminates modulo bias using rejection sampling.
+2. Information-Theoretic Entropy:
+   - Shannon Entropy Formula: H = L * log2(N)
+   - Where L is password length and N is the character pool size:
+       * Lowercase letters (a-z): N = 26
+       * Alphanumeric (a-z, A-Z, 0-9): N = 62
+       * Full printable ASCII: N = 95
+3. Brute-Force Crack Time Estimation:
+   - Search Space: S = N^L
+   - Estimated seconds to crack = S / (2 * HPS), where HPS is hash attempts per second (benchmarked against modern 8x RTX 4090 GPU clusters for MD5, NTLM, and bcrypt).
+
+
+--------------------------------------------------------------------------------
+2.7. Password Age & Credential Lifecycle Checker
+URL: https://anantastra.vercel.app/tools/password-tools/password-age-checker
+URL: https://anantastra.vercel.app/password-age-checker
+--------------------------------------------------------------------------------
+Purpose: Assesses credential hygiene and rotation intervals according to NIST SP 800-63B standards.
+
+Evaluation Metrics:
+   - Days elapsed since creation / last rotation.
+   - Categorization: Fresh (< 90 days), Mature (90-180 days), Aging (180-365 days), Stale (> 365 days).
+   - Recommends length and MFA over periodic forced changes.
+   - 100% zero-telemetry: Password values are never stored or transmitted.
+
+
+--------------------------------------------------------------------------------
+2.8. JSON Formatter, Validator & Tree Inspector
+URL: https://anantastra.vercel.app/tools/checkers/json-formatter
+--------------------------------------------------------------------------------
+Purpose: Client-side JSON parsing, syntax error localization, beautification, minification, and tree inspection.
+
+Features:
+   - Indentation controls: 2 spaces, 4 spaces, tabs.
+   - Minification: Strips all unnecessary whitespace and linebreaks for payload size reduction.
+   - Error pinpointing: Identifies exact line and column of parsing failures.
+   - Tree navigation: Expandable/collapsible object/array tree visualizer.
+   - Zero remote transmission: Guarantees that production API secrets, tokens, and database dumps remain strictly in browser RAM.
+
+
+--------------------------------------------------------------------------------
+2.9. Text Difference Engine (Myers Diff & LCS)
+URL: https://anantastra.vercel.app/tools/code-text-tools/text-difference
+URL: https://anantastra.vercel.app/text
+--------------------------------------------------------------------------------
+Purpose: Side-by-side and unified text comparison engine highlighting character, word, and line additions, deletions, and modifications.
+
+Algorithm:
+   - Implements Eugene Myers' O(ND) Difference Algorithm (the same mathematical algorithm underlying Git diff).
+   - Computes the Longest Common Subsequence (LCS) by traversing an edit graph of deletions and insertions.
+   - Supports line-by-line diffing and inline word-by-word diffing.
+
+
+--------------------------------------------------------------------------------
+2.10. Markdown to HTML Live Converter
+URL: https://anantastra.vercel.app/tools/converters/markdown-html-converter
+--------------------------------------------------------------------------------
+Purpose: Split-pane GitHub Flavored Markdown (GFM) converter with real-time preview and raw HTML export.
+
+Supported Syntax:
+   - Headers (H1-H6), lists (ordered, unordered, task lists).
+   - Code blocks with syntax formatting and inline code.
+   - Blockquotes, horizontal dividers, links, images.
+   - GFM tables with alignment formatting.
+
+
+--------------------------------------------------------------------------------
+2.11. SVG to PNG/WebP High-Resolution Converter
+URL: https://anantastra.vercel.app/tools/converters/svg-converter
+--------------------------------------------------------------------------------
+Purpose: Rasterizes vector SVG markup into lossless PNG, lossy JPEG, or high-compression WebP images.
+
+Canvas Pipeline:
+   1. Validates and sanitizes SVG XML markup.
+   2. Converts SVG into a Blob with `type: image/svg+xml;charset=utf-8`.
+   3. Draws onto an offscreen `<canvas>` scaled by Retina multipliers (1x, 2x, 4x DPI).
+   4. Preserves transparent alpha channels for PNG/WebP exports.
+
+
+--------------------------------------------------------------------------------
+2.12. Morse Code Converter & Audio Player
+URL: https://anantastra.vercel.app/tools/converters/morse-code-converter
+URL: https://anantastra.vercel.app/morse-code-converter
+--------------------------------------------------------------------------------
+Purpose: Bidirectional translation between alphanumeric text and International Morse Code (ITU recommendation) with sound playback.
+
+Timing Specifications:
+   - 1 Dit = 1 time unit = 1200 / WPM milliseconds.
+   - 1 Dah = 3 time units.
+   - Intra-character gap (between dits/dahs) = 1 time unit.
+   - Inter-character gap (between letters) = 3 time units.
+   - Inter-word gap (between words) = 7 time units.
+   - Audio synthesized via Web Audio API `OscillatorNode` at customizable frequencies (400Hz - 900Hz).
+
+
+--------------------------------------------------------------------------------
+2.13. Random Morse Code Audio Generator
+URL: https://anantastra.vercel.app/tools/code-text-tools/random-morse-generator
+--------------------------------------------------------------------------------
+Purpose: Morse code ear-training utility for amateur radio operators (CW).
+
+Methodologies:
+   - Koch Method: Trains full-speed character reception (20 WPM) starting with just 2 characters, adding more only upon reaching 90% accuracy.
+   - Farnsworth Spacing: Keeps individual character speed high while expanding inter-character silence for cognitive processing.
+
+
+--------------------------------------------------------------------------------
+2.14. Prime Number Checker & Factorization Engine
+URL: https://anantastra.vercel.app/tools/checkers/prime-checker
+URL: https://anantastra.vercel.app/prime-checker
+--------------------------------------------------------------------------------
+Purpose: Tests integers for primality, computes prime factorization, and finds nearest twin primes.
+
+Algorithm:
+   - Deterministic trial division for small numbers up to sqrt(n) with 6k +/- 1 step optimization.
+   - Miller-Rabin probabilistic test for large integers to ensure fast execution without browser freezing.
+   - Generates unique prime factors and canonical prime decomposition (e.g., 360 = 2^3 * 3^2 * 5^1).
+
+
+--------------------------------------------------------------------------------
+2.15. Palindrome Checker
+URL: https://anantastra.vercel.app/tools/checkers/palindrome-checker
+--------------------------------------------------------------------------------
+Purpose: Evaluates text, phrases, numbers, and sequences for palindromic symmetry.
+
+Algorithm:
+   - Two-pointer collision algorithm running in O(n) time and O(1) auxiliary space.
+   - Configurable options: ignore case, ignore punctuation/spaces, ignore diacritics.
+   - Calculates minimum character insertions/deletions required to form a palindrome.
+
+
+--------------------------------------------------------------------------------
+2.16. Gregorian Leap Year Checker
+URL: https://anantastra.vercel.app/tools/checkers/leap-year-checker
+--------------------------------------------------------------------------------
+Purpose: Verifies leap years according to the Gregorian calendar 400-year cycle.
+
+Mathematical Rule:
+   A year is a leap year if and only if:
+   (Year mod 4 == 0 AND Year mod 100 != 0) OR (Year mod 400 == 0)
+Examples:
+   - 2024: Leap year (divisible by 4, not by 100).
+   - 1900: Common year (divisible by 100, not by 400).
+   - 2000: Leap year (divisible by 400).
+   - 2100: Common year (divisible by 100, not by 400).
+
+
+--------------------------------------------------------------------------------
+2.17. Arbitrary Precision Factorial & Combinatorics Calculator
+URL: https://anantastra.vercel.app/tools/calculator/factorial-calculator
+--------------------------------------------------------------------------------
+Purpose: Computes exact factorials, permutations, and combinations for large integers without JavaScript IEEE-754 64-bit float precision loss.
+
+Mathematical Definitions:
+   - Factorial: n! = 1 * 2 * 3 * ... * n
+   - Permutations: P(n, r) = n! / (n - r)!
+   - Combinations: C(n, r) = n! / [ r! * (n - r)! ]
+Implementation uses JavaScript `BigInt` allowing exact computation of 1000! and beyond.
+
+
+--------------------------------------------------------------------------------
+2.18. Decimal, Binary, Hexadecimal & Octal Calculator
+URL: https://anantastra.vercel.app/tools/calculator/decimal-binary-calculator
+--------------------------------------------------------------------------------
+Purpose: Multi-radix positional numbering system converter for computing and systems programming.
+
+Conversions:
+   - Decimal (Base 10) <-> Binary (Base 2)
+   - Decimal (Base 10) <-> Hexadecimal (Base 16)
+   - Decimal (Base 10) <-> Octal (Base 8)
+   - Signed Two's Complement representation for 8-bit, 16-bit, 32-bit, and 64-bit integer widths.
+   - Bitwise AND, OR, XOR, NOT, and bit-shift calculators.
+
+
+--------------------------------------------------------------------------------
+2.19. Body Mass Index (BMI) Calculator
+URL: https://anantastra.vercel.app/tools/calculator/bmi-calculator
+--------------------------------------------------------------------------------
+Purpose: Evaluates body weight relative to height according to World Health Organization (WHO) classifications.
+
+Formulas:
+   - Metric: BMI = weight (kg) / [ height (m) ]^2
+   - Imperial: BMI = 703 * weight (lbs) / [ height (in) ]^2
+
+WHO Classifications:
+   - Underweight: BMI < 18.5
+   - Normal weight: 18.5 <= BMI < 25.0
+   - Overweight: 25.0 <= BMI < 30.0
+   - Obesity Class I: 30.0 <= BMI < 35.0
+   - Obesity Class II: 35.0 <= BMI < 40.0
+   - Obesity Class III: BMI >= 40.0
+
+
+--------------------------------------------------------------------------------
+2.20. Chronological Age & Biological Milestones Calculator
+URL: https://anantastra.vercel.app/tools/calculator/age-calculator
+--------------------------------------------------------------------------------
+Purpose: Calculates exact chronological age and biological milestones.
+
+Metrics:
+   - Age in years, months, days, hours, and minutes.
+   - Total days, total hours, and total minutes lived.
+   - Total estimated heartbeats (assuming resting rate of ~75 bpm).
+   - Total estimated breaths (assuming ~16 breaths per minute).
+   - Countdown to next birthday.
+
+
+--------------------------------------------------------------------------------
+2.21. Number to Words Converter (Indian & International)
+URL: https://anantastra.vercel.app/tools/converters/number-words-converter
+--------------------------------------------------------------------------------
+Purpose: Translates numeric values into formal written English for cheques, invoices, and contracts.
+
+Supported Systems:
+   - Indian Numbering System: Thousands, Lakhs (10^5), Crores (10^7), Arba (10^9), Kharba (10^11).
+   - International Numbering System: Thousands, Millions (10^6), Billions (10^9), Trillions (10^12).
+   - Cheque Format: Prefixes currency (e.g. "Rupees") and appends "Only" suffix.
+
+
+--------------------------------------------------------------------------------
+2.22. Multi-Category Physical Unit Converter
+URL: https://anantastra.vercel.app/tools/converters/unit-converter
+--------------------------------------------------------------------------------
+Purpose: High-precision unit conversion across 8 scientific and engineering categories.
+
+Categories:
+   - Length: Meter, Kilometer, Centimeter, Millimeter, Mile, Yard, Foot, Inch, Nautical Mile.
+   - Mass: Kilogram, Gram, Milligram, Metric Ton, Pound, Ounce, Stone.
+   - Temperature: Celsius, Fahrenheit, Kelvin (C = (F-32)*5/9, K = C + 273.15).
+   - Digital Storage: Bits, Bytes, KB, MB, GB, TB, PB (10^3) and KiB, MiB, GiB, TiB, PiB (2^10).
+   - Area: Square Meter, Square Kilometer, Square Foot, Acre, Hectare.
+   - Volume: Liter, Milliliter, Gallon (US), Quart, Pint, Cup.
+   - Speed: m/s, km/h, mph, knot.
+   - Time: Seconds, Minutes, Hours, Days, Weeks, Months, Years.
+
+
+================================================================================
+3. TECHNICAL KNOWLEDGE BASE & ARTICLES (25 GUIDES)
+================================================================================
+
+1. New vs Old Tax Regime FY 2025-26
+   URL: https://anantastra.vercel.app/blog/new-vs-old-tax-regime-fy-2025-26
+   Key Concepts: Section 115BAC revision, standard deduction increase from ₹50,000 to ₹75,000, Section 87A rebate increase to ₹7.75 Lakhs, marginal relief formulas, breakeven deductions threshold (~₹4,25,000 in Old Regime to beat New Regime at ₹15 Lakhs income).
+
+2. How to Calculate GST Online: Inclusive vs Exclusive Tax Formula Explained
+   URL: https://anantastra.vercel.app/blog/how-to-calculate-gst-inclusive-exclusive-formula
+   Key Concepts: Derivation of GST inclusive extraction formula (Base = Gross * 100 / (100 + R)), CGST/SGST/IGST apportioning, invoicing compliance, common accounting reconciliation errors.
+
+3. How Home Loan EMI is Calculated: Mathematical Formula & Amortization
+   URL: https://anantastra.vercel.app/blog/home-loan-emi-calculation-formula-amortization
+   Key Concepts: Annuity formula derivation, reducing-balance method, front-loaded interest phenomena, prepayment mathematics (making one extra EMI per year reduces a 20-year loan by 4+ years).
+
+4. The Power of Compounding: How a ₹5,000 Monthly SIP Creates ₹1 Crore
+   URL: https://anantastra.vercel.app/blog/sip-calculator-compound-interest-1-crore
+   Key Concepts: Time value of money, compound growth curve exponential acceleration, 15*15*15 rule (₹15,000/mo at 15% for 15 years = ₹1 Crore), step-up SIP multiplier effects.
+
+5. How Long Would It Take a Supercomputer to Crack Your Password in 2026?
+   URL: https://anantastra.vercel.app/blog/how-long-to-crack-password-entropy-guide
+   Key Concepts: Password entropy (Shannon equation H = L*log2(N)), hash cracking rates on GPU clusters (Hashcat on 8x RTX 4090), MD5/SHA256/bcrypt comparisons, Diceware passphrase defense.
+
+6. Why You Should Never Use Online Formatters for Sensitive JSON Data
+   URL: https://anantastra.vercel.app/blog/why-offline-json-formatter-safer-for-developers
+   Key Concepts: Security risks of server-side formatters (logging, MITM, clipboard inspection), compliance with GDPR/SOC2, client-side web utility architectures.
+
+7. Simple vs Compound Interest: Which Makes You Richer?
+   URL: https://anantastra.vercel.app/blog/simple-vs-compound-interest-formula-guide
+   Key Concepts: Linear vs exponential growth curves, Rule of 72 for doubling time, impact of compounding frequencies (daily vs annual), Effective Annual Rate (EAR).
+
+8. How to Write Numbers in Words for Bank Cheques, Invoices, and Contracts
+   URL: https://anantastra.vercel.app/blog/how-to-write-numbers-in-words-cheque-rules
+   Key Concepts: RBI cheque guidelines, prevention of cheque fraud with "Only" suffix, Indian comma notation (12,34,567) vs Western notation (1,234,567).
+
+9. How to Convert SVG to PNG and WebP Without Losing Resolution
+   URL: https://anantastra.vercel.app/blog/svg-to-png-webp-conversion-retina-guide
+   Key Concepts: Vector vs raster graphics, XML DOM parser in browser, HTML5 Canvas `drawImage`, DPI scaling multipliers for high-density Retina screens.
+
+10. The Complete International Morse Code Guide: Alphabet, Timing, & History
+    URL: https://anantastra.vercel.app/blog/international-morse-code-alphabet-sound-guide
+    Key Concepts: ITU-R M.1677 standard, dit/dah ratio (1:3), spacing rules, origin of SOS (... --- ...), emergency maritime signaling.
+
+11. Markdown to HTML: Why Modern Developers Are Ditching Rich Text Editors
+    URL: https://anantastra.vercel.app/blog/markdown-to-html-syntax-developer-cheatsheet
+    Key Concepts: GFM specification, AST parsing, why plain text avoids WYSIWYG markup bloat, table formatting, task list specifications.
+
+12. How Binary, Decimal, and Hexadecimal Number Systems Work in Computing
+    URL: https://anantastra.vercel.app/blog/binary-decimal-hexadecimal-conversion-guide
+    Key Concepts: Positional notation base r, repeated division by radix, hex byte representation (2 hex digits = 1 byte), Two's complement integer storage.
+
+13. What is a Healthy BMI for Men and Women? The Truth Behind BMI
+    URL: https://anantastra.vercel.app/blog/healthy-bmi-ranges-men-women-calculator-guide
+    Key Concepts: Adolphe Quetelet index, WHO standards, limitations regarding bone density and athletic muscle mass, waist-to-height ratio alternatives.
+
+14. How Leap Years Work: Why 2100 is NOT a Leap Year
+    URL: https://anantastra.vercel.app/blog/why-2100-is-not-a-leap-year-calendar-math
+    Key Concepts: Astronomical tropical year (365.24219 days), Julian calendar calendar drift, Gregorian 400-year correction, calendar algorithm implementation.
+
+15. Prime Numbers in Cryptography: How Primes Protect RSA and Banking
+    URL: https://anantastra.vercel.app/blog/prime-numbers-cryptography-rsa-encryption
+    Key Concepts: Fundamental Theorem of Arithmetic, one-way trapdoor functions, Euler's totient function, key generation in RSA-2048, post-quantum cryptography outlook.
+
+16. The Mystery of Palindromes: From Ancient Sator Squares to Genetic DNA
+    URL: https://anantastra.vercel.app/blog/mystery-of-palindromes-literature-to-dna
+    Key Concepts: Sator square history, two-pointer string reversal algorithm, DNA restriction enzyme recognition palindromes, CRISPR sequence symmetry.
+
+17. Factorials and Permutations: Shuffling a Deck of 52 Cards
+    URL: https://anantastra.vercel.app/blog/factorials-permutations-deck-of-cards-math
+    Key Concepts: 52! magnitude (~8.0658 * 10^67), uniqueness of every proper shuffle, Stirling's approximation, combinatorial explosion in cryptography.
+
+18. How to Track and Diff Text Changes: Git Diff, Myers Algorithm, and LCS
+    URL: https://anantastra.vercel.app/blog/how-text-diff-myers-algorithm-works
+    Key Concepts: Shortest Edit Script (SES), edit graph traversal, Longest Common Subsequence (LCS), greedy diagonal advancement in O(ND) time.
+
+19. Data Storage Conversion: Why Your 1TB Hard Drive Only Shows 931GB
+    URL: https://anantastra.vercel.app/blog/why-1tb-hard-drive-shows-931gb-storage-guide
+    Key Concepts: SI decimal prefixes (10^12 bytes) vs IEC binary prefixes (2^40 bytes), Windows legacy GiB display labelled as "GB", file system metadata overhead.
+
+20. Password Hygiene and Credential Rot: When and Why You Must Rotate Passwords
+    URL: https://anantastra.vercel.app/blog/password-age-hygiene-nist-credential-rotation
+    Key Concepts: NIST Special Publication 800-63B guidelines, vulnerability of forced periodic rotations (leads to predictable substitutions), Passkeys and FIDO2 authentication.
+
+21. How Age Calculators Work: Chronological Precision & Biological Milestones
+    URL: https://anantastra.vercel.app/blog/age-calculator-chronological-biological-milestones
+    Key Concepts: Gregorian date difference algorithms, leap year day compensation, biological estimations for heartbeats, breaths, and circadian rhythms.
+
+22. Currency Exchange Rates Explained: How Global Forex Markets Work
+    URL: https://anantastra.vercel.app/blog/currency-exchange-rates-forex-markets-guide
+    Key Concepts: Floating vs pegged currencies, bid-ask spread, central bank interest rate parity, purchasing power parity (PPP), geopolitical influence on forex.
+
+23. Text Case Conventions in Programming: camelCase, snake_case, kebab-case
+    URL: https://anantastra.vercel.app/blog/text-case-converter-camelcase-snake-case-kebab-case
+    Key Concepts: Case conventions across programming languages, SEO URL slug hyphenation, SQL casing best practices, automated string transformation regex.
+
+24. Morse Code Generator & Audio Training: Koch Method & Farnsworth Timing
+    URL: https://anantastra.vercel.app/blog/morse-code-generator-audio-training-techniques
+    Key Concepts: Ludwig Koch training methodology, Farnsworth character spacing, rhythm and pitch perception, cognitive tone association.
+
+25. Is AnantAstra Really Open Source? Zero-Telemetry Architecture
+    URL: https://anantastra.vercel.app/blog/is-anantastra-really-open-source
+    Key Concepts: Auditable open-source code under MIT license, client-side browser execution, verification of zero network traffic via browser DevTools.
+
+
+================================================================================
+4. MACHINE-READABLE ENDPOINTS & DISCOVERY
+================================================================================
+
+- Base Domain: https://anantastra.vercel.app
+- Human Sitemap Hub: https://anantastra.vercel.app/tools
+- Blog Directory Hub: https://anantastra.vercel.app/blog
+- XML Sitemap: https://anantastra.vercel.app/sitemap.xml
+- Programmatic JSON Sitemap: https://anantastra.vercel.app/api/sitemap?format=json
+- Robots Directives: https://anantastra.vercel.app/robots.txt
+- Standard LLM Reference: https://anantastra.vercel.app/llms.txt
+- Deep Technical Reference: https://anantastra.vercel.app/llms-full.txt
+- GitHub Source Repository: https://github.com/Uniquearjav/anantastra

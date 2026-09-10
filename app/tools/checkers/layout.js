@@ -1,13 +1,28 @@
+import Link from "next/link";
+import { ChevronRight, ArrowLeft } from "lucide-react";
+
 export default function CheckersLayout({ children }) {
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-green-600 dark:text-green-400">Checkers</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Validation tools to check and analyze various inputs
-        </p>
+    <div className="min-h-screen">
+      <div className="border-b border-border/40 bg-muted/20">
+        <div className="container mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Link href="/tools" className="hover:text-foreground transition-colors">
+              Tools
+            </Link>
+            <ChevronRight className="h-3 w-3 opacity-50" />
+            <span className="font-medium text-foreground">Checkers & Validation</span>
+          </div>
+          <Link
+            href="/tools"
+            className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-3 w-3" />
+            <span>All Tools</span>
+          </Link>
+        </div>
       </div>
-      {children}
+      <div className="py-6 sm:py-8">{children}</div>
     </div>
   );
 }

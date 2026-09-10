@@ -1,373 +1,487 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { 
+  ArrowLeftRight, 
+  Ruler, 
+  HardDrive, 
+  Scale, 
+  Thermometer, 
+  Gauge, 
+  Clock, 
+  Boxes, 
+  Maximize2, 
+  Copy, 
+  Check, 
+  ShieldCheck, 
+  Info 
+} from 'lucide-react';
+
+const CATEGORIES = {
+  length: {
+    name: 'Length & Distance',
+    icon: Ruler,
+    base: 'meter',
+    units: {
+      kilometer: { name: 'Kilometer', symbol: 'km', toBase: 1000 },
+      meter: { name: 'Meter', symbol: 'm', toBase: 1 },
+      centimeter: { name: 'Centimeter', symbol: 'cm', toBase: 0.01 },
+      millimeter: { name: 'Millimeter', symbol: 'mm', toBase: 0.001 },
+      mile: { name: 'Mile', symbol: 'mi', toBase: 1609.344 },
+      yard: { name: 'Yard', symbol: 'yd', toBase: 0.9144 },
+      foot: { name: 'Foot', symbol: 'ft', toBase: 0.3048 },
+      inch: { name: 'Inch', symbol: 'in', toBase: 0.0254 },
+      nautical_mile: { name: 'Nautical Mile', symbol: 'nmi', toBase: 1852 },
+    },
+    defaultFrom: 'meter',
+    defaultTo: 'foot',
+  },
+  storage: {
+    name: 'Digital Storage',
+    icon: HardDrive,
+    base: 'byte',
+    units: {
+      bit: { name: 'Bit', symbol: 'b', toBase: 0.125 },
+      byte: { name: 'Byte', symbol: 'B', toBase: 1 },
+      kilobyte: { name: 'Kilobyte', symbol: 'KB', toBase: 1024 },
+      megabyte: { name: 'Megabyte', symbol: 'MB', toBase: 1024 ** 2 },
+      gigabyte: { name: 'Gigabyte', symbol: 'GB', toBase: 1024 ** 3 },
+      terabyte: { name: 'Terabyte', symbol: 'TB', toBase: 1024 ** 4 },
+      petabyte: { name: 'Petabyte', symbol: 'PB', toBase: 1024 ** 5 },
+    },
+    defaultFrom: 'gigabyte',
+    defaultTo: 'megabyte',
+  },
+  weight: {
+    name: 'Weight & Mass',
+    icon: Scale,
+    base: 'gram',
+    units: {
+      metric_ton: { name: 'Metric Ton', symbol: 't', toBase: 1000000 },
+      kilogram: { name: 'Kilogram', symbol: 'kg', toBase: 1000 },
+      gram: { name: 'Gram', symbol: 'g', toBase: 1 },
+      milligram: { name: 'Milligram', symbol: 'mg', toBase: 0.001 },
+      pound: { name: 'Pound', symbol: 'lb', toBase: 453.59237 },
+      ounce: { name: 'Ounce', symbol: 'oz', toBase: 28.34952 },
+      stone: { name: 'Stone', symbol: 'st', toBase: 6350.29318 },
+    },
+    defaultFrom: 'kilogram',
+    defaultTo: 'pound',
+  },
+  temperature: {
+    name: 'Temperature',
+    icon: Thermometer,
+    isSpecial: true,
+    units: {
+      celsius: { name: 'Celsius', symbol: '°C' },
+      fahrenheit: { name: 'Fahrenheit', symbol: '°F' },
+      kelvin: { name: 'Kelvin', symbol: 'K' },
+    },
+    defaultFrom: 'celsius',
+    defaultTo: 'fahrenheit',
+  },
+  speed: {
+    name: 'Speed',
+    icon: Gauge,
+    base: 'mps',
+    units: {
+      mps: { name: 'Meters per second', symbol: 'm/s', toBase: 1 },
+      kmh: { name: 'Kilometers per hour', symbol: 'km/h', toBase: 1 / 3.6 },
+      mph: { name: 'Miles per hour', symbol: 'mph', toBase: 0.44704 },
+      knot: { name: 'Knot', symbol: 'kn', toBase: 0.514444 },
+    },
+    defaultFrom: 'kmh',
+    defaultTo: 'mph',
+  },
+  area: {
+    name: 'Area',
+    icon: Maximize2,
+    base: 'sqm',
+    units: {
+      sqm: { name: 'Square Meter', symbol: 'm²', toBase: 1 },
+      sqkm: { name: 'Square Kilometer', symbol: 'km²', toBase: 1000000 },
+      sqft: { name: 'Square Foot', symbol: 'ft²', toBase: 0.092903 },
+      acre: { name: 'Acre', symbol: 'ac', toBase: 4046.85642 },
+      hectare: { name: 'Hectare', symbol: 'ha', toBase: 10000 },
+      sqmi: { name: 'Square Mile', symbol: 'mi²', toBase: 2589988.11 },
+    },
+    defaultFrom: 'sqm',
+    defaultTo: 'sqft',
+  },
+  volume: {
+    name: 'Volume',
+    icon: Boxes,
+    base: 'liter',
+    units: {
+      cubic_meter: { name: 'Cubic Meter', symbol: 'm³', toBase: 1000 },
+      liter: { name: 'Liter', symbol: 'L', toBase: 1 },
+      milliliter: { name: 'Milliliter', symbol: 'mL', toBase: 0.001 },
+      gallon_us: { name: 'Gallon (US)', symbol: 'gal', toBase: 3.78541 },
+      quart_us: { name: 'Quart (US)', symbol: 'qt', toBase: 0.946353 },
+      pint_us: { name: 'Pint (US)', symbol: 'pt', toBase: 0.473176 },
+      cup_us: { name: 'Cup (US)', symbol: 'cup', toBase: 0.236588 },
+      floz_us: { name: 'Fluid Ounce (US)', symbol: 'fl oz', toBase: 0.0295735 },
+    },
+    defaultFrom: 'liter',
+    defaultTo: 'gallon_us',
+  },
+  time: {
+    name: 'Time',
+    icon: Clock,
+    base: 'second',
+    units: {
+      second: { name: 'Second', symbol: 's', toBase: 1 },
+      minute: { name: 'Minute', symbol: 'min', toBase: 60 },
+      hour: { name: 'Hour', symbol: 'h', toBase: 3600 },
+      day: { name: 'Day', symbol: 'd', toBase: 86400 },
+      week: { name: 'Week', symbol: 'wk', toBase: 604800 },
+      month: { name: 'Month (30d)', symbol: 'mo', toBase: 2592000 },
+      year: { name: 'Year (365d)', symbol: 'yr', toBase: 31536000 },
+    },
+    defaultFrom: 'hour',
+    defaultTo: 'minute',
+  },
+};
 
 export default function UnitConverter() {
-  const [category, setCategory] = useState("length");
-  const [fromUnit, setFromUnit] = useState("meter");
-  const [toUnit, setToUnit] = useState("foot");
-  const [value, setValue] = useState("1");
-  const [result, setResult] = useState("3.28084");
+  const [categoryKey, setCategoryKey] = useState('length');
+  const [valInput, setValInput] = useState('1');
+  const [fromUnit, setFromUnit] = useState('meter');
+  const [toUnit, setToUnit] = useState('foot');
+  const [copied, setCopied] = useState(false);
 
-  // Define conversion units and factors
-  const unitCategories = {
-    length: {
-      name: "Length",
-      units: {
-        meter: { name: "Meter (m)", factor: 1 },
-        kilometer: { name: "Kilometer (km)", factor: 0.001 },
-        centimeter: { name: "Centimeter (cm)", factor: 100 },
-        millimeter: { name: "Millimeter (mm)", factor: 1000 },
-        inch: { name: "Inch (in)", factor: 39.3701 },
-        foot: { name: "Foot (ft)", factor: 3.28084 },
-        yard: { name: "Yard (yd)", factor: 1.09361 },
-        mile: { name: "Mile (mi)", factor: 0.000621371 },
-      },
-    },
-    weight: {
-      name: "Weight",
-      units: {
-        kilogram: { name: "Kilogram (kg)", factor: 1 },
-        gram: { name: "Gram (g)", factor: 1000 },
-        milligram: { name: "Milligram (mg)", factor: 1000000 },
-        pound: { name: "Pound (lb)", factor: 2.20462 },
-        ounce: { name: "Ounce (oz)", factor: 35.274 },
-        stone: { name: "Stone (st)", factor: 0.157473 },
-        ton: { name: "Metric Ton (t)", factor: 0.001 },
-      },
-    },
-    temperature: {
-      name: "Temperature",
-      units: {
-        celsius: { name: "Celsius (°C)", factor: 1 },
-        fahrenheit: { name: "Fahrenheit (°F)", factor: 1 },
-        kelvin: { name: "Kelvin (K)", factor: 1 },
-      },
-    },
-    volume: {
-      name: "Volume",
-      units: {
-        liter: { name: "Liter (L)", factor: 1 },
-        milliliter: { name: "Milliliter (mL)", factor: 1000 },
-        cubicMeter: { name: "Cubic Meter (m³)", factor: 0.001 },
-        gallon: { name: "Gallon (US gal)", factor: 0.264172 },
-        quart: { name: "Quart (US qt)", factor: 1.05669 },
-        pint: { name: "Pint (US pt)", factor: 2.11338 },
-        cup: { name: "Cup (US cup)", factor: 4.22675 },
-        fluidOunce: { name: "Fluid Ounce (US fl oz)", factor: 33.814 },
-        tablespoon: { name: "Tablespoon (US tbsp)", factor: 67.628 },
-        teaspoon: { name: "Teaspoon (US tsp)", factor: 202.884 },
-      },
-    },
-    area: {
-      name: "Area",
-      units: {
-        squareMeter: { name: "Square Meter (m²)", factor: 1 },
-        squareFoot: { name: "Square Foot (ft²)", factor: 10.7639 },
-        squareInch: { name: "Square Inch (in²)", factor: 1550 },
-        squareKilometer: { name: "Square Kilometer (km²)", factor: 0.000001 },
-        hectare: { name: "Hectare (ha)", factor: 0.0001 },
-        acre: { name: "Acre", factor: 0.000247105 },
-        squareMile: { name: "Square Mile (mi²)", factor: 3.861e-7 },
-      },
-    },
-    speed: {
-      name: "Speed",
-      units: {
-        meterPerSecond: { name: "Meter per Second (m/s)", factor: 1 },
-        kilometerPerHour: { name: "Kilometer per Hour (km/h)", factor: 3.6 },
-        milePerHour: { name: "Mile per Hour (mph)", factor: 2.23694 },
-        knot: { name: "Knot (kn)", factor: 1.94384 },
-        foot_per_second: { name: "Foot per Second (ft/s)", factor: 3.28084 },
-      },
-    },
-    time: {
-      name: "Time",
-      units: {
-        second: { name: "Second (s)", factor: 1 },
-        minute: { name: "Minute (min)", factor: 1/60 },
-        hour: { name: "Hour (h)", factor: 1/3600 },
-        day: { name: "Day (d)", factor: 1/86400 },
-        week: { name: "Week (wk)", factor: 1/604800 },
-        month: { name: "Month (mo, 30 days)", factor: 1/2592000 },
-        year: { name: "Year (yr, 365 days)", factor: 1/31536000 },
-      },
-    },
+  const activeCategory = CATEGORIES[categoryKey];
+
+  // Helper for temperature conversions
+  const convertTemp = (v, from, to) => {
+    let c = v;
+    if (from === 'fahrenheit') c = (v - 32) * (5 / 9);
+    else if (from === 'kelvin') c = v - 273.15;
+
+    if (to === 'celsius') return c;
+    if (to === 'fahrenheit') return (c * 9) / 5 + 32;
+    if (to === 'kelvin') return c + 273.15;
+    return c;
   };
 
-  const handleCategoryChange = (newCategory) => {
-    setCategory(newCategory);
-    
-    // Set default units for the new category
-    const units = Object.keys(unitCategories[newCategory].units);
-    setFromUnit(units[0]);
-    setToUnit(units.length > 1 ? units[1] : units[0]);
-    
-    // Reset input values
-    setValue("1");
-    
-    // Trigger conversion with new units
-    setTimeout(() => convert("1", units[0], units.length > 1 ? units[1] : units[0], newCategory), 0);
+  const handleCategorySwitch = (catKey) => {
+    setCategoryKey(catKey);
+    setFromUnit(CATEGORIES[catKey].defaultFrom);
+    setToUnit(CATEGORIES[catKey].defaultTo);
   };
 
-  const handleSwapUnits = () => {
-    // Swap the from/to units
-    const tempFromUnit = fromUnit;
+  const handleSwap = () => {
     setFromUnit(toUnit);
-    setToUnit(tempFromUnit);
-    
-    // Trigger conversion with swapped units
-    setTimeout(() => convert(value, toUnit, fromUnit, category), 0);
+    setToUnit(fromUnit);
   };
 
-  const convert = (value, from, to, cat) => {
-    if (!value || isNaN(parseFloat(value))) {
-      setResult("");
-      return;
+  const parsedVal = parseFloat(valInput);
+  const isValidVal = !isNaN(parsedVal);
+
+  const formatNumber = (num) => {
+    if (num === null || isNaN(num)) return '';
+    if (Math.abs(num) >= 1e9 || (Math.abs(num) < 1e-4 && num !== 0)) {
+      return num.toExponential(6);
+    }
+    return Number(num.toPrecision(8)).toString();
+  };
+
+  // Compute conversion
+  const conversion = useMemo(() => {
+    if (!isValidVal) return null;
+
+    let targetValue = 0;
+    if (activeCategory.isSpecial && categoryKey === 'temperature') {
+      targetValue = convertTemp(parsedVal, fromUnit, toUnit);
+    } else {
+      const fromFactor = activeCategory.units[fromUnit]?.toBase || 1;
+      const toFactor = activeCategory.units[toUnit]?.toBase || 1;
+      const baseValue = parsedVal * fromFactor;
+      targetValue = baseValue / toFactor;
     }
 
-    const inputValue = parseFloat(value);
-    let resultValue;
-    
-    // Special case for temperature which doesn't use direct conversion factors
-    if (cat === "temperature") {
-      if (from === to) {
-        resultValue = inputValue;
-      } else if (from === "celsius" && to === "fahrenheit") {
-        resultValue = (inputValue * 9/5) + 32;
-      } else if (from === "celsius" && to === "kelvin") {
-        resultValue = inputValue + 273.15;
-      } else if (from === "fahrenheit" && to === "celsius") {
-        resultValue = (inputValue - 32) * 5/9;
-      } else if (from === "fahrenheit" && to === "kelvin") {
-        resultValue = (inputValue - 32) * 5/9 + 273.15;
-      } else if (from === "kelvin" && to === "celsius") {
-        resultValue = inputValue - 273.15;
-      } else if (from === "kelvin" && to === "fahrenheit") {
-        resultValue = (inputValue - 273.15) * 9/5 + 32;
+    // All units matrix
+    const matrix = Object.entries(activeCategory.units).map(([uKey, uData]) => {
+      let val = 0;
+      if (activeCategory.isSpecial && categoryKey === 'temperature') {
+        val = convertTemp(parsedVal, fromUnit, uKey);
+      } else {
+        const fromFactor = activeCategory.units[fromUnit]?.toBase || 1;
+        const toFactor = uData.toBase || 1;
+        val = (parsedVal * fromFactor) / toFactor;
       }
-    } else {
-      // For other categories, we use the standard conversion formula:
-      // First convert to the base unit, then convert to the target unit
-      const fromFactor = unitCategories[cat].units[from].factor;
-      const toFactor = unitCategories[cat].units[to].factor;
-      resultValue = (inputValue * toFactor) / fromFactor;
-    }
-    
-    // Format the result based on its magnitude
-    let formatted;
-    if (Math.abs(resultValue) >= 1000000 || Math.abs(resultValue) < 0.001 && resultValue !== 0) {
-      formatted = resultValue.toExponential(6);
-    } else {
-      const decimalPlaces = Math.min(10, Math.max(2, 6 - Math.floor(Math.log10(Math.abs(resultValue) || 1))));
-      formatted = resultValue.toFixed(decimalPlaces);
-    }
-    
-    setResult(formatted);
-  };
+      return {
+        key: uKey,
+        name: uData.name,
+        symbol: uData.symbol,
+        value: val,
+        formatted: formatNumber(val)
+      };
+    });
 
-  // Handle input changes
-  const handleValueChange = (e) => {
-    const newValue = e.target.value;
-    setValue(newValue);
-    convert(newValue, fromUnit, toUnit, category);
-  };
+    return {
+      targetValue,
+      formattedTarget: formatNumber(targetValue),
+      matrix
+    };
+  }, [parsedVal, isValidVal, fromUnit, toUnit, activeCategory, categoryKey]);
 
-  const handleFromUnitChange = (e) => {
-    const newUnit = e.target.value;
-    setFromUnit(newUnit);
-    convert(value, newUnit, toUnit, category);
-  };
-
-  const handleToUnitChange = (e) => {
-    const newUnit = e.target.value;
-    setToUnit(newUnit);
-    convert(value, fromUnit, newUnit, category);
+  const handleCopy = () => {
+    if (!conversion) return;
+    const text = `${valInput} ${activeCategory.units[fromUnit]?.symbol} = ${conversion.formattedTarget} ${activeCategory.units[toUnit]?.symbol}`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Unit Converter</h1>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-        {/* Category selection */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Select Category</label>
-          <div className="flex flex-wrap gap-2">
-            {Object.keys(unitCategories).map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryChange(cat)}
-                className={`px-3 py-1.5 text-sm rounded-lg ${
-                  category === cat
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                }`}
-              >
-                {unitCategories[cat].name}
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* From unit */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium" htmlFor="fromValue">
-              From
-            </label>
-            <Input
-              id="fromValue"
-              type="number"
-              value={value}
-              onChange={handleValueChange}
-              className="w-full mb-2"
-            />
-            <select
-              value={fromUnit}
-              onChange={handleFromUnitChange}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-            >
-              {Object.keys(unitCategories[category].units).map((unit) => (
-                <option key={unit} value={unit}>
-                  {unitCategories[category].units[unit].name}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Swap button */}
-          <div className="flex items-center justify-center hidden md:flex">
-            <Button
-              onClick={handleSwapUnits}
-              variant="ghost"
-              size="icon"
-              className="rounded-full self-center mt-8"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 1l4 4-4 4"></path>
-                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                <path d="M7 23l-4-4 4-4"></path>
-                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-              </svg>
-            </Button>
-          </div>
-          
-          {/* Mobile swap button */}
-          <div className="flex justify-center md:hidden">
-            <Button
-              onClick={handleSwapUnits}
-              variant="ghost"
-              size="sm"
-              className="my-2"
-            >
-              <svg className="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 16V4m0 0L3 8m4-4l4 4"></path>
-                <path d="M17 8v12m0 0l4-4m-4 4l-4-4"></path>
-              </svg>
-              Swap
-            </Button>
-          </div>
-          
-          {/* To unit */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium" htmlFor="toValue">
-              To
-            </label>
-            <Input
-              id="toValue"
-              type="text"
-              value={result}
-              readOnly
-              className="w-full mb-2 bg-gray-50 dark:bg-gray-700"
-            />
-            <select
-              value={toUnit}
-              onChange={handleToUnitChange}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-            >
-              {Object.keys(unitCategories[category].units).map((unit) => (
-                <option key={unit} value={unit}>
-                  {unitCategories[category].units[unit].name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        
-        {/* Conversion formula */}
-        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <h3 className="font-medium mb-2">Conversion Formula:</h3>
-          {category === "temperature" ? (
-            <div>
-              {fromUnit === "celsius" && toUnit === "fahrenheit" && (
-                <p className="font-mono text-sm">°F = (°C × 9/5) + 32</p>
-              )}
-              {fromUnit === "celsius" && toUnit === "kelvin" && (
-                <p className="font-mono text-sm">K = °C + 273.15</p>
-              )}
-              {fromUnit === "fahrenheit" && toUnit === "celsius" && (
-                <p className="font-mono text-sm">°C = (°F - 32) × 5/9</p>
-              )}
-              {fromUnit === "fahrenheit" && toUnit === "kelvin" && (
-                <p className="font-mono text-sm">K = (°F - 32) × 5/9 + 273.15</p>
-              )}
-              {fromUnit === "kelvin" && toUnit === "celsius" && (
-                <p className="font-mono text-sm">°C = K - 273.15</p>
-              )}
-              {fromUnit === "kelvin" && toUnit === "fahrenheit" && (
-                <p className="font-mono text-sm">°F = (K - 273.15) × 9/5 + 32</p>
-              )}
-              {fromUnit === toUnit && (
-                <p className="font-mono text-sm">No conversion needed</p>
-              )}
-            </div>
-          ) : (
-            <p className="font-mono text-sm">
-              {unitCategories[category].units[toUnit].name.split(' ')[0]} = {unitCategories[category].units[fromUnit].name.split(' ')[0]} × {(unitCategories[category].units[toUnit].factor / unitCategories[category].units[fromUnit].factor).toLocaleString(undefined, { maximumFractionDigits: 8 })}
-            </p>
-          )}
-        </div>
-      </div>
-      
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">About Unit Conversion</h2>
-        <p className="mb-4">
-          Unit conversion is the process of converting measurements from one unit to another within the same system or between different measurement systems.
+    <div className="container mx-auto py-8 px-4 sm:px-6 max-w-5xl">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <Badge variant="outline" className="mb-3 px-3 py-1 font-mono text-xs border-primary/30">
+          <ArrowLeftRight className="w-3.5 h-3.5 mr-1.5 text-primary" />
+          Universal Measurement Engine
+        </Badge>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          Unit Converter
+        </h1>
+        <p className="text-muted-foreground text-sm mt-1 max-w-xl mx-auto">
+          Convert length, storage, weight, temperature, speed, area, volume, and time with high precision and simultaneous multi-unit matrix.
         </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Common Conversion Types:</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Length (meters to feet, inches to centimeters)</li>
-              <li>Weight (kilograms to pounds, ounces to grams)</li>
-              <li>Volume (liters to gallons, cups to milliliters)</li>
-              <li>Temperature (Celsius to Fahrenheit, Kelvin)</li>
-              <li>Area (square meters to acres, square feet)</li>
-              <li>Speed (mph to km/h, m/s to mph)</li>
-              <li>Time (seconds to hours, days to minutes)</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Measurement Systems:</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                <span className="font-medium">Metric System (SI)</span>: Used worldwide, based on powers of 10
-              </li>
-              <li>
-                <span className="font-medium">Imperial System</span>: Used primarily in the US and a few other countries
-              </li>
-              <li>
-                <span className="font-medium">US Customary Units</span>: Similar to imperial but with some differences in volume measurements
-              </li>
-            </ul>
+      </div>
+
+      {/* Category Tabs */}
+      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-8">
+        {Object.entries(CATEGORIES).map(([key, cat]) => {
+          const Icon = cat.icon;
+          const isCurrent = categoryKey === key;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => handleCategorySwitch(key)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
+                isCurrent
+                  ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                  : 'bg-card text-foreground hover:bg-muted border-border/60'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              <span>{cat.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Input Card */}
+        <div className="lg:col-span-7 space-y-6">
+          <Card className="p-6 border-border/60 shadow-xs">
+            <label htmlFor="unit-val" className="text-sm font-semibold text-foreground block mb-2">
+              Value to Convert
+            </label>
+            <Input
+              id="unit-val"
+              type="number"
+              step="any"
+              value={valInput}
+              onChange={(e) => setValInput(e.target.value)}
+              placeholder="1"
+              className="font-mono text-xl py-6"
+            />
+
+            {/* From / To Unit Selectors */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-11 gap-3 items-center">
+              {/* From Unit */}
+              <div className="sm:col-span-5 space-y-1.5">
+                <label htmlFor="from-unit-select" className="text-xs font-medium text-muted-foreground">
+                  From Unit
+                </label>
+                <select
+                  id="from-unit-select"
+                  value={fromUnit}
+                  onChange={(e) => setFromUnit(e.target.value)}
+                  className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {Object.entries(activeCategory.units).map(([code, item]) => (
+                    <option key={code} value={code}>
+                      {item.name} ({item.symbol})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Swap Button */}
+              <div className="sm:col-span-1 flex justify-center pt-5">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleSwap}
+                  className="rounded-full h-10 w-10 shrink-0"
+                  title="Swap Units"
+                >
+                  <ArrowLeftRight className="w-4 h-4" />
+                </Button>
+              </div>
+
+              {/* To Unit */}
+              <div className="sm:col-span-5 space-y-1.5">
+                <label htmlFor="to-unit-select" className="text-xs font-medium text-muted-foreground">
+                  To Unit
+                </label>
+                <select
+                  id="to-unit-select"
+                  value={toUnit}
+                  onChange={(e) => setToUnit(e.target.value)}
+                  className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {Object.entries(activeCategory.units).map(([code, item]) => (
+                    <option key={code} value={code}>
+                      {item.name} ({item.symbol})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Quick Presets for Current Category */}
+            <div className="mt-5 pt-4 border-t border-border/60">
+              <span className="text-xs font-medium text-muted-foreground block mb-2">Quick Values:</span>
+              <div className="flex flex-wrap gap-1.5 font-mono">
+                {['0.1', '1', '5', '10', '50', '100', '1024'].map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setValInput(p)}
+                    className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
+                      valInput === p
+                        ? 'bg-primary text-primary-foreground border-primary font-bold'
+                        : 'bg-muted/30 hover:bg-muted border-border/60 text-foreground'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Copy button */}
+            <div className="mt-5 flex gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopy}
+                disabled={!conversion}
+                className="text-xs"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 mr-1 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 mr-1" />}
+                {copied ? 'Copied Result' : 'Copy Conversion'}
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        {/* Right Output & Multi-Unit Matrix */}
+        <div className="lg:col-span-5 space-y-6">
+          <Card className="p-6 border-border/60 shadow-xs">
+            <h2 className="text-base font-bold text-foreground mb-4">
+              Conversion Result
+            </h2>
+
+            {conversion ? (
+              <div className="space-y-4">
+                {/* Highlight Result */}
+                <div className="p-5 rounded-2xl border border-border/70 bg-card">
+                  <div className="text-xs text-muted-foreground font-mono">
+                    {valInput} {activeCategory.units[fromUnit]?.name} =
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-primary font-mono tracking-tight mt-1.5 break-all">
+                    {conversion.formattedTarget}{' '}
+                    <span className="text-lg font-bold text-muted-foreground">
+                      {activeCategory.units[toUnit]?.symbol}
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {activeCategory.units[toUnit]?.name}
+                  </div>
+                </div>
+
+                {/* All Units Live Matrix */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center justify-between text-xs font-semibold text-foreground mb-2">
+                    <span>All {activeCategory.name} Units:</span>
+                    <span className="text-muted-foreground font-mono">Base: {valInput} {activeCategory.units[fromUnit]?.symbol}</span>
+                  </div>
+
+                  <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                    {conversion.matrix.map((item) => (
+                      <div
+                        key={item.key}
+                        onClick={() => setToUnit(item.key)}
+                        className={`flex items-center justify-between p-2 rounded-lg border cursor-pointer transition-colors text-xs ${
+                          item.key === toUnit
+                            ? 'border-primary bg-primary/5 font-semibold'
+                            : 'border-border/40 hover:bg-muted/30'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-muted-foreground w-10">{item.symbol}</span>
+                          <span className="text-foreground">{item.name}</span>
+                        </div>
+                        <span className="font-mono font-bold text-foreground">
+                          {item.formatted}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-muted-foreground text-sm border border-dashed border-border/60 rounded-xl">
+                Please enter a valid numeric value.
+              </div>
+            )}
+          </Card>
+
+          {/* Privacy badge */}
+          <div className="p-4 rounded-xl border border-border/60 bg-card/60 text-xs text-muted-foreground flex items-center gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>Strictly client-side calculations using standard IEEE 754 precision.</span>
           </div>
         </div>
       </div>
+
+      {/* Standards Guide */}
+      <Card className="mt-8 p-6 border-border/60 shadow-xs">
+        <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+          <Info className="w-5 h-5 text-primary" />
+          Measurement Standards & Conventions
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">SI Metric vs Imperial</h3>
+            <p className="text-xs text-muted-foreground">
+              The International System of Units (SI) is based on powers of 10. Imperial units (US Customary) use historical multiples (12 inches/ft, 3 ft/yd).
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Binary Storage (1024)</h3>
+            <p className="text-xs text-muted-foreground">
+              Digital computing uses binary prefixes where 1 KB = 1,024 Bytes (2¹⁰) and 1 MB = 1,024 KB.
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl border border-border/50 bg-muted/20">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Temperature Scales</h3>
+            <p className="text-xs text-muted-foreground">
+              Celsius is pegged to water phase changes (0°C to 100°C), Kelvin is absolute thermodynamic temperature (0 K = -273.15°C).
+            </p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
