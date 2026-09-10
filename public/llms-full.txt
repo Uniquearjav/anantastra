@@ -513,6 +513,7 @@ Categories:
 - Human Sitemap Hub: https://anantastra.vercel.app/tools
 - Blog Directory Hub: https://anantastra.vercel.app/blog
 - XML Sitemap: https://anantastra.vercel.app/sitemap.xml
+- Plain-Text Sitemap: https://anantastra.vercel.app/sitemap.txt
 - Programmatic JSON Sitemap: https://anantastra.vercel.app/api/sitemap?format=json
 - Robots Directives: https://anantastra.vercel.app/robots.txt
 - Standard LLM Reference: https://anantastra.vercel.app/llms.txt

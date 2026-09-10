@@ -77,6 +77,7 @@ AnantAstra is engineered with Next.js 15, React 19, Tailwind CSS v4, and shadcn/
 ## Machine-Readable & Discovery Endpoints
 
 - [Dynamic XML Sitemap](https://anantastra.vercel.app/sitemap.xml): Complete, search-engine index of all tools, calculators, and articles.
+- [Plain-Text Sitemap](https://anantastra.vercel.app/sitemap.txt): Direct line-by-line list of all canonical URLs.
 - [JSON Sitemap API](https://anantastra.vercel.app/api/sitemap?format=json): Structured programmatic index returning paths, last modification dates, priorities, and change frequencies.
 - [Robots Configuration](https://anantastra.vercel.app/robots.txt): Standard crawler directives permitting global indexing and referencing sitemap resources.
 - [Deep Technical Documentation (llms-full.txt)](https://anantastra.vercel.app/llms-full.txt): Comprehensive technical breakdown with mathematical proofs, algorithm definitions, and complete code specifications.

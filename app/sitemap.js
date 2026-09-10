@@ -46,6 +46,7 @@ const KNOWN_ROUTES = [
   { path: '/privacy', priority: 0.5, changeFrequency: 'yearly' },
   { path: '/llms.txt', priority: 0.8, changeFrequency: 'weekly' },
   { path: '/llms-full.txt', priority: 0.8, changeFrequency: 'weekly' },
+  { path: '/sitemap.txt', priority: 0.8, changeFrequency: 'weekly' },
 ];
 
 // Helper to recursively discover all static routes in the app folder

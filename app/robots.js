@@ -7,7 +7,7 @@ export default function robots() {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/llms.txt', '/llms-full.txt', '/api/sitemap'],
+        allow: ['/', '/llms.txt', '/llms-full.txt', '/sitemap.xml', '/sitemap.txt', '/api/sitemap'],
         disallow: ['/_next/'],
       },
       {
@@ -21,10 +21,13 @@ export default function robots() {
           'cohere-ai',
           'OAI-SearchBot',
         ],
-        allow: ['/', '/llms.txt', '/llms-full.txt'],
+        allow: ['/', '/llms.txt', '/llms-full.txt', '/sitemap.txt'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: [
+      `${baseUrl}/sitemap.xml`,
+      `${baseUrl}/sitemap.txt`,
+    ],
   };
 }
 
