@@ -18,6 +18,9 @@ export const metadata = {
     template: "%s | Anantastra",
   },
   description: "Free, high-speed, open-source utilities that respect your privacy and don't store your data.",
+  verification: {
+    google: "lv3CEWO9JNrtG244JgsIZRiVxQmjeoD73xmDIhA0pKw",
+  },
 };
 
 export default function RootLayout({ children }) {
