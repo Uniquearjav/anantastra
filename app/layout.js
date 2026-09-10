@@ -23,10 +23,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
+      <body
+        className={`${poppins.variable} font-sans antialiased flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary transition-colors duration-200`}
+      >
         {/* Google tag (gtag.js) */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-1KHV99C95M"
+          src="https://www.googletagmanager.com/gtag/js?id=G-WVC4SHJZCB"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -34,13 +36,10 @@ export default function RootLayout({ children }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-1KHV99C95M');
+            gtag('config', 'G-WVC4SHJZCB');
           `}
         </Script>
-      </head>
-      <body
-        className={`${poppins.variable} font-sans antialiased flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary transition-colors duration-200`}
-      >
+
         <ThemeProvider>
           <Header />
           <main className="flex-grow">
