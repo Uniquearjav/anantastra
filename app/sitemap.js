@@ -32,6 +32,7 @@ const KNOWN_ROUTES = [
   { path: '/tools/checkers/json-formatter', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/tools/password-tools/password-generator', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/tools/password-tools/password-age-checker', priority: 0.85, changeFrequency: 'monthly' },
+  { path: '/tools/code-text-tools/seo-article-analyzer', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/tools/code-text-tools/text-difference', priority: 0.85, changeFrequency: 'monthly' },
   { path: '/tools/code-text-tools/random-morse-generator', priority: 0.85, changeFrequency: 'monthly' },
   { path: '/text', priority: 0.85, changeFrequency: 'weekly' },

@@ -62,6 +62,7 @@ export function Footer() {
       title: "Dev & Text Tools",
       icon: Code2,
       links: [
+        { label: "SEO Article Analyzer", href: "/tools/code-text-tools/seo-article-analyzer", badge: "New" },
         { label: "Text Utilities", href: "/text" },
         { label: "Password Generator", href: "/password-generator", badge: "Secure" },
         { label: "Password Age Checker", href: "/tools/password-tools/password-age-checker" },

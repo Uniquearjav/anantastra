@@ -88,6 +88,7 @@ const CATEGORIES = [
     description: "Diff viewers, morse trainers, and text transformers.",
     icon: FileCode,
     tools: [
+      { name: "SEO Article & Keyword Density Analyzer", slug: "seo-article-analyzer", badge: "SEO Tool", desc: "Keyword frequency tracker, word count goals (800/1200/1500), and density auditor" },
       { name: "Text Difference Tool", slug: "text-difference", badge: "LCS Diff", desc: "Side-by-side visual diff comparison with unified patch export" },
       { name: "Random Morse Code Generator", slug: "random-morse-generator", badge: "Ear Training", desc: "Flashcard quiz mode with synthesized audio transmission" },
       { name: "Text Utilities & Case Converter", slug: "text", category: "../", badge: "12+ Tools", desc: "Case converter, slugifier, base64 encode, and readability stats" },
