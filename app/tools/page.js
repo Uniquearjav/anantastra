@@ -88,6 +88,7 @@ const CATEGORIES = [
     description: "Diff viewers, morse trainers, and text transformers.",
     icon: FileCode,
     tools: [
+      { name: "Google SERP Simulator & Pixel Analyzer", slug: "google-serp-preview", badge: "SERP Pixel", desc: "Analyze title (580px) and description (680px) pixel lengths with realistic desktop and mobile Google preview" },
       { name: "SEO Article & Keyword Density Analyzer", slug: "seo-article-analyzer", badge: "SEO Tool", desc: "Keyword frequency tracker, word count goals (800/1200/1500), and density auditor" },
       { name: "Text Difference Tool", slug: "text-difference", badge: "LCS Diff", desc: "Side-by-side visual diff comparison with unified patch export" },
       { name: "Random Morse Code Generator", slug: "random-morse-generator", badge: "Ear Training", desc: "Flashcard quiz mode with synthesized audio transmission" },
