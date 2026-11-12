@@ -5,7 +5,7 @@ import { BLOG_POSTS } from '@/data/blogPosts';
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Cache for 1 hour, then revalidate
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://anantastra.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://www.usealltools.com';
 
 // Primary curated routes with priority metadata
 const KNOWN_ROUTES = [

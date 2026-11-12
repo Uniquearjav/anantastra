@@ -27,11 +27,11 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "About Anantastra & Arjav Choudhary | Mission, Privacy & Open Source",
-  description: "Learn about Anantastra, a free and privacy-focused suite of open-source web utilities created by Arjav Choudhary. Discover our mission, zero-data-collection architecture, and tools.",
+  title: "About usealltools.com & Arjav Choudhary | Mission, Privacy & Open Source",
+  description: "Learn about usealltools.com, a free and privacy-focused suite of open-source web utilities created by Arjav Choudhary. Discover our mission, zero-data-collection architecture, and tools.",
   keywords: [
-    "Anantastra",
-    "About Anantastra",
+    "usealltools.com",
+    "About usealltools.com",
     "Arjav Choudhary",
     "Open Source Tools",
     "Privacy First Utilities",
@@ -43,15 +43,15 @@ export const metadata = {
   ],
   authors: [{ name: "Arjav Choudhary", url: "https://github.com/Uniquearjav" }],
   creator: "Arjav Choudhary",
-  publisher: "Anantastra",
+  publisher: "usealltools.com",
   alternates: {
-    canonical: "https://anantastra.vercel.app/about",
+    canonical: "https://www.usealltools.com/about",
   },
   openGraph: {
-    title: "About Anantastra & Founder Arjav Choudhary",
+    title: "About usealltools.com & Founder Arjav Choudhary",
     description: "Empowering users with private, client-side, zero-tracking utilities. Open source under MIT license.",
-    url: "https://anantastra.vercel.app/about",
-    siteName: "Anantastra",
+    url: "https://www.usealltools.com/about",
+    siteName: "usealltools.com",
     locale: "en_US",
     type: "profile",
     images: [
@@ -59,14 +59,14 @@ export const metadata = {
         url: "/Arjav_about.jpg",
         width: 800,
         height: 800,
-        alt: "Arjav Choudhary - Founder of Anantastra",
+        alt: "Arjav Choudhary - Founder of usealltools.com",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Anantastra - Privacy-First Open Source Utilities",
-    description: "Learn about Anantastra and founder Arjav Choudhary. Pure client-side calculations with zero telemetry.",
+    title: "About usealltools.com - Privacy-First Open Source Utilities",
+    description: "Learn about usealltools.com and founder Arjav Choudhary. Pure client-side calculations with zero telemetry.",
     images: ["/Arjav_about.jpg"],
   },
 };
@@ -77,19 +77,19 @@ export default function AboutPage() {
     "@graph": [
       {
         "@type": ["AboutPage", "ProfilePage"],
-        "@id": "https://anantastra.vercel.app/about",
-        "url": "https://anantastra.vercel.app/about",
-        "name": "About Anantastra & Founder Arjav Choudhary",
-        "description": "Background, mission, technical architecture, and founder profile of the Anantastra open-source project.",
+        "@id": "https://www.usealltools.com/about",
+        "url": "https://www.usealltools.com/about",
+        "name": "About usealltools.com & Founder Arjav Choudhary",
+        "description": "Background, mission, technical architecture, and founder profile of the usealltools.com open-source project.",
         "isPartOf": {
           "@type": "WebSite",
-          "@id": "https://anantastra.vercel.app/#website",
-          "url": "https://anantastra.vercel.app",
-          "name": "Anantastra"
+          "@id": "https://www.usealltools.com/#website",
+          "url": "https://www.usealltools.com",
+          "name": "usealltools.com"
         },
         "mainEntity": {
           "@type": "Person",
-          "@id": "https://anantastra.vercel.app/about#founder",
+          "@id": "https://www.usealltools.com/about#founder",
           "name": "Arjav Choudhary",
           "jobTitle": "Founder & Full-Stack Developer",
           "alumniOf": "Delhi Public School, Jodhpur",
@@ -108,8 +108,8 @@ export default function AboutPage() {
       },
       {
         "@type": "SoftwareApplication",
-        "@id": "https://anantastra.vercel.app/#software",
-        "name": "Anantastra",
+        "@id": "https://www.usealltools.com/#software",
+        "name": "usealltools.com",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All modern web browsers",
         "offers": {
@@ -118,44 +118,44 @@ export default function AboutPage() {
           "priceCurrency": "INR"
         },
         "author": {
-          "@id": "https://anantastra.vercel.app/about#founder"
+          "@id": "https://www.usealltools.com/about#founder"
         },
         "description": "Free, client-side open-source calculators and developer tools built with zero data collection."
       },
       {
         "@type": "FAQPage",
-        "@id": "https://anantastra.vercel.app/about#faq",
+        "@id": "https://www.usealltools.com/about#faq",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "What is Anantastra?",
+            "name": "What is usealltools.com?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Anantastra is an open-source suite of browser-native utilities, financial tools, and developer helpers that execute 100% client-side without storing or collecting user data."
+              "text": "usealltools.com is an open-source suite of browser-native utilities, financial tools, and developer helpers that execute 100% client-side without storing or collecting user data."
             }
           },
           {
             "@type": "Question",
-            "name": "Who created Anantastra?",
+            "name": "Who created usealltools.com?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Anantastra was founded and created by Arjav Choudhary, a programmer and entrepreneur based in Jodhpur, India, who is passionate about open-source and privacy-preserving technology."
+              "text": "usealltools.com was founded and created by Arjav Choudhary, a programmer and entrepreneur based in Jodhpur, India, who is passionate about open-source and privacy-preserving technology."
             }
           },
           {
             "@type": "Question",
-            "name": "Does Anantastra collect or track user data?",
+            "name": "Does usealltools.com collect or track user data?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. Anantastra operates with zero data collection, zero cookies, and zero server logging. All calculations run strictly within the user's browser engine."
+              "text": "No. usealltools.com operates with zero data collection, zero cookies, and zero server logging. All calculations run strictly within the user's browser engine."
             }
           },
           {
             "@type": "Question",
-            "name": "Is Anantastra open source?",
+            "name": "Is usealltools.com open source?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, Anantastra is open source under the MIT License. Anyone can inspect the code, suggest improvements, or contribute directly on GitHub."
+              "text": "Yes, usealltools.com is open source under the MIT License. Anyone can inspect the code, suggest improvements, or contribute directly on GitHub."
             }
           }
         ]
@@ -197,19 +197,19 @@ export default function AboutPage() {
 
   const faqs = [
     {
-      q: "What is Anantastra and why was it built?",
-      a: "Anantastra is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, ad-light, client-side alternative."
+      q: "What is usealltools.com and why was it built?",
+      a: "usealltools.com is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, ad-light, client-side alternative."
     },
     {
       q: "Who is Arjav Choudhary?",
-      a: "Arjav Choudhary is the creator and lead developer of Anantastra. He is a programmer with expertise in Python, Node.js, and modern React architectures, focusing on privacy-first tools, sustainable digital solutions, and practical AI applications."
+      a: "Arjav Choudhary is the creator and lead developer of usealltools.com. He is a programmer with expertise in Python, Node.js, and modern React architectures, focusing on privacy-first tools, sustainable digital solutions, and practical AI applications."
     },
     {
-      q: "How does Anantastra guarantee zero data collection?",
+      q: "How does usealltools.com guarantee zero data collection?",
       a: "All calculation algorithms, charts, and text formatters run entirely in client-side JavaScript within your browser window. There are no backend database endpoints storing your inputs, financial numbers, or generated passwords."
     },
     {
-      q: "Can I contribute to Anantastra?",
+      q: "Can I contribute to usealltools.com?",
       a: "Yes! Contributions from developers, designers, and translators are enthusiastically welcomed. You can submit feature requests, open issues, or create pull requests on the official GitHub repository."
     }
   ];
@@ -229,7 +229,7 @@ export default function AboutPage() {
             About the Project & Creator
           </Badge>
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-            About Anantastra
+            About usealltools.com
           </h1>
           <p className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed">
             A free, open-source collection of web utilities engineered with privacy, speed, and clean code at its core.
@@ -245,7 +245,7 @@ export default function AboutPage() {
                 <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-2xl overflow-hidden border-2 border-border/80 shadow-md bg-muted/40">
                   <Image
                     src={AV_image}
-                    alt="Arjav Choudhary - Founder and Full-Stack Developer of Anantastra"
+                    alt="Arjav Choudhary - Founder and Full-Stack Developer of usealltools.com"
                     fill
                     sizes="(max-width: 768px) 256px, 300px"
                     className="object-cover"
@@ -304,7 +304,7 @@ export default function AboutPage() {
               <div className="flex-1 space-y-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/80 bg-muted/30 text-xs font-medium text-foreground">
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
-                  <span>The Story Behind Anantastra</span>
+                  <span>The Story Behind usealltools.com</span>
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -316,7 +316,7 @@ export default function AboutPage() {
                 </p>
 
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                  I created <strong className="text-foreground">Anantastra</strong> (from Sanskrit, meaning <em>"Infinite Instruments"</em>) because I grew tired of utility websites filled with trackers, popups, paywalls, and slow server-side page reloads. Everyday tools—like calculating loan EMIs, estimating SIP compound interest, or formatting tax figures—should be instant, accessible, and run completely within your own browser with <strong className="text-foreground">zero data harvesting</strong>.
+                  I created <strong className="text-foreground">usealltools.com</strong> (from Sanskrit, meaning <em>"Infinite Instruments"</em>) because I grew tired of utility websites filled with trackers, popups, paywalls, and slow server-side page reloads. Everyday tools—like calculating loan EMIs, estimating SIP compound interest, or formatting tax figures—should be instant, accessible, and run completely within your own browser with <strong className="text-foreground">zero data harvesting</strong>.
                 </p>
 
                 <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -408,7 +408,7 @@ export default function AboutPage() {
               <span>Technology Stack & Performance Engineering</span>
             </h2>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Anantastra is engineered using modern, production-grade tools designed for optimal client execution, small bundle sizes, and instantaneous interactivity:
+              usealltools.com is engineered using modern, production-grade tools designed for optimal client execution, small bundle sizes, and instantaneous interactivity:
             </p>
             <div className="flex flex-wrap gap-2.5">
               <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">

@@ -88,7 +88,7 @@ export function Footer() {
       title: "Project & Legal",
       icon: Lock,
       links: [
-        { label: "About AnantAstra", href: "/about" },
+        { label: "About usealltools.com", href: "/about" },
         { label: "All 24+ Utilities", href: "/tools" },
         { label: "Blog & Guides (25 Posts)", href: "/blog" },
         { label: "LLM Context (llms.txt)", href: "/llms.txt" },
@@ -160,7 +160,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-lg tracking-tight text-foreground">
-                  Anantastra
+                  usealltools.com
                 </span>
                 <span className="px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
                   v2.0
@@ -270,7 +270,7 @@ export function Footer() {
         {/* Bottom Bar: Copyright, Credits & Back-to-Top */}
         <div className="mt-12 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
-            <p>© {currentYear} Anantastra. Released under the MIT License.</p>
+            <p>© {currentYear} usealltools.com. Released under the MIT License.</p>
             <span className="hidden sm:inline">•</span>
             <div className="flex items-center gap-1">
               <span>Created with care by</span>

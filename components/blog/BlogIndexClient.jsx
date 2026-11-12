@@ -76,7 +76,7 @@ export default function BlogIndexClient({ posts = [] }) {
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4 leading-tight">
-          AnantAstra Technical & Financial Guides
+          usealltools.com Technical & Financial Guides
         </h1>
 
         <p className="text-base sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">

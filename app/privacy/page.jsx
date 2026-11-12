@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Privacy Policy | Anantastra - Infinite Tools",
-  description: "Learn about how Anantastra protects your privacy and handles your data",
+  title: "Privacy Policy | usealltools.com",
+  description: "Learn about how usealltools.com protects your privacy and handles your data",
 };
 
 export default function PrivacyPolicy() {
@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Our Commitment to Privacy</h2>
           <p>
-            At Anantastra, we take your privacy seriously. Our tools are designed to respect your privacy and operate without collecting or storing your personal data.
+            At usealltools.com, we take your privacy seriously. Our tools are designed to respect your privacy and operate without collecting or storing your personal data.
           </p>
         </section>
         
@@ -95,7 +95,7 @@ export default function PrivacyPolicy() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Open Source</h2>
           <p>
-            Anantastra is open-source. You can review our code on <a href="https://github.com/Uniquearjav/anantastra" className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">GitHub</a> to verify our privacy practices.
+            usealltools.com is open-source. You can review our code on <a href="https://github.com/Uniquearjav/anantastra" className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">GitHub</a> to verify our privacy practices.
           </p>
         </section>
         
@@ -105,7 +105,7 @@ export default function PrivacyPolicy() {
             If you have any questions about our Privacy Policy, please contact us at:
           </p>
           <p className="mt-4">
-            <a href="mailto:privacy@anantastra.com" className="text-blue-600 dark:text-blue-400 hover:underline">privacy@anantastra.com</a>
+            <a href="mailto:contact@usealltools.com" className="text-blue-600 dark:text-blue-400 hover:underline">contact@usealltools.com</a>
           </p>
         </section>
       </div>

@@ -116,7 +116,7 @@ export default function Home() {
             {/* Pill Tag */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-muted/50 text-xs sm:text-sm font-medium text-foreground mb-8">
               <span className="flex h-2 w-2 rounded-full bg-primary" />
-              <span className="font-semibold text-primary">Anantastra 2.0</span>
+              <span className="font-semibold text-primary">usealltools.com</span>
               <span className="text-muted-foreground">•</span>
               <span className="text-muted-foreground">Free, Private & Open Source Utilities</span>
             </div>
@@ -380,10 +380,10 @@ export default function Home() {
                   Open Source Freedom
                 </Badge>
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Build and contribute to Anantastra
+                  Build and contribute to usealltools.com
                 </h2>
                 <p className="text-muted-foreground mt-3 text-sm sm:text-base leading-relaxed">
-                  Anantastra is community-built and open for everyone. Add new calculators, improve UI themes, or report feature requests on GitHub.
+                  usealltools.com is community-built and open for everyone. Add new calculators, improve UI themes, or report feature requests on GitHub.
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-3">

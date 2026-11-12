@@ -2,7 +2,7 @@ import { BLOG_POSTS } from '@/data/blogPosts';
 import BlogIndexClient from '@/components/blog/BlogIndexClient';
 
 export const metadata = {
-  title: 'Engineering, Tax & Security Guides | AnantAstra Blog',
+  title: 'Engineering, Tax & Security Guides | usealltools.com Blog',
   description: 'Explore 25+ comprehensive, high-volume guides on Indian taxation (FY 2025-26), financial formulas (EMI, SIP, GST), password entropy, and zero-telemetry development.',
   keywords: [
     'online calculators blog',
@@ -12,21 +12,21 @@ export const metadata = {
     'password security entropy',
     'offline json formatter',
     'gst inclusive formula',
-    'anantastra articles'
+    'usealltools articles'
   ],
   alternates: {
-    canonical: 'https://anantastra.vercel.app/blog',
+    canonical: 'https://www.usealltools.com/blog',
   },
   openGraph: {
-    title: 'Engineering, Tax & Security Guides | AnantAstra Blog',
+    title: 'Engineering, Tax & Security Guides | usealltools.com Blog',
     description: 'Explore 25+ comprehensive guides on Indian taxation, financial formulas, cryptography, and client-side web utilities.',
-    url: 'https://anantastra.vercel.app/blog',
-    siteName: 'AnantAstra',
+    url: 'https://www.usealltools.com/blog',
+    siteName: 'usealltools.com',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Engineering, Tax & Security Guides | AnantAstra Blog',
+    title: 'Engineering, Tax & Security Guides | usealltools.com Blog',
     description: 'Explore 25+ comprehensive guides on Indian taxation, financial formulas, cryptography, and client-side web utilities.',
   },
 };

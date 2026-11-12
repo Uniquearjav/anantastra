@@ -66,7 +66,7 @@ export function Header() {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors">
-                  Anantastra
+                  usealltools.com
                 </span>
                 <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
                   v2.0
@@ -143,7 +143,7 @@ export function Header() {
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                         <Sparkles className="h-4 w-4" />
                       </div>
-                      <span className="font-bold text-lg">Anantastra</span>
+                      <span className="font-bold text-lg">usealltools.com</span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
                         v2.0
                       </span>

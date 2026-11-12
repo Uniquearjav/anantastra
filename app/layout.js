@@ -12,10 +12,10 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://anantastra.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.usealltools.com'),
   title: {
-    default: "Anantastra - Infinite Tools for Productivity & Calculations",
-    template: "%s | Anantastra",
+    default: "usealltools.com - Free Online Tools for Productivity & Calculations",
+    template: "%s | usealltools.com",
   },
   description: "Free, high-speed, open-source utilities that respect your privacy and don't store your data.",
   verification: {

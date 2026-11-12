@@ -36,10 +36,10 @@ const DESC_FONT = '14px Arial, sans-serif';
 const SAMPLE_PRESETS = [
   {
     name: 'SaaS / Developer Tool',
-    title: 'AnantAstra - 25+ High-Performance Online Developer & Math Utilities',
+    title: 'usealltools.com - 25+ High-Performance Online Developer & Math Utilities',
     description: 'Explore 25+ free, privacy-focused online calculators, format converters, and security checkers. Run arbitrary calculations with instant client-side execution and zero tracking.',
-    url: 'https://anantastra.vercel.app/tools',
-    domain: 'anantastra.vercel.app',
+    url: 'https://www.usealltools.com/tools',
+    domain: 'www.usealltools.com',
     keyword: 'online calculators'
   },
   {

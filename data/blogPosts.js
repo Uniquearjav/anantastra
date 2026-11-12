@@ -17,7 +17,7 @@ export const BLOG_POSTS = [
     date: "September 10, 2026",
     readTime: "8 min read",
     category: "Financial",
-    author: "AnantAstra Financial Research",
+    author: "UseAllTools Financial Research",
     authorRole: "Tax & Financial Policy Analysts",
     tool: {
       name: "Income Tax Calculator (India)",
@@ -115,7 +115,7 @@ Use our interactive **[Income Tax Calculator](/tools/calculator/income-tax-calcu
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Financial",
-    author: "AnantAstra Commerce Team",
+    author: "UseAllTools Commerce Team",
     authorRole: "Accounting & GST Compliance Specialists",
     tool: {
       name: "GST Calculator",
@@ -200,7 +200,7 @@ Try our free **[GST Calculator](/tools/calculator/gst-calculator)** to generate 
     date: "September 10, 2026",
     readTime: "9 min read",
     category: "Financial",
-    author: "AnantAstra Credit Research",
+    author: "UseAllTools Credit Research",
     authorRole: "Banking & Loan Amortization Analysts",
     tool: {
       name: "Loan EMI Calculator",
@@ -274,7 +274,7 @@ Experiment with custom tenures and prepayments on our free **[Loan EMI Calculato
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Financial",
-    author: "AnantAstra Wealth Research",
+    author: "UseAllTools Wealth Research",
     authorRole: "Personal Finance & Investment Strategists",
     tool: {
       name: "SIP Calculator",
@@ -355,7 +355,7 @@ Test your future financial independence with our interactive **[SIP Calculator](
     date: "September 10, 2026",
     readTime: "8 min read",
     category: "Security",
-    author: "AnantAstra Infosec Team",
+    author: "UseAllTools Infosec Team",
     authorRole: "Cybersecurity & Cryptographic Engineers",
     tool: {
       name: "Password Generator",
@@ -443,7 +443,7 @@ Generate mathematically verified passwords with our client-side **[Password Gene
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Developer",
-    author: "AnantAstra Security Architecture",
+    author: "UseAllTools Security Architecture",
     authorRole: "Application Security & Privacy Engineers",
     tool: {
       name: "JSON Formatter & Validator",
@@ -486,7 +486,7 @@ Pasting production customer payloads containing names, emails, or financial reco
 
 Modern browsers are equipped with powerful JavaScript engines that can parse, validate, and beautify massive multi-megabyte JSON payloads in milliseconds using native \`JSON.parse()\` and \`JSON.stringify()\`—without a single byte leaving your machine.
 
-AnantAstra's **[JSON Formatter & Validator](/tools/checkers/json-formatter)** runs 100% locally on your machine with zero server communication and zero tracking.
+UseAllTools's **[JSON Formatter & Validator](/tools/checkers/json-formatter)** runs 100% locally on your machine with zero server communication and zero tracking.
     `
   },
   {
@@ -506,7 +506,7 @@ AnantAstra's **[JSON Formatter & Validator](/tools/checkers/json-formatter)** ru
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Financial",
-    author: "AnantAstra Economics Team",
+    author: "UseAllTools Economics Team",
     authorRole: "Macroeconomics & Quantitative Finance Writers",
     tool: {
       name: "Interest Calculator",
@@ -599,7 +599,7 @@ Simulate multiple compounding frequencies and deposit schedules using our **[Int
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Financial",
-    author: "AnantAstra Legal & Banking Desk",
+    author: "UseAllTools Legal & Banking Desk",
     authorRole: "Banking Procedures & Commercial Law Writers",
     tool: {
       name: "Number to Words Converter",
@@ -669,7 +669,7 @@ Convert any number into verified Indian, Western, or Hindi words using our **[Nu
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Developer",
-    author: "AnantAstra Graphics Lab",
+    author: "UseAllTools Graphics Lab",
     authorRole: "Frontend Graphics & UI Architecture",
     tool: {
       name: "SVG to Image Converter",
@@ -736,7 +736,7 @@ Convert your vector artwork securely in your browser with resolution scaling on 
     date: "September 10, 2026",
     readTime: "8 min read",
     category: "Science & Health",
-    author: "AnantAstra Telecommunications Desk",
+    author: "UseAllTools Telecommunications Desk",
     authorRole: "Radio History & Telegraphy Enthusiasts",
     tool: {
       name: "Morse Code Converter",
@@ -804,7 +804,7 @@ Translate, decode, and listen to synthesized 650Hz radio telegraph tones with ou
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Developer",
-    author: "AnantAstra Dev Studio",
+    author: "UseAllTools Dev Studio",
     authorRole: "Fullstack Web Engineers & Technical Writers",
     tool: {
       name: "Markdown to HTML Converter",
@@ -861,7 +861,7 @@ Twenty years later, Markdown powers GitHub documentation, headless CMS architect
 > — John Johnson
 
 \`\`\`javascript
-const greeting = "Hello, AnantAstra!";
+const greeting = "Hello, UseAllTools!";
 console.log(greeting);
 \`\`\`
 \`\`\`
@@ -886,7 +886,7 @@ Write markdown and download clean semantic HTML in real-time with our **[Markdow
     date: "September 10, 2026",
     readTime: "8 min read",
     category: "Mathematics",
-    author: "AnantAstra Computer Science Desk",
+    author: "UseAllTools Computer Science Desk",
     authorRole: "Systems Architecture & Low-Level Programming",
     tool: {
       name: "Decimal & Binary Converter",
@@ -958,7 +958,7 @@ Test synchronized 4-base conversions and toggle individual bits on our **[Decima
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Science & Health",
-    author: "AnantAstra Health Science Desk",
+    author: "UseAllTools Health Science Desk",
     authorRole: "Exercise Physiology & Biostatistics Writers",
     tool: {
       name: "BMI Calculator",
@@ -1020,7 +1020,7 @@ Calculate your exact score with dual Metric/Imperial sliders on our **[BMI Calcu
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Science & Health",
-    author: "AnantAstra Astronomy Lab",
+    author: "UseAllTools Astronomy Lab",
     authorRole: "Planetary Science & Celestial Mechanics",
     tool: {
       name: "Leap Year Checker",
@@ -1076,7 +1076,7 @@ Check any historical or future year with visual mathematical proofs on our **[Le
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Security",
-    author: "AnantAstra Cryptography Team",
+    author: "UseAllTools Cryptography Team",
     authorRole: "Applied Cryptography & Number Theory",
     tool: {
       name: "Prime Number Checker",
@@ -1124,7 +1124,7 @@ Test any number's primality and view canonical prime factor trees on our **[Prim
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Science & Health",
-    author: "AnantAstra Linguistics & Biology Desk",
+    author: "UseAllTools Linguistics & Biology Desk",
     authorRole: "Computational Linguistics & Molecular Genetics",
     tool: {
       name: "Palindrome Checker",
@@ -1174,7 +1174,7 @@ Inspect string symmetry and find longest palindromic substrings with our **[Pali
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Mathematics",
-    author: "AnantAstra Pure Mathematics Team",
+    author: "UseAllTools Pure Mathematics Team",
     authorRole: "Combinatorics & Theoretical Probability",
     tool: {
       name: "Factorial Calculator",
@@ -1225,7 +1225,7 @@ Calculate exact BigInt factorials and combinatorial equations with our **[Factor
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Developer",
-    author: "AnantAstra Engineering Desk",
+    author: "UseAllTools Engineering Desk",
     authorRole: "Compiler & Version Control Engineers",
     tool: {
       name: "Text Difference Tool",
@@ -1271,7 +1271,7 @@ Compare code files side-by-side with unified patch generation on our **[Text Dif
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Developer",
-    author: "AnantAstra Hardware Architecture",
+    author: "UseAllTools Hardware Architecture",
     authorRole: "Operating Systems & Storage Technology",
     tool: {
       name: "Unit Converter",
@@ -1329,7 +1329,7 @@ Convert storage sizes across bits, bytes, MB, GB, and TB on our **[Unit Converte
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Security",
-    author: "AnantAstra Cybersecurity Desk",
+    author: "UseAllTools Cybersecurity Desk",
     authorRole: "Identity & Access Management (IAM) Specialists",
     tool: {
       name: "Password Age Checker",
@@ -1382,7 +1382,7 @@ Track your account rotation cycles safely with our local-only **[Password Age Ch
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Science & Health",
-    author: "AnantAstra Biometrics Lab",
+    author: "UseAllTools Biometrics Lab",
     authorRole: "Chronobiology & Algorithm Design",
     tool: {
       name: "Age Calculator",
@@ -1431,7 +1431,7 @@ Calculate your exact chronological age, next birthday countdown, and lifetime he
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Financial",
-    author: "AnantAstra Global Markets Desk",
+    author: "UseAllTools Global Markets Desk",
     authorRole: "Foreign Exchange & Macro Trading",
     tool: {
       name: "Currency Converter",
@@ -1476,7 +1476,7 @@ Convert global currencies with transparent mid-market rates on our **[Currency C
     date: "September 10, 2026",
     readTime: "6 min read",
     category: "Developer",
-    author: "AnantAstra Code Lab",
+    author: "UseAllTools Code Lab",
     authorRole: "Software Architecture & Style Standards",
     tool: {
       name: "Text Utilities & Case Converter",
@@ -1523,7 +1523,7 @@ Transform text across 12+ naming conventions instantly with our **[Text Utilitie
     date: "September 10, 2026",
     readTime: "7 min read",
     category: "Science & Health",
-    author: "AnantAstra Ham Radio Society",
+    author: "UseAllTools Ham Radio Society",
     authorRole: "Amateur Radio Operators (CW Specialists)",
     tool: {
       name: "Random Morse Generator",
@@ -1555,9 +1555,9 @@ Practice audio flashcard drills with adjustable WPM on our **[Random Morse Gener
   },
   {
     slug: "is-anantastra-really-open-source",
-    title: "Is AnantAstra Really Open Source? Understanding Our Privacy & Zero-Telemetry Architecture",
-    metaTitle: "Is AnantAstra Really Open Source? Zero-Telemetry Architecture",
-    metaDescription: "Discover AnantAstra's open-source philosophy. Learn why our calculators and converters run 100% client-side in your browser with zero data collection or tracking.",
+    title: "Is UseAllTools Really Open Source? Understanding Our Privacy & Zero-Telemetry Architecture",
+    metaTitle: "Is UseAllTools Really Open Source? Zero-Telemetry Architecture",
+    metaDescription: "Discover UseAllTools's open-source philosophy. Learn why our calculators and converters run 100% client-side in your browser with zero data collection or tracking.",
     keywords: [
       "anantastra open source tools",
       "privacy friendly online calculators",
@@ -1565,29 +1565,29 @@ Practice audio flashcard drills with adjustable WPM on our **[Random Morse Gener
       "why client side tools are safer",
       "anantastra github repository"
     ],
-    excerpt: "Learn why AnantAstra was built on a strict zero-telemetry guarantee: verify our client-side code on GitHub and understand why privacy should be the default on the modern web.",
+    excerpt: "Learn why UseAllTools was built on a strict zero-telemetry guarantee: verify our client-side code on GitHub and understand why privacy should be the default on the modern web.",
     date: "September 10, 2026",
     readTime: "5 min read",
     category: "Developer",
-    author: "AnantAstra Core Team",
+    author: "UseAllTools Core Team",
     authorRole: "Open Source Maintainers",
     tool: {
-      name: "About AnantAstra",
+      name: "About UseAllTools",
       url: "/about",
       cta: "Learn More About Our Open Source Mission"
     },
     faqs: [
       {
-        question: "Where can I view AnantAstra's source code?",
-        answer: "AnantAstra is 100% open source under the MIT license. You can inspect, audit, or contribute to our codebase on GitHub at https://github.com/Uniquearjav/anantastra."
+        question: "Where can I view UseAllTools's source code?",
+        answer: "UseAllTools is 100% open source under the MIT license. You can inspect, audit, or contribute to our codebase on GitHub at https://github.com/Uniquearjav/anantastra."
       }
     ],
     content: `
-## Why We Built AnantAstra
+## Why We Built UseAllTools
 
 The modern web is filled with free developer utilities and financial calculators, but nearly all of them come with a hidden cost: intrusive tracking scripts, bloated popups, and backend servers logging your sensitive computations, tax figures, and passwords.
 
-**AnantAstra** was engineered to prove that a modern utility suite can be fast, beautiful, completely free, and **strictly zero-telemetry**.
+**UseAllTools** was engineered to prove that a modern utility suite can be fast, beautiful, completely free, and **strictly zero-telemetry**.
 
 ---
 

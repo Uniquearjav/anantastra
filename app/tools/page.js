@@ -308,7 +308,7 @@ export default function ToolsPage() {
             Zero-Telemetry Guarantee
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-md mx-auto leading-relaxed">
-            Every computation in AnantAstra is executed purely within your browser's local sandbox. No data, form inputs, or calculations are logged or transmitted to any server.
+            Every computation in usealltools.com is executed purely within your browser's local sandbox. No data, form inputs, or calculations are logged or transmitted to any server.
           </p>
           <div className="mt-5 flex items-center justify-center gap-3">
             <Link href="/about">
