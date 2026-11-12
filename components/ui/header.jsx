@@ -69,9 +69,6 @@ export function Header() {
                 <span className="font-bold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors">
                   usealltools.com
                 </span>
-                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                  v2.0
-                </span>
               </div>
             </div>
           </Link>
@@ -141,13 +138,10 @@ export function Header() {
                 <SheetContent side="right" className="w-[85%] sm:w-[380px] p-6 border-l border-border/60 bg-background/95 backdrop-blur-xl">
                   <SheetHeader className="text-left pb-4 border-b border-border/50">
                     <SheetTitle className="flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                        <Sparkles className="h-4 w-4" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary-foreground">
+                        <AnantastraIcon size={18} />
                       </div>
                       <span className="font-bold text-lg">usealltools.com</span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                        v2.0
-                      </span>
                     </SheetTitle>
                   </SheetHeader>
 

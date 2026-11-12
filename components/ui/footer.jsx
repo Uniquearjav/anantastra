@@ -163,9 +163,6 @@ export function Footer() {
                 <span className="font-bold text-lg tracking-tight text-foreground">
                   usealltools.com
                 </span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                  v2.0
-                </span>
               </div>
             </Link>
 
