@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="fav_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="40%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#D946EF" />
+    </linearGradient>
+    <linearGradient id="fav_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#090D16" />
+    </linearGradient>
+  </defs>
+  <!-- Background Squircle -->
+  <rect width="64" height="64" rx="16" fill="url(#fav_bg)" />
+  <rect width="62" height="62" x="1" y="1" rx="15" stroke="#312E81" stroke-width="1.5" fill="none" />
+
+  <!-- High-contrast bold mark scaled for favicon -->
+  <g transform="translate(32, 32) scale(0.088) translate(-256, -260)">
+    <!-- Right loop -->
+    <path d="M 256,86 C 256,86 380,210 380,312 C 380,396 326,432 276,406 C 242,388 220,344 190,298"
+          stroke="#818CF8" stroke-width="54" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Left loop -->
+    <path d="M 322,298 C 292,344 270,388 236,406 C 186,432 132,396 132,312 C 132,210 256,86 256,86"
+          stroke="url(#fav_grad)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Apex -->
+    <path d="M 238,106 L 256,70 L 274,106 Z" fill="url(#fav_grad)" />
+    <!-- Core star -->
+    <circle cx="256" cy="216" r="14" fill="#38BDF8" />
+  </g>
+</svg>

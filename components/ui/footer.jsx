@@ -22,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { AnantastraIcon } from '@/components/ui/logo';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -155,8 +156,8 @@ export function Footer() {
           {/* Brand Info (4 cols) */}
           <div className="md:col-span-4 space-y-4">
             <Link href="/" className="inline-flex items-center gap-2.5 group">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs transition-transform group-hover:scale-105">
-                <Sparkles className="h-4 w-4" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shadow-xs transition-transform group-hover:scale-105">
+                <AnantastraIcon size={20} />
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-lg tracking-tight text-foreground">

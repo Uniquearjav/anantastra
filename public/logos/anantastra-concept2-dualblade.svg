@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="blade_grad_left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="60%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <linearGradient id="blade_grad_right" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+  </defs>
+
+  <g id="dual-blade-mark">
+    <!-- Left Blade (Sweeps from apex down left, loops inward to center) -->
+    <path d="M 256,64 
+             C 214,140 112,240 112,336 
+             C 112,420 180,452 236,420 
+             C 276,396 290,344 256,280 
+             C 226,220 236,130 256,64 Z"
+          fill="url(#blade_grad_left)" />
+
+    <!-- Right Blade (Interlocks symmetrically, sweeping from apex down right) -->
+    <path d="M 256,64 
+             C 298,140 400,240 400,336 
+             C 400,420 332,452 276,420 
+             C 236,396 222,344 256,280 
+             C 286,220 276,130 256,64 Z"
+          fill="url(#blade_grad_right)" opacity="0.92" style="mix-blend-mode: screen;" />
+
+    <!-- Central Astra Precision Diamond -->
+    <polygon points="256,190 270,224 256,258 242,224" fill="#FFFFFF" opacity="0.95" />
+  </g>
+</svg>

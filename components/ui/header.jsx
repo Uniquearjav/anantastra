@@ -25,6 +25,7 @@ import {
   ExternalLink,
   BookOpen
 } from 'lucide-react';
+import { AnantastraIcon } from '@/components/ui/logo';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home', icon: Home },
@@ -60,8 +61,8 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Brand / Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs transition-all duration-300 group-hover:scale-105">
-              <Sparkles className="h-5 w-5" />
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary-foreground shadow-xs transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40 group-hover:shadow-md group-hover:shadow-primary/10">
+              <AnantastraIcon size={22} />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
