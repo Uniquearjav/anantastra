@@ -28,6 +28,8 @@ https://www.usealltools.com/tools/checkers/leap-year-checker
 https://www.usealltools.com/tools/checkers/json-formatter
 https://www.usealltools.com/tools/password-tools/password-generator
 https://www.usealltools.com/tools/password-tools/password-age-checker
+https://www.usealltools.com/tools/code-text-tools/google-serp-preview
+https://www.usealltools.com/tools/code-text-tools/seo-article-analyzer
 https://www.usealltools.com/tools/code-text-tools/text-difference
 https://www.usealltools.com/tools/code-text-tools/random-morse-generator
 https://www.usealltools.com/text

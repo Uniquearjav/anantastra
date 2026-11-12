@@ -82,7 +82,7 @@ usealltools.com is engineered with Next.js 15, React 19, Tailwind CSS v4, and sh
 - [Robots Configuration](https://www.usealltools.com/robots.txt): Standard crawler directives permitting global indexing and referencing sitemap resources.
 - [Deep Technical Documentation (llms-full.txt)](https://www.usealltools.com/llms-full.txt): Comprehensive technical breakdown with mathematical proofs, algorithm definitions, and complete code specifications.
 
-## Metadata & Contact
+## Project Metadata & Repository
 
 - **Domain**: https://www.usealltools.com
 - **Repository**: https://github.com/Uniquearjav/anantastra

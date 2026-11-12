@@ -19,8 +19,68 @@ import {
   CheckCircle2,
   Cpu,
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  HelpCircle
 } from "lucide-react";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.usealltools.com';
+
+export const metadata = {
+  title: "Free Online Tools & Calculators Suite | 100% Client-Side & Private",
+  description: "Access 25+ fast, free, privacy-first web utilities: SIP, GST, Income Tax (India FY 24-25/25-26), Loan EMI & Interest calculators, password tools, converters, and text utilities. Zero data tracking.",
+  alternates: {
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    title: "Free Online Tools & Calculators Suite | usealltools.com",
+    description: "25+ free, privacy-first web utilities: financial calculators, password tools, converters, and text tools running 100% in your browser.",
+    url: SITE_URL,
+    siteName: "usealltools.com",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 960,
+        height: 240,
+        alt: "usealltools.com Free Online Tools Suite",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Online Tools & Calculators Suite | usealltools.com",
+    description: "25+ free, privacy-first web utilities: financial calculators, password tools, converters, and text tools.",
+    images: ["/logo.svg"],
+  },
+};
+
+const HOMEPAGE_FAQS = [
+  {
+    question: "What is usealltools.com (Anantastra)?",
+    answer: "usealltools.com is a free, privacy-first suite of web utilities and calculators designed to run 100% locally in your browser. From financial planning (SIP, Income Tax, GST, Loan EMI) to developer utilities (JSON formatter, Base converters, Diff checker) and security tools (password generator), all computations execute on client-side JavaScript without recording or transmitting your data."
+  },
+  {
+    question: "Are all tools on usealltools.com completely free to use?",
+    answer: "Yes, 100% of the tools, calculators, and converters are completely free with no usage limits, no credit card requirements, and no registration needed."
+  },
+  {
+    question: "How does client-side calculation protect my data and privacy?",
+    answer: "Traditional web calculators send your sensitive inputs (such as income figures, loan values, or passwords) over the network to a backend server. On usealltools.com, all mathematical operations execute strictly inside your browser's V8 engine via Web APIs. No cookies, session tracking, or remote databases record what you calculate."
+  },
+  {
+    question: "Do these online calculators work offline?",
+    answer: "Yes. Because every calculation engine is packaged with client-side code and cached by your browser, once a tool page is loaded, it continues to compute results, generate amortization tables, and plot charts without requiring an active internet connection."
+  },
+  {
+    question: "Which Indian financial and tax calculators are supported?",
+    answer: "We offer dedicated tools tailored to Indian regulations, including the Income Tax Calculator (comparing New vs Old Tax Regime for FY 2024-25 and FY 2025-26 with Section 87A rebate and 80C/80D deductions), the GST Calculator (with CGST, SGST, IGST breakdown across 0%, 5%, 12%, 18%, 28% slabs), the Mutual Fund SIP Calculator (with INR Lakhs and Crores formatting), and the Loan EMI Calculator with amortization schedules."
+  },
+  {
+    question: "Can I inspect the source code or contribute new tools?",
+    answer: "Yes! The entire project is open-source under the MIT license on GitHub. Developers are welcome to review the code, verify our zero-tracking architecture, or submit pull requests for new utilities."
+  }
+];
 
 export default function Home() {
   const popularTools = [
@@ -370,6 +430,40 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Frequently Asked Questions Section (SEO & Rich Snippets) */}
+      <section className="py-20 border-t border-border/40 bg-muted/20">
+        <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
+          <div className="text-center mb-14">
+            <Badge variant="subtle" className="mb-3 inline-flex items-center gap-1.5">
+              <HelpCircle className="h-3.5 w-3.5 text-primary" />
+              <span>Got Questions?</span>
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-muted-foreground mt-3 text-base max-w-xl mx-auto">
+              Everything you need to know about our free, zero-tracking web utilities and financial calculators.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {HOMEPAGE_FAQS.map((faq, idx) => (
+              <Card key={idx} className="border-border/60 bg-card/80 backdrop-blur-xs transition-colors hover:border-primary/40">
+                <CardHeader className="py-5 px-6">
+                  <CardTitle className="text-base sm:text-lg font-semibold text-foreground flex items-start gap-3">
+                    <span className="text-primary font-bold text-sm mt-0.5">Q{idx + 1}.</span>
+                    <span>{faq.question}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 pb-5 px-6 pl-12 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  {faq.answer}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Open Source Callout Banner */}
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6">
@@ -407,6 +501,46 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Structured Data: FAQPage & WebApplication */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "usealltools.com",
+            alternateName: "Anantastra Tools",
+            url: SITE_URL,
+            description: "Free, high-speed, privacy-first web utilities & financial calculators that execute 100% in your browser. Zero tracking, zero data storage.",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All (Modern Web Browsers)",
+            browserRequirements: "Requires JavaScript",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: HOMEPAGE_FAQS.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.answer,
+              },
+            })),
+          }),
+        }}
+      />
     </div>
   );
 }

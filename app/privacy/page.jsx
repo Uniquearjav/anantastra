@@ -93,19 +93,9 @@ export default function PrivacyPolicy() {
         </section>
         
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Open Source</h2>
+          <h2 className="text-2xl font-semibold mb-4">Open Source & Inquiries</h2>
           <p>
-            usealltools.com is open-source. You can review our code on <a href="https://github.com/Uniquearjav/anantastra" className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">GitHub</a> to verify our privacy practices.
-          </p>
-        </section>
-        
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
-          <p>
-            If you have any questions about our Privacy Policy, please contact us at:
-          </p>
-          <p className="mt-4">
-            <a href="mailto:contact@usealltools.com" className="text-blue-600 dark:text-blue-400 hover:underline">contact@usealltools.com</a>
+            usealltools.com is open-source under the MIT license. You can review our client-side architecture or submit questions and feedback directly through our <a href="https://github.com/Uniquearjav/anantastra" className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
           </p>
         </section>
       </div>

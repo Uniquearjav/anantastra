@@ -107,7 +107,7 @@ export default async function BlogPostPage({ params }) {
       url: BASE_URL,
       logo: {
         '@type': 'ImageObject',
-        url: `${BASE_URL}/globe.svg`,
+        url: `${BASE_URL}/logo-icon.svg`,
       },
     },
     keywords: post.keywords ? post.keywords.join(', ') : '',
