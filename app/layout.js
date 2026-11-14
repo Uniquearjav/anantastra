@@ -135,6 +135,14 @@ export default function RootLayout({ children }) {
           `}
         </Script>
 
+        {/* Adsterra Native Banner Script */}
+        <Script
+          async
+          data-cfasync="false"
+          src="https://bauval.org/21/1a1d2b2908a923be2827d27b2a07813c"
+          strategy="afterInteractive"
+        />
+
         <ThemeProvider>
           <Header />
           <main className="flex-grow">

@@ -1,5 +1,6 @@
 import { BLOG_POSTS } from '@/data/blogPosts';
 import BlogIndexClient from '@/components/blog/BlogIndexClient';
+import { NativeBannerAd } from '@/components/ads';
 
 export const metadata = {
   title: 'Engineering, Tax & Security Guides | Use All Tools Blog',
@@ -32,5 +33,12 @@ export const metadata = {
 };
 
 export default function BlogPage() {
-  return <BlogIndexClient posts={BLOG_POSTS} />;
+  return (
+    <>
+      <BlogIndexClient posts={BLOG_POSTS} />
+      <div className="container mx-auto px-4 sm:px-6 max-w-5xl pb-12">
+        <NativeBannerAd />
+      </div>
+    </>
+  );
 }

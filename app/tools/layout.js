@@ -1,4 +1,5 @@
 import { BASE_URL } from '@/data/toolsSeo';
+import { ToolPageWrapper } from '@/components/ads';
 
 export const metadata = {
   title: 'Free Online Tools & Calculators Suite | 25+ Browser Utilities',
@@ -82,7 +83,9 @@ export default function ToolsLayout({ children }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
-      {children}
+      <ToolPageWrapper>
+        {children}
+      </ToolPageWrapper>
     </>
   );
 }

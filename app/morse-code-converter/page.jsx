@@ -1,6 +1,7 @@
 import MorseCodeConverter from '@/components/ui/morseCodeConverter/page';
 import { generateToolMetadata, generateToolSchema } from '@/lib/seo';
 import { BASE_URL } from '@/data/toolsSeo';
+import { ToolPageWrapper } from '@/components/ads';
 
 export const metadata = {
   ...generateToolMetadata('morse-code-converter'),
@@ -26,7 +27,9 @@ export default function MorseCodeConverterRootPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
         />
       )}
-      <MorseCodeConverter />
+      <ToolPageWrapper>
+        <MorseCodeConverter />
+      </ToolPageWrapper>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import PrimeChecker from '@/components/ui/primeChecker/page';
 import { generateToolMetadata, generateToolSchema } from '@/lib/seo';
 import { BASE_URL } from '@/data/toolsSeo';
+import { ToolPageWrapper } from '@/components/ads';
 
 export const metadata = {
   ...generateToolMetadata('prime-checker'),
@@ -26,7 +27,9 @@ export default function PrimeCheckerRootPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
         />
       )}
-      <PrimeChecker />
+      <ToolPageWrapper>
+        <PrimeChecker />
+      </ToolPageWrapper>
     </>
   );
 }

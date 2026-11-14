@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { NativeBannerAd } from "@/components/ads";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -345,6 +346,11 @@ export default function Home() {
               );
             })}
           </div>
+
+          {/* Sponsored Native Banner */}
+          <div className="mt-12">
+            <NativeBannerAd />
+          </div>
         </div>
       </section>
 
@@ -369,7 +375,7 @@ export default function Home() {
                   ))}
                 </div>
                 <CardDescription className="text-foreground/90 italic text-sm leading-relaxed">
-                  "The interest and SIP calculators are blazingly fast with precise Indian Rupee formatting. Zero ads in the way and no tracking."
+                  "The interest and SIP calculators are blazingly fast with precise Indian Rupee formatting. Zero latency and reliable figures."
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex items-center gap-3">

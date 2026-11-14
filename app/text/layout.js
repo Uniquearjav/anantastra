@@ -1,4 +1,5 @@
 import { generateToolMetadata, generateToolSchema } from '@/lib/seo';
+import { ToolPageWrapper } from '@/components/ads';
 
 export const metadata = generateToolMetadata('text');
 
@@ -19,7 +20,9 @@ export default function TextLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas.breadcrumbSchema) }}
         />
       )}
-      {children}
+      <ToolPageWrapper>
+        {children}
+      </ToolPageWrapper>
     </>
   );
 }

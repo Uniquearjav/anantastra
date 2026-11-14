@@ -9,6 +9,7 @@ import FaqAccordion from '@/components/blog/FaqAccordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { NativeBannerAd, SkyscraperBannerAd } from '@/components/ads';
 import {
   Calendar,
   Clock,
@@ -339,6 +340,9 @@ export default async function BlogPostPage({ params }) {
               </div>
             </div>
 
+            {/* Sponsored Native Recommendations */}
+            <NativeBannerAd />
+
             {/* Related Articles Section */}
             {relatedPosts.length > 0 && (
               <div className="my-12 pt-8 border-t border-border/60">
@@ -425,6 +429,11 @@ export default async function BlogPostPage({ params }) {
                     <ExternalLink className="size-3.5" />
                   </Link>
                 </Button>
+              </div>
+
+              {/* Sidebar Skyscraper Banner Ad */}
+              <div className="pt-2 flex justify-center">
+                <SkyscraperBannerAd />
               </div>
             </div>
           </aside>
