@@ -27,11 +27,11 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "About usealltools.com & Arjav Choudhary | Mission, Privacy & Open Source",
-  description: "Learn about usealltools.com, a free and privacy-focused suite of open-source web utilities created by Arjav Choudhary. Discover our mission, zero-data-collection architecture, and tools.",
+  title: "About Use All Tools & Arjav Choudhary | Mission, Privacy & Open Source",
+  description: "Learn about Use All Tools, a free and privacy-focused suite of open-source web utilities created by Arjav Choudhary. Discover our mission, zero-data-collection architecture, and tools.",
   keywords: [
-    "usealltools.com",
-    "About usealltools.com",
+    "Use All Tools",
+    "About Use All Tools",
     "Arjav Choudhary",
     "Open Source Tools",
     "Privacy First Utilities",
@@ -43,15 +43,15 @@ export const metadata = {
   ],
   authors: [{ name: "Arjav Choudhary", url: "https://github.com/Uniquearjav" }],
   creator: "Arjav Choudhary",
-  publisher: "usealltools.com",
+  publisher: "Use All Tools",
   alternates: {
     canonical: "https://www.usealltools.com/about",
   },
   openGraph: {
-    title: "About usealltools.com & Founder Arjav Choudhary",
+    title: "About Use All Tools & Founder Arjav Choudhary",
     description: "Empowering users with private, client-side, zero-tracking utilities. Open source under MIT license.",
     url: "https://www.usealltools.com/about",
-    siteName: "usealltools.com",
+    siteName: "Use All Tools",
     locale: "en_US",
     type: "profile",
     images: [
@@ -59,14 +59,14 @@ export const metadata = {
         url: "/Arjav_about.jpg",
         width: 800,
         height: 800,
-        alt: "Arjav Choudhary - Founder of usealltools.com",
+        alt: "Arjav Choudhary - Founder of Use All Tools",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "About usealltools.com - Privacy-First Open Source Utilities",
-    description: "Learn about usealltools.com and founder Arjav Choudhary. Pure client-side calculations with zero telemetry.",
+    title: "About Use All Tools - Privacy-First Open Source Utilities",
+    description: "Learn about Use All Tools and founder Arjav Choudhary. Pure client-side calculations with zero telemetry.",
     images: ["/Arjav_about.jpg"],
   },
 };
@@ -79,13 +79,13 @@ export default function AboutPage() {
         "@type": ["AboutPage", "ProfilePage"],
         "@id": "https://www.usealltools.com/about",
         "url": "https://www.usealltools.com/about",
-        "name": "About usealltools.com & Founder Arjav Choudhary",
-        "description": "Background, mission, technical architecture, and founder profile of the usealltools.com open-source project.",
+        "name": "About Use All Tools & Founder Arjav Choudhary",
+        "description": "Background, mission, technical architecture, and founder profile of the Use All Tools open-source project.",
         "isPartOf": {
           "@type": "WebSite",
           "@id": "https://www.usealltools.com/#website",
           "url": "https://www.usealltools.com",
-          "name": "usealltools.com"
+          "name": "Use All Tools"
         },
         "mainEntity": {
           "@type": "Person",
@@ -93,12 +93,6 @@ export default function AboutPage() {
           "name": "Arjav Choudhary",
           "jobTitle": "Founder & Full-Stack Developer",
           "alumniOf": "Delhi Public School, Jodhpur",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Jodhpur",
-            "addressRegion": "Rajasthan",
-            "addressCountry": "India"
-          },
           "sameAs": [
             "https://github.com/Uniquearjav",
             "https://www.linkedin.com/in/arjav-choudhary-531b2126b/",
@@ -109,7 +103,7 @@ export default function AboutPage() {
       {
         "@type": "SoftwareApplication",
         "@id": "https://www.usealltools.com/#software",
-        "name": "usealltools.com",
+        "name": "Use All Tools",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All modern web browsers",
         "offers": {
@@ -128,34 +122,34 @@ export default function AboutPage() {
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "What is usealltools.com?",
+            "name": "What is Use All Tools?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "usealltools.com is an open-source suite of browser-native utilities, financial tools, and developer helpers that execute 100% client-side without storing or collecting user data."
+              "text": "Use All Tools is an open-source suite of browser-native utilities, financial tools, and developer helpers that execute 100% client-side without storing or collecting user data."
             }
           },
           {
             "@type": "Question",
-            "name": "Who created usealltools.com?",
+            "name": "Who created Use All Tools?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "usealltools.com was founded and created by Arjav Choudhary, a programmer and entrepreneur based in Jodhpur, India, who is passionate about open-source and privacy-preserving technology."
+              "text": "Use All Tools was founded and created by Arjav Choudhary, a programmer and entrepreneur based in Jodhpur, India, who is passionate about open-source and privacy-preserving technology."
             }
           },
           {
             "@type": "Question",
-            "name": "Does usealltools.com collect or track user data?",
+            "name": "Does Use All Tools collect or track user data?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. usealltools.com operates with zero data collection, zero cookies, and zero server logging. All calculations run strictly within the user's browser engine."
+              "text": "No. Use All Tools operates with zero data collection, zero cookies, and zero server logging. All calculations run strictly within the user's browser engine."
             }
           },
           {
             "@type": "Question",
-            "name": "Is usealltools.com open source?",
+            "name": "Is Use All Tools open source?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, usealltools.com is open source under the MIT License. Anyone can inspect the code, suggest improvements, or contribute directly on GitHub."
+              "text": "Yes, Use All Tools is open source under the MIT License. Anyone can inspect the code, suggest improvements, or contribute directly on GitHub."
             }
           }
         ]
@@ -188,7 +182,6 @@ export default function AboutPage() {
 
   const quickFacts = [
     { label: "Founder", value: "Arjav Choudhary" },
-    { label: "Location", value: "Jodhpur, Rajasthan, India" },
     { label: "Project Status", value: "Active & Open Source" },
     { label: "License", value: "MIT License" },
     { label: "Architecture", value: "Next.js 15, React 19, Tailwind CSS" },
@@ -197,19 +190,19 @@ export default function AboutPage() {
 
   const faqs = [
     {
-      q: "What is usealltools.com and why was it built?",
-      a: "usealltools.com is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, ad-light, client-side alternative."
+      q: "What is Use All Tools and why was it built?",
+      a: "Use All Tools is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, ad-light, client-side alternative."
     },
     {
       q: "Who is Arjav Choudhary?",
-      a: "Arjav Choudhary is the creator and lead developer of usealltools.com. He is a programmer with expertise in Python, Node.js, and modern React architectures, focusing on privacy-first tools, sustainable digital solutions, and practical AI applications."
+      a: "Arjav Choudhary is the creator and lead developer of Use All Tools. He is a programmer with expertise in Python, Node.js, and modern React architectures, focusing on privacy-first tools, sustainable digital solutions, and practical AI applications."
     },
     {
-      q: "How does usealltools.com guarantee zero data collection?",
+      q: "How does Use All Tools guarantee zero data collection?",
       a: "All calculation algorithms, charts, and text formatters run entirely in client-side JavaScript within your browser window. There are no backend database endpoints storing your inputs, financial numbers, or generated passwords."
     },
     {
-      q: "Can I contribute to usealltools.com?",
+      q: "Can I contribute to Use All Tools?",
       a: "Yes! Contributions from developers, designers, and translators are enthusiastically welcomed. You can submit feature requests, open issues, or create pull requests on the official GitHub repository."
     }
   ];
@@ -229,7 +222,7 @@ export default function AboutPage() {
             About the Project & Creator
           </Badge>
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-            About usealltools.com
+            About Use All Tools
           </h1>
           <p className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed">
             A free, open-source collection of web utilities engineered with privacy, speed, and clean code at its core.
@@ -245,7 +238,7 @@ export default function AboutPage() {
                 <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-2xl overflow-hidden border-2 border-border/80 shadow-md bg-muted/40">
                   <Image
                     src={AV_image}
-                    alt="Arjav Choudhary - Founder and Full-Stack Developer of usealltools.com"
+                    alt="Arjav Choudhary - Founder and Full-Stack Developer of Use All Tools"
                     fill
                     sizes="(max-width: 768px) 256px, 300px"
                     className="object-cover"
@@ -256,10 +249,6 @@ export default function AboutPage() {
                 <div className="text-center mt-4 space-y-1">
                   <h2 className="text-xl font-bold text-foreground">Arjav Choudhary</h2>
                   <p className="text-xs text-muted-foreground font-medium">Founder & Developer</p>
-                  <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-1">
-                    <MapPin className="h-3.5 w-3.5 text-primary" />
-                    <span>Jodhpur, India</span>
-                  </div>
                 </div>
 
                 {/* Social Connect Buttons */}
@@ -304,7 +293,7 @@ export default function AboutPage() {
               <div className="flex-1 space-y-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/80 bg-muted/30 text-xs font-medium text-foreground">
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
-                  <span>The Story Behind usealltools.com</span>
+                  <span>The Story Behind Use All Tools</span>
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -316,7 +305,7 @@ export default function AboutPage() {
                 </p>
 
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                  I created <strong className="text-foreground">usealltools.com</strong> (from Sanskrit, meaning <em>"Infinite Instruments"</em>) because I grew tired of utility websites filled with trackers, popups, paywalls, and slow server-side page reloads. Everyday tools—like calculating loan EMIs, estimating SIP compound interest, or formatting tax figures—should be instant, accessible, and run completely within your own browser with <strong className="text-foreground">zero data harvesting</strong>.
+                  I created <strong className="text-foreground">Use All Tools</strong> (originally named Anantastra, from Sanskrit meaning <em>"Infinite Instruments"</em>) because I grew tired of utility websites filled with trackers, popups, paywalls, and slow server-side page reloads. Everyday tools—like calculating loan EMIs, estimating SIP compound interest, or formatting tax figures—should be instant, accessible, and run completely within your own browser with <strong className="text-foreground">zero data harvesting</strong>.
                 </p>
 
                 <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -408,7 +397,7 @@ export default function AboutPage() {
               <span>Technology Stack & Performance Engineering</span>
             </h2>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              usealltools.com is engineered using modern, production-grade tools designed for optimal client execution, small bundle sizes, and instantaneous interactivity:
+              Use All Tools is engineered using modern, production-grade tools designed for optimal client execution, small bundle sizes, and instantaneous interactivity:
             </p>
             <div className="flex flex-wrap gap-2.5">
               <span className="px-3 py-1.5 rounded-xl border border-border/70 bg-background/50 text-xs font-semibold text-foreground">

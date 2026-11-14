@@ -17,8 +17,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.usealltools.co
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "usealltools.com - Free Online Tools for Productivity & Calculations",
-    template: "%s | usealltools.com",
+    default: "Use All Tools - Free Online Tools for Productivity & Calculations",
+    template: "%s | Use All Tools",
   },
   description: "Free, high-speed, privacy-first web utilities & financial calculators that execute 100% in your browser. Zero tracking, zero data storage.",
   keywords: [
@@ -44,10 +44,10 @@ export const metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "usealltools.com - Free Online Tools for Productivity & Calculations",
+    title: "Use All Tools - Free Online Tools for Productivity & Calculations",
     description: "Free, high-speed, privacy-first web utilities & financial calculators that execute 100% in your browser. Zero tracking, zero data storage.",
     url: SITE_URL,
-    siteName: "usealltools.com",
+    siteName: "Use All Tools",
     locale: "en_US",
     type: "website",
     images: [
@@ -55,13 +55,13 @@ export const metadata = {
         url: "/logo.svg",
         width: 960,
         height: 240,
-        alt: "usealltools.com & Anantastra Tools",
+        alt: "Use All Tools Suite",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "usealltools.com - Free Online Tools for Productivity & Calculations",
+    title: "Use All Tools - Free Online Tools for Productivity & Calculations",
     description: "Free, high-speed, privacy-first web utilities & financial calculators that execute 100% in your browser.",
     images: ["/logo.svg"],
   },
@@ -121,6 +121,17 @@ export default function RootLayout({ children }) {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-WVC4SHJZCB');
+          `}
+        </Script>
+
+        {/* Microsoft Clarity */}
+        <Script id="microsoft-clarity" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "zdls7n7oxv");
           `}
         </Script>
 

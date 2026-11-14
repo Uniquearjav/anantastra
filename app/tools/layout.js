@@ -24,7 +24,7 @@ export const metadata = {
     title: 'Free Online Tools & Calculators Suite | 25+ Browser Utilities',
     description: 'Explore 25+ free, privacy-first web utilities and calculators running 100% in your browser.',
     url: `${BASE_URL}/tools`,
-    siteName: 'usealltools.com',
+    siteName: 'Use All Tools',
     locale: 'en_US',
     type: 'website',
     images: [
@@ -32,7 +32,7 @@ export const metadata = {
         url: '/logo.svg',
         width: 960,
         height: 240,
-        alt: 'usealltools.com Tools Directory',
+        alt: 'Use All Tools Directory',
       },
     ],
   },
@@ -53,7 +53,7 @@ export default function ToolsLayout({ children }) {
     url: `${BASE_URL}/tools`,
     isPartOf: {
       '@type': 'WebSite',
-      name: 'usealltools.com',
+      name: 'Use All Tools',
       url: BASE_URL,
     },
     breadcrumb: {

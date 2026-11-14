@@ -32,10 +32,10 @@ export const metadata = {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "Free Online Tools & Calculators Suite | usealltools.com",
+    title: "Free Online Tools & Calculators Suite | Use All Tools",
     description: "25+ free, privacy-first web utilities: financial calculators, password tools, converters, and text tools running 100% in your browser.",
     url: SITE_URL,
-    siteName: "usealltools.com",
+    siteName: "Use All Tools",
     locale: "en_US",
     type: "website",
     images: [
@@ -43,13 +43,13 @@ export const metadata = {
         url: "/logo.svg",
         width: 960,
         height: 240,
-        alt: "usealltools.com Free Online Tools Suite",
+        alt: "Use All Tools - Free Online Tools Suite",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Online Tools & Calculators Suite | usealltools.com",
+    title: "Free Online Tools & Calculators Suite | Use All Tools",
     description: "25+ free, privacy-first web utilities: financial calculators, password tools, converters, and text tools.",
     images: ["/logo.svg"],
   },
@@ -57,16 +57,16 @@ export const metadata = {
 
 const HOMEPAGE_FAQS = [
   {
-    question: "What is usealltools.com (Anantastra)?",
-    answer: "usealltools.com is a free, privacy-first suite of web utilities and calculators designed to run 100% locally in your browser. From financial planning (SIP, Income Tax, GST, Loan EMI) to developer utilities (JSON formatter, Base converters, Diff checker) and security tools (password generator), all computations execute on client-side JavaScript without recording or transmitting your data."
+    question: "What is Use All Tools?",
+    answer: "Use All Tools is a free, privacy-first suite of web utilities and calculators designed to run 100% locally in your browser. From financial planning (SIP, Income Tax, GST, Loan EMI) to developer utilities (JSON formatter, Base converters, Diff checker) and security tools (password generator), all computations execute on client-side JavaScript without recording or transmitting your data."
   },
   {
-    question: "Are all tools on usealltools.com completely free to use?",
+    question: "Are all tools on Use All Tools completely free to use?",
     answer: "Yes, 100% of the tools, calculators, and converters are completely free with no usage limits, no credit card requirements, and no registration needed."
   },
   {
     question: "How does client-side calculation protect my data and privacy?",
-    answer: "Traditional web calculators send your sensitive inputs (such as income figures, loan values, or passwords) over the network to a backend server. On usealltools.com, all mathematical operations execute strictly inside your browser's V8 engine via Web APIs. No cookies, session tracking, or remote databases record what you calculate."
+    answer: "Traditional web calculators send your sensitive inputs (such as income figures, loan values, or passwords) over the network to a backend server. On Use All Tools, all mathematical operations execute strictly inside your browser's V8 engine via Web APIs. No cookies, session tracking, or remote databases record what you calculate."
   },
   {
     question: "Do these online calculators work offline?",
@@ -176,7 +176,7 @@ export default function Home() {
             {/* Pill Tag */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-muted/50 text-xs sm:text-sm font-medium text-foreground mb-8">
               <span className="flex h-2 w-2 rounded-full bg-primary" />
-              <span className="font-semibold text-primary">usealltools.com</span>
+              <span className="font-semibold text-primary">Use All Tools</span>
               <span className="text-muted-foreground">•</span>
               <span className="text-muted-foreground">Free, Private & Open Source Utilities</span>
             </div>
@@ -474,10 +474,10 @@ export default function Home() {
                   Open Source Freedom
                 </Badge>
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Build and contribute to usealltools.com
+                  Build and contribute to Use All Tools
                 </h2>
                 <p className="text-muted-foreground mt-3 text-sm sm:text-base leading-relaxed">
-                  usealltools.com is community-built and open for everyone. Add new calculators, improve UI themes, or report feature requests on GitHub.
+                  Use All Tools is community-built and open for everyone. Add new calculators, improve UI themes, or report feature requests on GitHub.
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -509,8 +509,8 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            name: "usealltools.com",
-            alternateName: "Anantastra Tools",
+            name: "Use All Tools",
+            alternateName: ["Anantastra Tools", "usealltools.com"],
             url: SITE_URL,
             description: "Free, high-speed, privacy-first web utilities & financial calculators that execute 100% in your browser. Zero tracking, zero data storage.",
             applicationCategory: "UtilityApplication",

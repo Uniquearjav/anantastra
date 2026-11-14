@@ -67,7 +67,7 @@ export function Header() {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors">
-                  usealltools.com
+                  Use All Tools
                 </span>
               </div>
             </div>
@@ -141,7 +141,7 @@ export function Header() {
                       <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary-foreground">
                         <AnantastraIcon size={18} />
                       </div>
-                      <span className="font-bold text-lg">usealltools.com</span>
+                      <span className="font-bold text-lg">Use All Tools</span>
                     </SheetTitle>
                   </SheetHeader>
 

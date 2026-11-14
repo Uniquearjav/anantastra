@@ -36,20 +36,20 @@ export async function generateMetadata({ params }) {
 
   if (!post) {
     return {
-      title: 'Article Not Found | usealltools.com',
+      title: 'Article Not Found | Use All Tools',
       description: 'The requested technical guide or financial article could not be found.',
     };
   }
 
   const canonicalUrl = `${BASE_URL}/blog/${post.slug}`;
-  const title = `${post.metaTitle || post.title} | usealltools.com`;
+  const title = `${post.metaTitle || post.title} | Use All Tools`;
   const description = post.metaDescription || post.excerpt;
 
   return {
     title,
     description,
     keywords: post.keywords || [],
-    authors: [{ name: post.author || 'usealltools.com Technical Team' }],
+    authors: [{ name: post.author || 'Use All Tools Technical Team' }],
     alternates: {
       canonical: canonicalUrl,
     },
@@ -57,10 +57,10 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url: canonicalUrl,
-      siteName: 'usealltools.com',
+      siteName: 'Use All Tools',
       type: 'article',
       publishedTime: post.date,
-      authors: [post.author || 'usealltools.com Technical Team'],
+      authors: [post.author || 'Use All Tools Technical Team'],
       tags: post.keywords || [],
     },
     twitter: {
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'usealltools.com',
+      name: 'Use All Tools',
       url: BASE_URL,
       logo: {
         '@type': 'ImageObject',
@@ -333,7 +333,7 @@ export default async function BlogPostPage({ params }) {
                   <div className="text-base font-bold text-foreground">{post.author}</div>
                   <div className="text-xs text-muted-foreground mb-2">{post.authorRole}</div>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                    Published by usealltools.com's engineering and research desk. All calculations, privacy guarantees, and algorithms referenced in this article are open-source and run client-side in the browser.
+                    Published by Use All Tools's engineering and research desk. All calculations, privacy guarantees, and algorithms referenced in this article are open-source and run client-side in the browser.
                   </p>
                 </div>
               </div>
@@ -415,7 +415,7 @@ export default async function BlogPostPage({ params }) {
 
               {/* All Tools Navigation Card */}
               <div className="rounded-2xl border border-border/70 bg-card p-5 shadow-xs">
-                <h4 className="text-sm font-bold text-foreground mb-1">usealltools.com Toolbox</h4>
+                <h4 className="text-sm font-bold text-foreground mb-1">Use All Tools Toolbox</h4>
                 <p className="text-xs text-muted-foreground mb-4">
                   Explore 24+ free, privacy-first developer utilities and financial calculators.
                 </p>

@@ -11,7 +11,7 @@ export const TOOLS_SEO = {
   // Financial Calculators
   // ---------------------------------------------------------------------------
   'sip-calculator': {
-    title: 'SIP Calculator Online - Calculate Mutual Fund SIP Returns | usealltools.com',
+    title: 'SIP Calculator Online - Calculate Mutual Fund SIP Returns | Use All Tools',
     description: 'Free online SIP calculator to compute expected returns, total investment amount, and wealth gain on mutual fund SIP investments in Indian Rupees (INR) with compound growth charts.',
     keywords: [
       'SIP calculator',
@@ -45,7 +45,7 @@ export const TOOLS_SEO = {
   },
 
   'income-tax-calculator': {
-    title: 'Income Tax Calculator India FY 2024-25 & 2025-26 (New vs Old Regime) | usealltools.com',
+    title: 'Income Tax Calculator India FY 2024-25 & 2025-26 (New vs Old Regime) | Use All Tools',
     description: 'Compare tax liability under New vs Old tax regimes for India FY 2024-25 (AY 2025-26) and FY 2025-26. Includes standard deduction, 87A rebate, 80C, 80D, HRA deductions, and tax slab breakdown.',
     keywords: [
       'Income tax calculator India',
@@ -75,7 +75,7 @@ export const TOOLS_SEO = {
   },
 
   'gst-calculator': {
-    title: 'GST Calculator Online India (Inclusive & Exclusive GST Rates) | usealltools.com',
+    title: 'GST Calculator Online India (Inclusive & Exclusive GST Rates) | Use All Tools',
     description: 'Calculate Goods & Services Tax (GST) for India instantly. Supports inclusive and exclusive GST computations across 0%, 5%, 12%, 18%, and 28% slabs with CGST, SGST, and IGST breakdowns.',
     keywords: [
       'GST calculator India',
@@ -104,7 +104,7 @@ export const TOOLS_SEO = {
   },
 
   'loan-emi-calculator': {
-    title: 'Loan EMI Calculator with Amortization Schedule & Breakup | usealltools.com',
+    title: 'Loan EMI Calculator with Amortization Schedule & Breakup | Use All Tools',
     description: 'Calculate monthly loan EMI for home, personal, or car loans. View interactive amortization payment schedules, principal vs interest breakdown, and export CSV reports for free.',
     keywords: [
       'Loan EMI calculator',
@@ -133,7 +133,7 @@ export const TOOLS_SEO = {
   },
 
   'interest-calculator': {
-    title: 'Compound & Simple Interest Calculator with Growth Schedule | usealltools.com',
+    title: 'Compound & Simple Interest Calculator with Growth Schedule | Use All Tools',
     description: 'Compare simple vs compound interest over time. Features customizable compounding frequencies (daily, monthly, quarterly, annual), interactive charts, and schedule breakdown.',
     keywords: [
       'Interest calculator',
@@ -157,7 +157,7 @@ export const TOOLS_SEO = {
   },
 
   'currency-converter': {
-    title: 'Live Currency Converter & Exchange Rates Calculator | usealltools.com',
+    title: 'Live Currency Converter & Exchange Rates Calculator | Use All Tools',
     description: 'Convert 150+ world currencies with up-to-date foreign exchange rates. Fast, zero-lag conversion with multi-currency matrix, inverse rates, and historical charts.',
     keywords: [
       'Currency converter',
@@ -178,7 +178,7 @@ export const TOOLS_SEO = {
   // General & Math Calculators
   // ---------------------------------------------------------------------------
   'bmi-calculator': {
-    title: 'BMI Calculator (Body Mass Index) Metric & Imperial | usealltools.com',
+    title: 'BMI Calculator (Body Mass Index) Metric & Imperial | Use All Tools',
     description: 'Calculate Body Mass Index (BMI) for adults with Metric (cm/kg) and Imperial (ft/lbs) units. View WHO classification, healthy weight range, and prime index.',
     keywords: [
       'BMI calculator',
@@ -196,7 +196,7 @@ export const TOOLS_SEO = {
   },
 
   'age-calculator': {
-    title: 'Chronological Age Calculator - Exact Years, Months & Days | usealltools.com',
+    title: 'Chronological Age Calculator - Exact Years, Months & Days | Use All Tools',
     description: 'Calculate your exact age in years, months, weeks, days, hours, and minutes from date of birth. Includes countdown to next birthday and weekday of birth.',
     keywords: [
       'Age calculator',
@@ -214,7 +214,7 @@ export const TOOLS_SEO = {
   },
 
   'factorial-calculator': {
-    title: 'Arbitrary Precision Factorial Calculator (n!), nPr & nCr | usealltools.com',
+    title: 'Arbitrary Precision Factorial Calculator (n!), nPr & nCr | Use All Tools',
     description: 'Compute exact arbitrary-precision factorials (n!), permutations (nPr), and combinations (nCr) using BigInt. Calculate thousands of digits instantly without floating-point overflow.',
     keywords: [
       'Factorial calculator',
@@ -232,7 +232,7 @@ export const TOOLS_SEO = {
   },
 
   'decimal-binary-calculator': {
-    title: 'Binary to Decimal, Hex & Octal Base Converter with Bitboard | usealltools.com',
+    title: 'Binary to Decimal, Hex & Octal Base Converter with Bitboard | Use All Tools',
     description: 'Synchronized number base converter supporting Binary (Base 2), Octal (Base 8), Decimal (Base 10), and Hexadecimal (Base 16) with interactive toggle bitboard.',
     keywords: [
       'Binary to decimal converter',
@@ -253,7 +253,7 @@ export const TOOLS_SEO = {
   // Checkers & Code Utilities
   // ---------------------------------------------------------------------------
   'json-formatter': {
-    title: 'Free Online JSON Formatter, Validator & Minifier | usealltools.com',
+    title: 'Free Online JSON Formatter, Validator & Minifier | Use All Tools',
     description: 'Format, validate, beautify, and minify JSON online with instant syntax error highlighting, tree hierarchy navigation, and client-side privacy protection.',
     keywords: [
       'JSON formatter',
@@ -271,7 +271,7 @@ export const TOOLS_SEO = {
   },
 
   'leap-year-checker': {
-    title: 'Leap Year Checker - Check Any Year with 400-Year Rule | usealltools.com',
+    title: 'Leap Year Checker - Check Any Year with 400-Year Rule | Use All Tools',
     description: 'Check whether any Gregorian year is a leap year. Explains the complete 4, 100, and 400-year mathematical rules with upcoming leap years list.',
     keywords: [
       'Leap year checker',
@@ -288,7 +288,7 @@ export const TOOLS_SEO = {
   },
 
   'palindrome-checker': {
-    title: 'Palindrome Checker - Test Words, Phrases & Numbers Online | usealltools.com',
+    title: 'Palindrome Checker - Test Words, Phrases & Numbers Online | Use All Tools',
     description: 'Verify if a word, sentence, or number is a palindrome with option to ignore punctuation, spaces, and case. Features real-time visual reverse comparison.',
     keywords: [
       'Palindrome checker',
@@ -305,7 +305,7 @@ export const TOOLS_SEO = {
   },
 
   'prime-checker': {
-    title: 'Prime Number Checker & Prime Factorization Calculator | usealltools.com',
+    title: 'Prime Number Checker & Prime Factorization Calculator | Use All Tools',
     description: 'Check if any number is prime, view its prime factors, and discover the nearest preceding and succeeding prime numbers with sub-millisecond execution.',
     keywords: [
       'Prime number checker',
@@ -325,7 +325,7 @@ export const TOOLS_SEO = {
   // Password & Security Tools
   // ---------------------------------------------------------------------------
   'password-generator': {
-    title: 'Cryptographically Secure Password Generator (Client-Side) | usealltools.com',
+    title: 'Cryptographically Secure Password Generator (Client-Side) | Use All Tools',
     description: 'Generate strong, unpredictable passwords using browser-native crypto.getRandomValues(). Customize length, symbols, digits, and calculate real-time entropy bits.',
     keywords: [
       'Password generator',
@@ -343,7 +343,7 @@ export const TOOLS_SEO = {
   },
 
   'password-age-checker': {
-    title: 'Password Strength & Age Checker - Test Entropy & Crack Time | usealltools.com',
+    title: 'Password Strength & Age Checker - Test Entropy & Crack Time | Use All Tools',
     description: 'Audit password strength, entropy bit depth, and estimated brute-force crack time offline. Never transmits keystrokes; runs 100% locally in browser memory.',
     keywords: [
       'Password strength checker',
@@ -363,7 +363,7 @@ export const TOOLS_SEO = {
   // Converters & Content Tools
   // ---------------------------------------------------------------------------
   'unit-converter': {
-    title: 'Universal Unit Converter - Length, Weight, Temp, Speed, Area | usealltools.com',
+    title: 'Universal Unit Converter - Length, Weight, Temp, Speed, Area | Use All Tools',
     description: 'Convert between Metric and Imperial measurement systems across length, mass/weight, temperature, speed, area, and digital data storage.',
     keywords: [
       'Unit converter',
@@ -381,7 +381,7 @@ export const TOOLS_SEO = {
   },
 
   'number-words-converter': {
-    title: 'Number to Words Converter (Indian Lakhs/Crores & International) | usealltools.com',
+    title: 'Number to Words Converter (Indian Lakhs/Crores & International) | Use All Tools',
     description: 'Convert numerical values into spelled words formatted for bank cheques, invoices, and legal documents. Supports Indian (Lakhs, Crores) and Western (Millions, Billions) naming.',
     keywords: [
       'Number to words converter',
@@ -398,7 +398,7 @@ export const TOOLS_SEO = {
   },
 
   'morse-code-converter': {
-    title: 'Morse Code Translator & Audio Player (Text to Morse) | usealltools.com',
+    title: 'Morse Code Translator & Audio Player (Text to Morse) | Use All Tools',
     description: 'Translate text to Morse code and decode Morse code back to text with real-time sound audio playback, speed control (WPM), and ITU international standard table.',
     keywords: [
       'Morse code translator',
@@ -415,7 +415,7 @@ export const TOOLS_SEO = {
   },
 
   'random-morse-generator': {
-    title: 'Random Morse Code Practice Generator with Audio & Speed Control | usealltools.com',
+    title: 'Random Morse Code Practice Generator with Audio & Speed Control | Use All Tools',
     description: 'Generate randomized Morse code characters, words, and call signs for amateur radio (CW) practice. Includes audio synthesis, adjustable WPM, and delay settings.',
     keywords: [
       'Random morse code generator',
@@ -432,7 +432,7 @@ export const TOOLS_SEO = {
   },
 
   'markdown-html-converter': {
-    title: 'Markdown to Clean HTML Converter with Live Preview | usealltools.com',
+    title: 'Markdown to Clean HTML Converter with Live Preview | Use All Tools',
     description: 'Convert Markdown syntax into clean, semantic HTML with real-time dual-pane preview, syntax highlighting, and 1-click clipboard copy.',
     keywords: [
       'Markdown to HTML converter',
@@ -449,7 +449,7 @@ export const TOOLS_SEO = {
   },
 
   'svg-converter': {
-    title: 'Client-Side SVG to PNG Converter with Custom Resolution | usealltools.com',
+    title: 'Client-Side SVG to PNG Converter with Custom Resolution | Use All Tools',
     description: 'Convert vector SVG files into high-resolution PNG, JPEG, or WebP images client-side. Set custom width, height, and DPI scale without uploading files to servers.',
     keywords: [
       'SVG to PNG converter',
@@ -466,7 +466,7 @@ export const TOOLS_SEO = {
   },
 
   'google-serp-preview': {
-    title: 'Google SERP Simulator & Snippet Preview Tool | usealltools.com',
+    title: 'Google SERP Simulator & Snippet Preview Tool | Use All Tools',
     description: 'Simulate how your webpage appears on Google Search results on desktop and mobile. Test title pixel width, meta description truncation, and rich snippet stars.',
     keywords: [
       'Google SERP preview tool',
@@ -483,7 +483,7 @@ export const TOOLS_SEO = {
   },
 
   'seo-article-analyzer': {
-    title: 'On-Page SEO Article & Content Quality Analyzer | usealltools.com',
+    title: 'On-Page SEO Article & Content Quality Analyzer | Use All Tools',
     description: 'Audit blog articles and webpage text for on-page SEO signals: word count, reading time, keyword density, heading distribution, and readability scores.',
     keywords: [
       'SEO article analyzer',
@@ -500,7 +500,7 @@ export const TOOLS_SEO = {
   },
 
   'text-difference': {
-    title: 'Online Text Difference Checker - Line-by-Line Diff Tool | usealltools.com',
+    title: 'Online Text Difference Checker - Line-by-Line Diff Tool | Use All Tools',
     description: 'Compare two texts, code snippets, or documents with color-coded side-by-side and inline diff highlights. Spot additions, deletions, and character modifications.',
     keywords: [
       'Text difference checker',
@@ -517,7 +517,7 @@ export const TOOLS_SEO = {
   },
 
   'text': {
-    title: 'Text & String Utilities Suite - Format, Clean & Count Words | usealltools.com',
+    title: 'Text & String Utilities Suite - Format, Clean & Count Words | Use All Tools',
     description: 'Comprehensive client-side text toolkit: word and character counters, UPPERCASE, lowercase, Title Case converters, whitespace cleaners, find & replace, and morse code.',
     keywords: [
       'Text utilities online',
