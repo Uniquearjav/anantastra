@@ -3,6 +3,7 @@ import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { generateRootSchema } from "@/lib/seo";
+import { SkyscraperBannerAd } from "@/components/ads";
 import "./globals.css";
 import Script from "next/script";
 
@@ -137,9 +138,27 @@ export default function RootLayout({ children }) {
 
         <ThemeProvider>
           <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
+          <div className="relative flex-grow flex flex-col">
+            {/* Left Sticky Desktop Skyscraper Banner */}
+            <aside
+              aria-label="Left Sidebar Advertisement"
+              className="hidden xl:block fixed left-2 xl:left-4 2xl:left-6 top-28 z-20 w-[160px]"
+            >
+              <SkyscraperBannerAd />
+            </aside>
+
+            {/* Right Sticky Desktop Skyscraper Banner */}
+            <aside
+              aria-label="Right Sidebar Advertisement"
+              className="hidden xl:block fixed right-2 xl:right-4 2xl:right-6 top-28 z-20 w-[160px]"
+            >
+              <SkyscraperBannerAd />
+            </aside>
+
+            <main className="flex-grow">
+              {children}
+            </main>
+          </div>
           <Footer />
         </ThemeProvider>
       </body>

@@ -9,7 +9,7 @@ import FaqAccordion from '@/components/blog/FaqAccordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { NativeBannerAd, SkyscraperBannerAd } from '@/components/ads';
+import { NativeBannerAd } from '@/components/ads';
 import {
   Calendar,
   Clock,
@@ -431,10 +431,7 @@ export default async function BlogPostPage({ params }) {
                 </Button>
               </div>
 
-              {/* Sidebar Skyscraper Banner Ad */}
-              <div className="pt-2 flex justify-center">
-                <SkyscraperBannerAd />
-              </div>
+
             </div>
           </aside>
         </div>
