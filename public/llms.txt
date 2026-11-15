@@ -87,4 +87,4 @@ usealltools.com is engineered with Next.js 15, React 19, Tailwind CSS v4, and sh
 - **Domain**: https://www.usealltools.com
 - **Repository**: https://github.com/Uniquearjav/anantastra
 - **License**: MIT License
-- **Author**: Arjav & The usealltools.com Open Source Community
+- **Author**: The Use All Tools Open Source Community

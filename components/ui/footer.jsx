@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { 
   Sparkles, 
   Github, 
-  Linkedin, 
-  Globe, 
   Heart, 
   ExternalLink, 
   ShieldCheck, 
@@ -128,24 +126,6 @@ export function Footer() {
               >
                 <Github className="h-4 w-4" />
               </a>
-              <a
-                href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Arjav Choudhary LinkedIn"
-                className="p-2 rounded-full border border-border/70 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a
-                href="https://www.unnatvega.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Unnat Vega Official Website"
-                className="p-2 rounded-full border border-border/70 bg-background/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
-              >
-                <Globe className="h-4 w-4" />
-              </a>
             </div>
           </div>
 
@@ -191,31 +171,10 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright, Credits & Back-to-Top */}
+        {/* Bottom Bar: Copyright & Back-to-Top */}
         <div className="mt-12 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
             <p>© 2026 Use All Tools. Released under the MIT License.</p>
-            <span className="hidden sm:inline">•</span>
-            <div className="flex items-center gap-1">
-              <span>Created with care by</span>
-              <a
-                href="https://github.com/Uniquearjav"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
-              >
-                Arjav Choudhary
-              </a>
-              <span>&</span>
-              <a
-                href="https://www.unnatvega.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
-              >
-                Unnat Vega
-              </a>
-            </div>
           </div>
 
           <Button

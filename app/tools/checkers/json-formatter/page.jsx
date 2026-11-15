@@ -19,8 +19,7 @@ import {
 } from 'lucide-react';
 
 const SAMPLE_JSON = `{
-  "app": "Anantastra",
-  "version": "2.0.0",
+  "app": "Use All Tools",
   "privacy": {
     "telemetry": false,
     "clientSideExecution": true
@@ -31,8 +30,8 @@ const SAMPLE_JSON = `{
     "Converters"
   ],
   "author": {
-    "name": "Arjav Choudhary",
-    "role": "Creator"
+    "name": "Use All Tools",
+    "role": "Open Source Community"
   }
 }`;
 

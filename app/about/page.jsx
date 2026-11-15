@@ -1,9 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import AV_image from "@/public/Arjav_about.jpg";
+import { Card } from "@/components/ui/card";
+import { AnantastraIcon } from "@/components/ui/logo";
 import { 
   ShieldCheck, 
   Code2, 
@@ -11,9 +10,6 @@ import {
   Lock, 
   Globe, 
   Github, 
-  Linkedin, 
-  Mail, 
-  ExternalLink, 
   Heart,
   Terminal,
   Cpu,
@@ -21,53 +17,50 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle2,
-  MapPin,
-  School,
-  Award
+  ServerOff
 } from "lucide-react";
 
 export const metadata = {
-  title: "About Use All Tools & Arjav Choudhary | Mission, Privacy & Open Source",
-  description: "Learn about Use All Tools, a free and privacy-focused suite of open-source web utilities created by Arjav Choudhary. Discover our mission, zero-data-collection architecture, and tools.",
+  title: "About Use All Tools | Free, Privacy-First Online Utilities",
+  description: "Learn about Use All Tools, a free and privacy-focused suite of open-source web utilities and calculators. Discover our mission, zero-data-collection architecture, and tools.",
   keywords: [
     "Use All Tools",
     "About Use All Tools",
-    "Arjav Choudhary",
     "Open Source Tools",
     "Privacy First Utilities",
     "Client-side Calculators",
-    "Unnat Vega",
     "Free Online Utilities",
     "Web Developer Tools",
-    "Indian Financial Calculators"
+    "Financial Calculators",
+    "Zero Telemetry Software"
   ],
-  authors: [{ name: "Arjav Choudhary", url: "https://github.com/Uniquearjav" }],
-  creator: "Arjav Choudhary",
+  authors: [{ name: "Use All Tools Team" }],
+  creator: "Use All Tools",
   publisher: "Use All Tools",
   alternates: {
     canonical: "https://www.usealltools.com/about",
   },
   openGraph: {
-    title: "About Use All Tools & Founder Arjav Choudhary",
-    description: "Empowering users with private, client-side, zero-tracking utilities. Open source under MIT license.",
+    title: "About Use All Tools - Privacy-First Web Utilities",
+    description: "Empowering users with private, client-side, zero-tracking utilities. Open source under the MIT license.",
     url: "https://www.usealltools.com/about",
     siteName: "Use All Tools",
     locale: "en_US",
-    type: "profile",
+    type: "website",
     images: [
       {
-        url: "/Arjav_about.jpg",
-        width: 800,
-        height: 800,
-        alt: "Arjav Choudhary - Founder of Use All Tools",
+        url: "/logo.svg",
+        width: 960,
+        height: 240,
+        alt: "Use All Tools - Free Online Tools Suite",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "About Use All Tools - Privacy-First Open Source Utilities",
-    description: "Learn about Use All Tools and founder Arjav Choudhary. Pure client-side calculations with zero telemetry.",
-    images: ["/Arjav_about.jpg"],
+    description: "Pure client-side calculations with zero telemetry, zero cookies, and zero server logging.",
+    images: ["/logo.svg"],
   },
 };
 
@@ -76,28 +69,25 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": ["AboutPage", "ProfilePage"],
+        "@type": "AboutPage",
         "@id": "https://www.usealltools.com/about",
         "url": "https://www.usealltools.com/about",
-        "name": "About Use All Tools & Founder Arjav Choudhary",
-        "description": "Background, mission, technical architecture, and founder profile of the Use All Tools open-source project.",
+        "name": "About Use All Tools",
+        "description": "Background, mission, technical architecture, and philosophy of the Use All Tools open-source project.",
         "isPartOf": {
           "@type": "WebSite",
           "@id": "https://www.usealltools.com/#website",
           "url": "https://www.usealltools.com",
           "name": "Use All Tools"
         },
-        "mainEntity": {
-          "@type": "Person",
-          "@id": "https://www.usealltools.com/about#founder",
-          "name": "Arjav Choudhary",
-          "jobTitle": "Founder & Full-Stack Developer",
-          "alumniOf": "Delhi Public School, Jodhpur",
-          "sameAs": [
-            "https://github.com/Uniquearjav",
-            "https://www.linkedin.com/in/arjav-choudhary-531b2126b/",
-            "https://www.unnatvega.in"
-          ]
+        "publisher": {
+          "@type": "Organization",
+          "name": "Use All Tools",
+          "url": "https://www.usealltools.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.usealltools.com/logo.svg"
+          }
         }
       },
       {
@@ -109,10 +99,7 @@ export default function AboutPage() {
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "INR"
-        },
-        "author": {
-          "@id": "https://www.usealltools.com/about#founder"
+          "priceCurrency": "USD"
         },
         "description": "Free, client-side open-source calculators and developer tools built with zero data collection."
       },
@@ -130,10 +117,10 @@ export default function AboutPage() {
           },
           {
             "@type": "Question",
-            "name": "Who created Use All Tools?",
+            "name": "Why was Use All Tools built?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use All Tools was founded and created by Arjav Choudhary, a programmer and entrepreneur based in Jodhpur, India, who is passionate about open-source and privacy-preserving technology."
+              "text": "Use All Tools was built to replace slow, bloated utility websites filled with trackers, popups, and paywalls with an ultra-fast, zero-telemetry, client-side alternative."
             }
           },
           {
@@ -141,7 +128,7 @@ export default function AboutPage() {
             "name": "Does Use All Tools collect or track user data?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. Use All Tools operates with zero data collection, zero cookies, and zero server logging. All calculations run strictly within the user's browser engine."
+              "text": "No. Use All Tools operates with zero data harvesting, zero tracking cookies, and zero server logging. All calculations run strictly within the user's browser engine."
             }
           },
           {
@@ -149,7 +136,7 @@ export default function AboutPage() {
             "name": "Is Use All Tools open source?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, Use All Tools is open source under the MIT License. Anyone can inspect the code, suggest improvements, or contribute directly on GitHub."
+              "text": "Yes, Use All Tools is completely open source under the permissive MIT License. Anyone can inspect the code, verify its zero-telemetry design, or contribute on GitHub."
             }
           }
         ]
@@ -161,49 +148,50 @@ export default function AboutPage() {
     {
       icon: ShieldCheck,
       title: "100% Client-Side Privacy",
-      description: "No calculation parameters, loan amounts, or inputs ever leave your device. Everything executes inside your local browser engine."
+      description: "No calculation parameters, loan amounts, or inputs ever leave your device. Everything executes inside your local browser engine via modern Web APIs."
     },
     {
       icon: Code2,
       title: "Open Source Under MIT",
-      description: "Full transparency. Inspect the source code, verify privacy claims, or fork and adapt it for your own personal or enterprise needs."
+      description: "Full transparency. Inspect the source code, verify our privacy guarantees, or fork and adapt the utilities for your own personal or enterprise needs."
     },
     {
       icon: Zap,
       title: "Instant Zero-Latency Execution",
-      description: "No server roundtrips, no loading spinners, and no session expiration. Instant calculations with full offline capability."
+      description: "No server roundtrips, no loading spinners, and no session expiration. Instant calculations with full offline capability once loaded."
     },
     {
       icon: Heart,
       title: "Community & User First",
-      description: "Created to serve students, professionals, and developers with accessible utilities without aggressive ads or paywalls."
+      description: "Engineered to serve students, professionals, and developers with accessible utilities without paywalls, subscriptions, or data harvesting."
     }
   ];
 
   const quickFacts = [
-    { label: "Founder", value: "Arjav Choudhary" },
+    { label: "Project Name", value: "Use All Tools" },
     { label: "Project Status", value: "Active & Open Source" },
     { label: "License", value: "MIT License" },
-    { label: "Architecture", value: "Next.js 15, React 19, Tailwind CSS" },
+    { label: "Architecture", value: "Next.js 15, React 19, Tailwind CSS v4" },
     { label: "Data Storage", value: "Zero Server Storage (100% Client-Side)" },
+    { label: "Telemetry", value: "Zero Remote Data Harvesting" },
   ];
 
   const faqs = [
     {
       q: "What is Use All Tools and why was it built?",
-      a: "Use All Tools is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, ad-light, client-side alternative."
-    },
-    {
-      q: "Who is Arjav Choudhary?",
-      a: "Arjav Choudhary is the creator and lead developer of Use All Tools. He is a programmer with expertise in Python, Node.js, and modern React architectures, focusing on privacy-first tools, sustainable digital solutions, and practical AI applications."
+      a: "Use All Tools is an open-source web application providing daily financial and developer utilities—from SIP and Interest calculators to Text converters and Password tools. It was built to solve the frustration of ad-cluttered, privacy-invasive utility websites by delivering a blazingly fast, client-side alternative."
     },
     {
       q: "How does Use All Tools guarantee zero data collection?",
       a: "All calculation algorithms, charts, and text formatters run entirely in client-side JavaScript within your browser window. There are no backend database endpoints storing your inputs, financial numbers, or generated passwords."
     },
     {
+      q: "Are all tools completely free?",
+      a: "Yes, 100% of the tools, calculators, and converters are completely free with no usage limits, no credit card requirements, and no registration needed."
+    },
+    {
       q: "Can I contribute to Use All Tools?",
-      a: "Yes! Contributions from developers, designers, and translators are enthusiastically welcomed. You can submit feature requests, open issues, or create pull requests on the official GitHub repository."
+      a: "Yes! Contributions from developers, designers, and educators are enthusiastically welcomed. You can submit feature requests, open issues, or create pull requests on our official GitHub repository."
     }
   ];
 
@@ -219,7 +207,7 @@ export default function AboutPage() {
         {/* Breadcrumb & Header */}
         <header className="text-center max-w-3xl mx-auto mb-14">
           <Badge variant="subtle" className="mb-3">
-            About the Project & Creator
+            About the Project
           </Badge>
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
             About Use All Tools
@@ -229,89 +217,72 @@ export default function AboutPage() {
           </p>
         </header>
 
-        {/* Founder Hero Card Section */}
+        {/* Project Mission Hero Card Section */}
         <section className="mb-16">
           <Card className="overflow-hidden border-border/60 bg-card shadow-sm p-6 sm:p-10">
             <div className="flex flex-col lg:flex-row gap-10 items-center lg:items-start">
-              {/* Profile Image & Badges */}
+              {/* Project Brand Graphic */}
               <div className="w-full sm:w-80 lg:w-72 shrink-0 flex flex-col items-center">
-                <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-2xl overflow-hidden border-2 border-border/80 shadow-md bg-muted/40">
-                  <Image
-                    src={AV_image}
-                    alt="Arjav Choudhary - Founder and Full-Stack Developer of Use All Tools"
-                    fill
-                    sizes="(max-width: 768px) 256px, 300px"
-                    className="object-cover"
-                    priority
-                  />
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden border-2 border-primary/20 shadow-lg bg-gradient-to-br from-primary/10 via-background to-muted/40 flex flex-col items-center justify-center p-6 text-center">
+                  <div className="p-4 rounded-2xl bg-primary/15 border border-primary/30 text-primary mb-3 shadow-inner">
+                    <AnantastraIcon size={56} />
+                  </div>
+                  <span className="font-extrabold text-lg text-foreground tracking-tight">
+                    Use All Tools
+                  </span>
+                  <span className="text-[11px] font-semibold text-primary uppercase tracking-wider mt-0.5">
+                    100% Client-Side
+                  </span>
                 </div>
 
                 <div className="text-center mt-4 space-y-1">
-                  <h2 className="text-xl font-bold text-foreground">Arjav Choudhary</h2>
-                  <p className="text-xs text-muted-foreground font-medium">Founder & Developer</p>
+                  <h2 className="text-lg font-bold text-foreground">Open Source Utility Suite</h2>
+                  <p className="text-xs text-muted-foreground font-medium">Free • Private • Fast</p>
                 </div>
 
-                {/* Social Connect Buttons */}
-                <div className="flex flex-wrap items-center justify-center gap-2 mt-5 w-full">
+                {/* GitHub Repository Button */}
+                <div className="flex items-center justify-center mt-5 w-full">
                   <a
-                    href="https://github.com/Uniquearjav"
+                    href="https://github.com/Uniquearjav/anantastra"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="GitHub Profile"
+                    aria-label="GitHub Repository"
                   >
-                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-full border-border/70 text-xs gap-1.5">
-                      <Github className="h-3.5 w-3.5" />
-                      <span>GitHub</span>
-                    </Button>
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="LinkedIn Profile"
-                  >
-                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-full border-border/70 text-xs gap-1.5">
-                      <Linkedin className="h-3.5 w-3.5 text-blue-500" />
-                      <span>LinkedIn</span>
-                    </Button>
-                  </a>
-                  <a
-                    href="https://www.unnatvega.in"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Unnat Vega Website"
-                  >
-                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-full border-border/70 text-xs gap-1.5">
-                      <Globe className="h-3.5 w-3.5 text-primary" />
-                      <span>Unnat Vega</span>
+                    <Button variant="outline" size="sm" className="h-9 px-4 rounded-full border-border/70 text-xs gap-2">
+                      <Github className="h-4 w-4" />
+                      <span>GitHub Repository</span>
                     </Button>
                   </a>
                 </div>
               </div>
 
-              {/* Bio & Story */}
+              {/* Mission & Story */}
               <div className="flex-1 space-y-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/80 bg-muted/30 text-xs font-medium text-foreground">
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
-                  <span>The Story Behind Use All Tools</span>
+                  <span>The Vision Behind Use All Tools</span>
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-                  "I believe software should respect people's privacy by default."
+                  "Software should respect people's privacy by default."
                 </h3>
 
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                  Hi! I'm <strong className="text-foreground">Arjav Choudhary</strong>, a passionate programmer, student at Delhi Public School Jodhpur, and technology builder. What started as exploring Python as a hobby has grown into building complete web platforms, generative AI applications, and community-oriented utilities.
+                  Everyday digital utilities—calculating loan EMIs, projecting compound interest, formatting sensitive JSON data, or converting numbers—should be instantaneous, accessible, and completely private.
                 </p>
 
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                  I created <strong className="text-foreground">Use All Tools</strong> (originally named Anantastra, from Sanskrit meaning <em>"Infinite Instruments"</em>) because I grew tired of utility websites filled with trackers, popups, paywalls, and slow server-side page reloads. Everyday tools—like calculating loan EMIs, estimating SIP compound interest, or formatting tax figures—should be instant, accessible, and run completely within your own browser with <strong className="text-foreground">zero data harvesting</strong>.
+                  Most online utility websites today are burdened by invasive analytics, slow server-side page reloads, tracking cookies, and popup paywalls that harvest your inputs. <strong className="text-foreground">Use All Tools</strong> was created to prove that a modern web utility suite can be blazingly fast, visually polished, and strictly zero-telemetry.
+                </p>
+
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  Every computation runs directly in your browser's local V8 engine. No sensitive inputs ever leave your device or touch a remote database.
                 </p>
 
                 <div className="pt-2 flex flex-wrap items-center gap-3">
                   <Link href="/tools">
                     <Button className="rounded-full gap-2 shadow-xs">
-                      <span>Explore Tools</span>
+                      <span>Explore All Tools</span>
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -331,14 +302,14 @@ export default function AboutPage() {
           </Card>
         </section>
 
-        {/* Quick Facts Matrix (Optimized for GEO / Search Generative Engines) */}
+        {/* Quick Facts Matrix */}
         <section className="mb-16">
           <div className="mb-6">
             <h2 className="text-xl font-bold tracking-tight text-foreground">
               Key Facts at a Glance
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Verified specifications and architectural summary for researchers and answer engines.
+              Architectural summary and open-source specifications.
             </p>
           </div>
 
@@ -465,14 +436,14 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Collaboration & Contact Footer Card */}
+        {/* Community & Open Source Contribution Section */}
         <section>
           <Card className="border-border/60 bg-muted/20 p-8 sm:p-12 text-center rounded-3xl">
             <h2 className="text-2xl font-bold text-foreground">
-              Get in Touch or Collaborate
+              Open Source & Community Driven
             </h2>
             <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto leading-relaxed">
-              Have an idea for a new calculator, want to suggest an improvement, or explore collaboration? Connect with Arjav directly:
+              Have an idea for a new calculator, want to suggest an improvement, or report a bug? We welcome contributions from developers, educators, and users worldwide on GitHub.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <a
@@ -485,16 +456,12 @@ export default function AboutPage() {
                   <span>Submit an Issue on GitHub</span>
                 </Button>
               </a>
-              <a
-                href="https://www.linkedin.com/in/arjav-choudhary-531b2126b/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link href="/tools">
                 <Button variant="outline" className="rounded-full border-border/80 gap-2">
-                  <Linkedin className="h-4 w-4 text-blue-500" />
-                  <span>Message on LinkedIn</span>
+                  <Zap className="h-4 w-4 text-primary" />
+                  <span>Explore All Tools</span>
                 </Button>
-              </a>
+              </Link>
             </div>
           </Card>
         </section>
