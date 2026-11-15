@@ -7,10 +7,10 @@ import SkyscraperBannerAd from './SkyscraperBannerAd';
 export default function ToolPageWrapper({ children }) {
   return (
     <div className="relative min-h-[calc(100vh-140px)]">
-      {/* Sticky Desktop Skyscraper Banner (Visible on extra-wide screens 1536px+) */}
+      {/* Sticky Desktop Skyscraper Banner (Visible on desktop & laptop screens 1280px+) */}
       <aside
         aria-label="Sidebar Advertisement"
-        className="hidden 2xl:block fixed right-6 top-32 z-20 w-[160px]"
+        className="hidden xl:block fixed right-2 xl:right-4 2xl:right-6 top-28 z-20 w-[160px]"
       >
         <SkyscraperBannerAd />
       </aside>

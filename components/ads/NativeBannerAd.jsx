@@ -4,35 +4,41 @@ import React, { useEffect, useRef } from 'react';
 
 /**
  * Adsterra Native Banner Ad Component
- * Container: container-1a1d2b2908a923be2827d27b2a07813c
- * Script: https://bauval.org/21/1a1d2b2908a923be2827d27b2a07813c
+ * Container ID: container-1a1d2b2908a923be2827d27b2a07813c
+ * Script Source: https://bauval.org/21/1a1d2b2908a923be2827d27b2a07813c
  */
 export default function NativeBannerAd({ className = '' }) {
-  const containerRef = useRef(null);
+  const adContainerRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const scriptSrc = 'https://bauval.org/21/1a1d2b2908a923be2827d27b2a07813c';
-    let script = document.querySelector(`script[src="${scriptSrc}"]`);
+    const container = adContainerRef.current;
+    if (!container) return;
 
-    if (!script) {
-      script = document.createElement('script');
-      script.src = scriptSrc;
-      script.async = true;
-      script.setAttribute('data-cfasync', 'false');
-      document.body.appendChild(script);
-    } else {
-      // Re-trigger reload on SPA page changes if supported by Adsterra script
-      try {
-        const container = document.getElementById('container-1a1d2b2908a923be2827d27b2a07813c');
-        if (container && typeof container.reload === 'function') {
-          container.reload();
-        }
-      } catch (e) {
-        // Safe fallback
+    // Reset container to avoid duplicate scripts on fast re-renders
+    container.innerHTML = '';
+
+    // 1. Create the container div required by Adsterra's script
+    const innerDiv = document.createElement('div');
+    innerDiv.id = 'container-1a1d2b2908a923be2827d27b2a07813c';
+    container.appendChild(innerDiv);
+
+    // 2. Create the script element
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = 'https://bauval.org/21/1a1d2b2908a923be2827d27b2a07813c';
+
+    container.appendChild(script);
+
+    return () => {
+      // Cleanup on unmount
+      if (container) {
+        container.innerHTML = '';
       }
-    }
+    };
   }, []);
 
   return (
@@ -45,9 +51,8 @@ export default function NativeBannerAd({ className = '' }) {
           </span>
         </div>
         <div
-          ref={containerRef}
-          id="container-1a1d2b2908a923be2827d27b2a07813c"
-          className="w-full min-h-[140px] flex items-center justify-center overflow-hidden"
+          ref={adContainerRef}
+          className="w-full min-h-[140px] flex flex-col items-center justify-center overflow-hidden"
         />
       </div>
     </aside>
