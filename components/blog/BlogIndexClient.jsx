@@ -23,9 +23,10 @@ export default function BlogIndexClient({ posts = [] }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Categories list with counts
+  // Categories list with counts dynamically gathered from posts
   const categories = useMemo(() => {
-    const list = ['All', 'Financial', 'Developer', 'Science & Health', 'Security', 'Mathematics'];
+    const unique = Array.from(new Set(posts.map((p) => p.category).filter(Boolean)));
+    const list = ['All', ...unique];
     return list.map((cat) => {
       const count = cat === 'All' ? posts.length : posts.filter((p) => p.category === cat).length;
       return { name: cat, count };

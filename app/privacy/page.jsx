@@ -1,6 +1,37 @@
 export const metadata = {
-  title: "Privacy Policy | Use All Tools",
-  description: "Learn about how Use All Tools protects your privacy and handles your data",
+  title: "Privacy Policy & Zero-Telemetry Commitment | Use All Tools",
+  description: "Learn how Use All Tools protects your privacy through 100% in-browser client-side computation, zero cookie tracking, and zero remote data storage.",
+  keywords: [
+    "privacy policy",
+    "zero telemetry tools",
+    "client-side privacy",
+    "no tracking web utilities",
+    "Use All Tools privacy"
+  ],
+  alternates: {
+    canonical: "https://www.usealltools.com/privacy",
+  },
+  openGraph: {
+    title: "Privacy Policy & Zero-Telemetry Commitment | Use All Tools",
+    description: "100% client-side privacy. Zero data collection, no cookies, and zero database queries.",
+    url: "https://www.usealltools.com/privacy",
+    siteName: "Use All Tools",
+    type: "website",
+    images: [
+      {
+        url: "https://www.usealltools.com/logo.svg",
+        width: 960,
+        height: 240,
+        alt: "Use All Tools Privacy Commitment",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy & Zero-Telemetry Commitment | Use All Tools",
+    description: "100% client-side privacy. Zero data collection, no cookies, and zero database queries.",
+    images: ["https://www.usealltools.com/logo.svg"],
+  },
 };
 
 export default function PrivacyPolicy() {

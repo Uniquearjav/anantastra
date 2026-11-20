@@ -2,8 +2,8 @@ import { BASE_URL } from '@/data/toolsSeo';
 import { ToolPageWrapper } from '@/components/ads';
 
 export const metadata = {
-  title: 'Free Online Tools & Calculators Suite | 25+ Browser Utilities',
-  description: 'Explore 25+ free, privacy-first web utilities and calculators: Mutual Fund SIP, GST, Income Tax (India FY 24-25/25-26), Loan EMI, Interest, Password Generator, and Text Converters. 100% client-side.',
+  title: 'Free Online Tools & Calculators Suite | 35+ Browser Utilities',
+  description: 'Explore 35+ free, privacy-first web utilities and calculators: QR Generator, UUID, Base64, Glassmorphism, Color Contrast, Mutual Fund SIP, GST, Income Tax, Loan EMI, Interest, and Password tools. 100% client-side.',
   keywords: [
     'online tools suite',
     'free calculators online',

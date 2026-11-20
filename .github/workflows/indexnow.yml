@@ -1,0 +1,37 @@
+name: IndexNow Auto-Submission
+
+on:
+  schedule:
+    # Runs every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'data/**'
+      - 'app/**'
+      - 'public/sitemap.txt'
+
+jobs:
+  indexnow:
+    name: Submit URLs to IndexNow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Refresh Sitemap URLs
+        run: node scripts/generate-sitemap.js
+
+      - name: Submit URLs to IndexNow (Bing, Yandex, Seznam, Naver)
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY || '5ffaf57c3f706928109c0e0405f6ceca' }}
+        run: node scripts/submit-indexnow.js

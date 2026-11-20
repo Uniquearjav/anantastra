@@ -28,7 +28,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.usealltools.co
 
 export const metadata = {
   title: "Free Online Tools & Calculators Suite | 100% Client-Side & Private",
-  description: "Access 25+ fast, free, privacy-first web utilities: SIP, GST, Income Tax (India FY 24-25/25-26), Loan EMI & Interest calculators, password tools, converters, and text utilities. Zero data tracking.",
+  description: "Access 35+ fast, free, privacy-first web utilities: QR generator, UUID, Base64, SIP, GST, Income Tax, Loan EMI & Interest calculators, password tools, converters, and text utilities. Zero data tracking.",
   alternates: {
     canonical: SITE_URL,
   },
@@ -226,7 +226,7 @@ export default function Home() {
             {/* Bento Key Metrics */}
             <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
               <div className="rounded-2xl border border-border/60 bg-card/60 p-4 sm:p-5 backdrop-blur-md text-center hover:border-primary/30 transition-colors">
-                <div className="text-2xl sm:text-3xl font-extrabold text-primary">15+</div>
+                <div className="text-2xl sm:text-3xl font-extrabold text-primary">35+</div>
                 <div className="text-xs sm:text-sm text-muted-foreground mt-1">Free Utilities</div>
               </div>
               <div className="rounded-2xl border border-border/60 bg-card/60 p-4 sm:p-5 backdrop-blur-md text-center hover:border-primary/30 transition-colors">

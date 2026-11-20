@@ -53,6 +53,8 @@ const CATEGORIES = [
     description: "Convert units, markup languages, numbers, and vector graphics.",
     icon: Binary,
     tools: [
+      { name: "Base64 Encoder & Decoder", slug: "base64-encoder-decoder", badge: "UTF-8 & Img", desc: "Convert text, unicode, and image files to Base64 data URIs and back" },
+      { name: "Unix Timestamp & Epoch Converter", slug: "unix-timestamp-converter", badge: "UTC / Local", desc: "Epoch seconds and milliseconds to human readable dates with live clock" },
       { name: "Number to Words Converter", slug: "number-words-converter", badge: "Lakh & Crore", desc: "Indian and Western scales, Hindi numbers, and cheque formats" },
       { name: "Morse Code Converter", slug: "morse-code-converter", badge: "Audio Synth", desc: "650Hz audio playback, visual light flasher, and ITU alphabet chart" },
       { name: "Unit Converter", slug: "unit-converter", badge: "Multi-Matrix", desc: "Length, digital storage, weight, temperature, speed, area, volume" },
@@ -66,6 +68,8 @@ const CATEGORIES = [
     description: "Validate inputs, algorithms, primes, and JSON payloads.",
     icon: CheckCircle,
     tools: [
+      { name: "Color Contrast & Accessibility Checker", slug: "color-contrast-checker", badge: "WCAG 2.1", desc: "Evaluate AA and AAA contrast ratios with live interactive UI previews" },
+      { name: "Cryptographic Hash Generator", slug: "hash-generator", badge: "WebCrypto", desc: "Compute SHA-256, SHA-512, SHA-1 and verify file checksum integrity" },
       { name: "Prime Number Checker", slug: "prime-checker", badge: "Factor Tree", desc: "Instant primality verification, prime factorization, and divisor lists" },
       { name: "Palindrome Checker", slug: "palindrome-checker", desc: "Symmetry percentage, character alignment, and longest palindrome finder" },
       { name: "Leap Year Checker", slug: "leap-year-checker", desc: "Gregorian 3-step proof, century exception rules, and countdown" },
@@ -88,6 +92,12 @@ const CATEGORIES = [
     description: "Diff viewers, morse trainers, and text transformers.",
     icon: FileCode,
     tools: [
+      { name: "QR Code Generator & Styler", slug: "qr-code-generator", badge: "PNG / SVG", desc: "Custom color QR codes for Wi-Fi, URLs, vCards, and emails with zero tracking" },
+      { name: "UUID / GUID & NanoID Generator", slug: "uuid-generator", badge: "CSPRNG", desc: "Bulk generate UUID v4, v1, and NanoID with format casing and JSON export" },
+      { name: "Word Counter & Readability Analyzer", slug: "word-counter", badge: "Flesch Score", desc: "Live word and character count, reading time, and keyword density table" },
+      { name: "RegEx Tester & Pattern Library", slug: "regex-tester", badge: "Live Evaluator", desc: "Debug regular expressions with visual match highlighting and substitution" },
+      { name: "CSS Glassmorphism Generator", slug: "css-glassmorphism-generator", badge: "Soft UI", desc: "Frosted-glass card designer with blur, opacity, and CSS/Tailwind export" },
+      { name: "Campaign URL & UTM Builder", slug: "utm-builder", badge: "GA4 Ready", desc: "Construct marketing tracking links with preset channels and query breakdown" },
       { name: "Google SERP Simulator & Pixel Analyzer", slug: "google-serp-preview", badge: "SERP Pixel", desc: "Analyze title (580px) and description (680px) pixel lengths with realistic desktop and mobile Google preview" },
       { name: "SEO Article & Keyword Density Analyzer", slug: "seo-article-analyzer", badge: "SEO Tool", desc: "Keyword frequency tracker, word count goals (800/1200/1500), and density auditor" },
       { name: "Text Difference Tool", slug: "text-difference", badge: "LCS Diff", desc: "Side-by-side visual diff comparison with unified patch export" },
@@ -100,6 +110,17 @@ const CATEGORIES = [
 export default function ToolsPage() {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // Handle Google Sitelinks Searchbox ?q= parameter on initial client load
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const queryParam = params.get('q');
+      if (queryParam) {
+        setSearch(queryParam);
+      }
+    }
+  }, []);
 
   // Filter tools based on search and category
   const filteredCategories = useMemo(() => {

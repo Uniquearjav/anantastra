@@ -45,6 +45,7 @@ export async function generateMetadata({ params }) {
   const canonicalUrl = `${BASE_URL}/blog/${post.slug}`;
   const title = `${post.metaTitle || post.title} | Use All Tools`;
   const description = post.metaDescription || post.excerpt;
+  const ogImageUrl = `${BASE_URL}/logo.svg`;
 
   return {
     title,
@@ -63,11 +64,20 @@ export async function generateMetadata({ params }) {
       publishedTime: post.date,
       authors: [post.author || 'Use All Tools Technical Team'],
       tags: post.keywords || [],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 960,
+          height: 240,
+          alt: `${post.title} - Use All Tools`,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images: [ogImageUrl],
     },
   };
 }
@@ -80,6 +90,16 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
 
+  // Format ISO 8601 date for Schema.org
+  const isoDate = (() => {
+    try {
+      const d = new Date(post.date);
+      return isNaN(d.getTime()) ? post.date : d.toISOString();
+    } catch {
+      return post.date;
+    }
+  })();
+
   // Find related articles (same category, excluding current post)
   const relatedPosts = BLOG_POSTS.filter(
     (p) => p.slug !== post.slug && (p.category === post.category || true)
@@ -91,8 +111,9 @@ export default async function BlogPostPage({ params }) {
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.metaDescription || post.excerpt,
-    datePublished: post.date,
-    dateModified: post.date,
+    image: `${BASE_URL}/logo.svg`,
+    datePublished: isoDate,
+    dateModified: isoDate,
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `${BASE_URL}/blog/${post.slug}`,

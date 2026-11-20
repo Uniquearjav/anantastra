@@ -41,26 +41,32 @@ export function Footer() {
       title: "Dev & Text Tools",
       icon: Code2,
       links: [
-        { label: "Google SERP Simulator", href: "/tools/code-text-tools/google-serp-preview" },
-        { label: "SEO Article Analyzer", href: "/tools/code-text-tools/seo-article-analyzer" },
-        { label: "Text Utilities", href: "/text" },
-        { label: "Password Generator", href: "/password-generator" },
-        { label: "Password Age Checker", href: "/tools/password-tools/password-age-checker" },
+        { label: "QR Code Generator", href: "/tools/code-text-tools/qr-code-generator" },
+        { label: "UUID / GUID Generator", href: "/tools/code-text-tools/uuid-generator" },
+        { label: "Base64 Encoder/Decoder", href: "/tools/converters/base64-encoder-decoder" },
+        { label: "CSS Glassmorphism", href: "/tools/code-text-tools/css-glassmorphism-generator" },
+        { label: "RegEx Pattern Tester", href: "/tools/code-text-tools/regex-tester" },
+        { label: "Word & Readability Counter", href: "/tools/code-text-tools/word-counter" },
+        { label: "Campaign UTM Builder", href: "/tools/code-text-tools/utm-builder" },
         { label: "JSON Formatter", href: "/tools/checkers/json-formatter" },
-        { label: "Markdown to HTML", href: "/tools/converters/markdown-html-converter" },
-        { label: "SVG Converter", href: "/tools/converters/svg-converter" },
+        { label: "Google SERP Simulator", href: "/tools/code-text-tools/google-serp-preview" },
+        { label: "Password Generator", href: "/password-generator" },
       ]
     },
     {
       title: "Math & Checkers",
       icon: Binary,
       links: [
+        { label: "Color Contrast Checker", href: "/tools/checkers/color-contrast-checker" },
+        { label: "Cryptographic Hash Generator", href: "/tools/checkers/hash-generator" },
+        { label: "Unix Timestamp Converter", href: "/tools/converters/unix-timestamp-converter" },
         { label: "Age Calculator", href: "/tools/calculator/age-calculator" },
         { label: "BMI Calculator", href: "/tools/calculator/bmi-calculator" },
         { label: "Decimal to Binary", href: "/tools/calculator/decimal-binary-calculator" },
         { label: "Prime Checker", href: "/tools/checkers/prime-checker" },
         { label: "Palindrome Checker", href: "/tools/checkers/palindrome-checker" },
         { label: "Factorial Calculator", href: "/tools/calculator/factorial-calculator" },
+        { label: "Unit Converter", href: "/tools/converters/unit-converter" },
       ]
     },
     {
@@ -68,9 +74,10 @@ export function Footer() {
       icon: Lock,
       links: [
         { label: "About Use All Tools", href: "/about" },
-        { label: "All 24+ Utilities", href: "/tools" },
-        { label: "Blog & Guides (25 Posts)", href: "/blog" },
+        { label: "All 35+ Utilities", href: "/tools" },
+        { label: "Blog & Guides (40 Posts)", href: "/blog" },
         { label: "LLM Context (llms.txt)", href: "/llms.txt" },
+        { label: "Full LLMs (llms-full.txt)", href: "/llms-full.txt" },
         { label: "Privacy Commitment", href: "/privacy" },
         { label: "GitHub Repository", href: "https://github.com/Uniquearjav/anantastra", external: true },
       ]

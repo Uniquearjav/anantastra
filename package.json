@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sitemap": "node scripts/generate-sitemap.js",
+    "llms": "node scripts/build-llms-full.js",
+    "indexnow": "node scripts/submit-indexnow.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.11",
